@@ -1,4 +1,7 @@
 <?php
+    /**
+    *   TODO:   Convert into using JWT in cookies.
+    */
     class ActiveUsers extends MySQL_Socket
     {
         public function __construct ()
@@ -27,25 +30,20 @@
             return false;
         }
 
-        public function confirm ($username, $key, $ip)
+        public function fetch ($key)
         {
             $connection = parent::connect();
-            if ($qurey = $connection->prepare('SELECT * FROM active WHERE username = ?, key = ?, ip = ? LIMIT 1'))
+            if ($qurey = $connection->prepare('SELECT * FROM active WHERE key = ? LIMIT 1'))
             {
-                $query->bind_param('sss', $username, $key, $ip);
+                $query->bind_param('s', $key);
                 $query->execute();
 
-                $query->bind_result($username);
+                $query->bind_result($activeUser);
                 $query->fetch();
 
                 $query->close();
                 $connection->close();
-
-                if ($username)
-                {
-                    return $username;
-                }
-                return false;
+                return $activeUser;
             }
             $connection->close();
             return false;
