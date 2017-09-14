@@ -1,17 +1,18 @@
 <?php
-    /**
-     *
-     */
-    class Content_Manager extends Content_Model
+    /*
+    *
+    * */
+    class content extends content_model
     {
-        static private $ActiveUsers;
-        private $confirmed;
+        static private $active_user;
+        private $authorized;
 
-        function __construct(argument)
+        function __construct($auth_token)
         {
             parent::__construct();
-            $this->ActiveUsers = new ActiveUsers();
-            $this->confirmed = false;
+            $this->active_user = new user_soket();
+			$confirmation = $this->active_user->confirm($auth_token)
+            $this->authorized = ;
             //  TODO:   Authenticate the key and set the active
             //          user to the username of the active user.
         }

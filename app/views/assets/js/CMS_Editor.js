@@ -1,17 +1,17 @@
 $(() => { new CMS_Editor(); });
 
 class CMS_Editor {
-	
+
 	constructor () {
 		//	Adding event listeners for actions.
 		this.postEvents();
 		this.articleEvents();
 		this.imagePostEvents();
 		this.imageEvents();
-		
+
 		this.htmlTemplates = []; //	TODO: Fill the templates array. (Load them dynamicaly?)
 	}
-	
+
 	/*
 	*
 	* */
@@ -21,15 +21,15 @@ class CMS_Editor {
 		$('#savePost').on('click', this.savePost);		//	Save new or edited post.
 		$('#removePost').on('click', this.removePost);	//	Remove an existing post.
 	}
-	
+
 	/*
 	*
 	* */
 	startPost () {
 		console.log('New post...');
-		
+
 		// Show the input for a new post and the buttons for 'Select image', 'Add image' and 'Publish post'.
-		
+
 		AJAX.get('ajaxTest', (err, res) => {
 			if (!err) {
 				console.log(res.msg)
@@ -38,14 +38,14 @@ class CMS_Editor {
 			}
 		});
 	}
-	
+
 	/*
 	*
 	* */
 	editPost () {
 		console.log('Edit post...');
 	}
-	
+
 	/*
 	*
 	* */
@@ -59,7 +59,7 @@ class CMS_Editor {
 			}
 		});
 	}
-	
+
 	/*
 	*
 	* */
@@ -73,7 +73,7 @@ class CMS_Editor {
 			}
 		});
 	}
-	
+
 	/*
 	*
 	* */
@@ -83,35 +83,35 @@ class CMS_Editor {
 		$('#saveArticle').on('click', this.saveArticle);		//	Save a new or edited article.
 		$('#removeArticle').on('click', this.removeArticle);	//	Remove an existing article.
 	}
-	
+
 	/*
 	*
 	* */
 	startArticle () {
-		
+
 	}
-	
+
 	/*
 	*
 	* */
 	editArticle () {
-		
+
 	}
-	
+
 	/*
 	*
 	* */
 	saveArticle () {
-		
+
 	}
-	
+
 	/*
 	*
 	* */
 	removeArticle () {
-		
+
 	}
-	
+
 	/*
 	*
 	* */
@@ -121,42 +121,42 @@ class CMS_Editor {
 		$('#saveImagePost').on('click', this.saveImagePost);		//	Save a new or edited image post.
 		$('#removeImagePost').on('click', this.removeImagePost);	//	Remove an existing image post.
 	}
-	
+
 	/*
 	*
 	* */
 	startImagePost () {
-		
+
 	}
-	
+
 	/*
 	*
 	* */
 	editImagePost () {
-		
+
 	}
-	
+
 	/*
 	*
 	* */
 	saveImagePost () {
-		
+
 	}
-	
+
 	/*
 	*
 	* */
 	removeImagPost () {
-		
+
 	}
-	
+
 	/*
 	*
 	* */
 	imageEvents () {
-		
+
 	}
-	
+
 	/*
 	*
 	* */
@@ -166,33 +166,33 @@ class CMS_Editor {
 		$('#selectImage').on('click', this.selectImage);	//	Select an existing image to use with your post, article or image post.
 		$('#removeImage').on('click', this.removeImage);	//	Remove an existing image.
 	}
-	
+
 	/*
 	*
 	* */
 	startImage () {
-		
+
 	}
-	
+
 	/*
 	*
 	* */
 	saveImage () {
-		
+
 	}
-	
+
 	/*
 	*
 	* */
 	selectImage () {
-		
+
 	}
-	
+
 	/*
 	*
 	* */
 	removeImage () {
-		
+
 	}
-	
+
 }

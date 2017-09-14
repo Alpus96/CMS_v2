@@ -1,0 +1,9 @@
+{
+    "" : {
+        "host": "localhost",
+        "user": "root",
+        "pw": "",
+        "db": ""
+    },
+    "charset" : "utf8"
+}
