@@ -1,4 +1,7 @@
 <?php
+    /*
+    *   @description    This class handels the connection to the database.
+    * */
     class MySQL_socket
     {
         //  Logger class instance varaible and log file name.
@@ -55,7 +58,8 @@
         }
 
         /*
-        *   @description    This function tries to connect to the MySQL database using the *                   cridentials in the configuration file.
+        *   @description    This function tries to connect to the MySQL database using the
+        *                   cridentials in the configuration file.
         *
         *   @returns        (object) {error: boolean, connection: MySQL_connection}
         * */
