@@ -90,8 +90,9 @@
 		*	@description    The create function adds a timestap to an object
         *                   and encodes it to a JWT.
 		*
-		*	@arguments      $object is the object with data that will be encoded as a JWT.
-        *                   Must have the property 'username'.
+		*	@arguments      $object is the object with data
+        *                   that will been encoded as a JWT.
+        *                   Must have the property 'username' and 'password'.
 		*	@returns        The encoded JWT or false on fail.
 		* */
         public function create ($object)
@@ -100,7 +101,8 @@
             $this->error = '';
 
             //  Confirm the object contains the property 'username'.
-			if (!is_object($object) || !property_exists($object, 'username') || !property_exists($object, 'password'))
+			if (!is_object($object) || !property_exists($object, 'username') ||
+                !property_exists($object, 'password'))
 			{
                 //  If the passed argument was not an object or
                 //  the required property was not present
@@ -136,7 +138,8 @@
                 if (!$mysql->error)
                 {
                     //  If the database connection succeded prepare the query.
-                    if ($query = $mysql->connection->prepare('INSERT INTO ACTIVE_USERS SET USERNAME = ?, TOKEN = ?'))
+                    if ($query = $mysql->connection->prepare(
+                        'INSERT INTO ACTIVE_USERS SET USERNAME = ?, TOKEN = ?'))
     				{
                         //  Bind the parameters and perform the query.
     					$query->bind_param('ss', $object->username, $token);
@@ -218,10 +221,12 @@
             {
                 //  If the tokens match try to decode the one from the database.
                 $decoded_token;
-                try { $decoded_token = $this->JWT->decode($active_entry, $this->key, true); }
+                try { $decoded_token = $this->JWT->decode(
+                    $active_entry, $this->key, true); }
                 catch (Exeption $e)
                 {
-                    //  If there was an error decoding the token log it and return false.
+                    //  If there was an error decoding the token
+                    //  log it and return false.
                     $this->error = 'WARNING: Unable to decode JWT: '.$e->errno.' : '.$e;
                     $this->logger->log(
                         $this->logName,
@@ -314,8 +319,10 @@
             //  Confirm the connection was successful.
             if (!$mysql->error)
             {
-                //  If the connection was successful prepare the query to delete the entry.
-                if ($query = $mysql->connection->prepare('DELETE * FROM ACTIVE_USERS WHERE ID = ? LIMIT 1'))
+                //  If the connection was successful
+                //  prepare the query to delete the entry.
+                if ($query = $mysql->connection->prepare(
+                    'DELETE * FROM ACTIVE_USERS WHERE ID = ? LIMIT 1'))
     			{
                     //  Bind the id as the parameter and run the query.
     				$query->bind_param('i', key($JWT));
@@ -370,7 +377,8 @@
             $this->error = '';
 
             //  Confirm the username and password are non-empty strings.
-            if (!is_string($username) || $username == '' || !is_string($password) || $password == '')
+            if (!is_string($username) || $username == '' ||
+                !is_string($password) || $password == '')
             {
                 $this->error = 'The username and password must be non-empty strings.';
                 return false;
@@ -385,7 +393,8 @@
             {
                 //  If the connection was successfull prepare the query
                 //  to fetch the hash of the passed username.
-                if ($query = $mysql->connection->prepare('SELECT PASSWORD FROM USERS WHERE USERNAME = ?'))
+                if ($query = $mysql->connection->prepare(
+                    'SELECT PASSWORD FROM USERS WHERE USERNAME = ?'))
     			{
                     //  Bind the username as the parameter and run the query.
     				$query->bind_param('s', $username);
@@ -428,43 +437,58 @@
 		}
 
         /*
-        *   @description    This function checks if a user already has an active token.
+        *   @description    This function checks if a user
+        *                   already has an active token.
         *
         *   @arguments      $username   : The name of the user to look for.
-        *   @returns        Boolean     : True if inactive, false if already active.
-        *
-        *   TODO: Review code and write commets.
+        *   @returns        Boolean     : True if inactive,
+        *                                 false if already active.
         * */
         private function confirmInactive($username)
         {
+            //  Reset the error string.
             $this->error = '';
 
+            //  Confirm the username is a non-empty string.
             if (!is_string($username) || $username === '')
             {
+                //  Set the error and return false
+                //  if the username was not a non-empty string.
                 this->error = 'Invalid username passed, must be an non-empty string.';
                 return false;
             }
 
+            //  Connect to the database.
             $mysql = parent::connect();
 
+            //  Confirm there was no error connecting to the datebase.
             if (!$mysql->error)
             {
-                if ($query = $mysql->connection->prepare('SELECT ID FROM ACTIVE_USERS WHERE USERNAME = ?'))
+                //  If the connection was successful prepare the query.
+                if ($query = $mysql->connection->prepare(
+                    'SELECT ID FROM ACTIVE_USERS WHERE USERNAME = ?'))
                 {
+                    //  Bind the username to the query and run it.
                     $query->bind_param('s', $username);
                     $query->execute();
 
+                    //  Bind the result and fetch it.
                     $query->bind_result($id);
                     $query->fetch();
 
+                    //  Close the query and the connection.
                     $query->close();
                     $mysql->connection->close();
 
+                    //  If the query returned no retult
+                    //  return true for inactive, otherwise return false.
                     if (mysql_num_rows($id) == 0) { return true; }
                     else { return false; }
                 }
                 else
                 {
+                    //  If the query could not be prepared
+                    //  set the error, close the connection and return false.
                     $this->error = 'Unable to confirm user inactive: '.$mysql->connection->error;
                     $mysql->connection->close();
                     return false;
@@ -510,7 +534,8 @@
             if (!$mysql->error)
             {
                 //  If connection was successful prepare the query.
-                if ($query = $mysql->connection->prepare('SELECT ID FROM ACTIVE_USERS WHERE USERNAME = ?'))
+                if ($query = $mysql->connection->prepare(
+                    'SELECT ID FROM ACTIVE_USERS WHERE USERNAME = ?'))
                 {
                     //  Bind the username as the parameter and run the query.
                     $query->bind_param('s', $username);
@@ -562,9 +587,11 @@
         {
             //  Confirm that the JWT is an object with a numeric property
             //  that contains a non-empty string.
-			if (!is_object($JWT) || !is_numeric(key($JWT)) || !is_string($JWT->{key($JWT)}) && $JWT->{key($JWT)} === '')
+			if (!is_object($JWT) || !is_numeric(key($JWT)) ||
+                !is_string($JWT->{key($JWT)}) && $JWT->{key($JWT)} === '')
 			{
-                //  If the passed JWT did not match the specification log the problem and return false.
+                //  If the passed JWT did not match the specification
+                //  log the problem and return false.
                 $this->error = 'WARNING: The passed JWT did not match original construct.';
 				$this->logger->log(
                     $this->logName,
@@ -604,8 +631,10 @@
             //  Confirm the connection was successful.
             if (!$mysql->error)
             {
-                //  If the connection was successful prepare the query to read the specified row.
-                if ($query = $mysql->connection->prepare('SELECT * FROM ACTIVE_USERS WHERE ID = ?'))
+                //  If the connection was successful
+                //  prepare the query to read the specified row.
+                if ($query = $mysql->connection->prepare(
+                    'SELECT * FROM ACTIVE_USERS WHERE ID = ?'))
     			{
                     //  Bind the id as the paramater and run the query.
     				$query->bind_param('i', $id);
@@ -669,7 +698,8 @@
             if (!$mysql->error)
             {
                 //  If connection was successful prepare thne query to update the token.
-                if ($query = $mysql->connection->pepare('UPDATE ACTIVE_USERS SET TOKEN = ? WHERE ID = ?'))
+                if ($query = $mysql->connection->pepare(
+                    'UPDATE ACTIVE_USERS SET TOKEN = ? WHERE ID = ?'))
                 {
                     //  Bind the new token and the id
                     //  to the query and run it.
