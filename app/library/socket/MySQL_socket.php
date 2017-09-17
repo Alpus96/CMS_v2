@@ -8,8 +8,10 @@
         static private $logger;
         static private $logName;
 
-        static private $socketConfig;   //  MySQL cridentials and charset configuration.
-        protected $error;               //  Class error message.
+        //  MySQL cridentials and charset configuration.
+        static private $socketConfig;
+        
+        protected $error;   //  Class error message.
 
         /*
         *   @description    The constructor of this class sets up an instance
