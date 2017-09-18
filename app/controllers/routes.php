@@ -37,6 +37,11 @@
             {
 
             }
+            //  Load manage page.
+            else if (substr($url, 0, 7) === '/manage')
+            {
+                //
+            }
         }
 
         function post ($url)
@@ -44,6 +49,7 @@
 			echo 'NOTE: POST has not yet been implemented.<br>';
 
             //  Login
+            //  Logout
 
 			//	New post
 			//	Update post
