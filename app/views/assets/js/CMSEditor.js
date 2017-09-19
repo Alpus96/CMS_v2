@@ -1,4 +1,9 @@
-$(() => { new CMS_Editor(); });
+//$(() => { new CMS_Editor(); });
+
+/*
+*	NOTE:	Change state by making a form filled in
+*			with the data from the post, or blank if new post.
+* */
 
 class CMS_Editor {
 
@@ -26,7 +31,7 @@ class CMS_Editor {
 	*
 	* */
 	startPost () {
-		//	Show the input for a new post and the buttons 
+		//	Show the input for a new post and the buttons
 		//	for 'Select image', 'Add image' and 'Publish post'.
 	}
 
