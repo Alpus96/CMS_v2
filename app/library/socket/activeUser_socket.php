@@ -24,8 +24,8 @@
 			parent::__construct();
 
 			//	Initiate the logger class to log errors for debuging purposes.
-            $this->logger = new logger();
-            $this->logName = '_user_socket_log';
+            self::$logger = new logger();
+            self::$logName = '_user_socket_log';
 
             //  Check if a key was passed as an argument.
             if (!$key)
@@ -39,14 +39,14 @@
                 if ($jwt_config && key($jwt_config) == 'key')
                 {
                     //  If the key was read save it to be used for token encryption.
-                    $this->key = $jwt_config->key;
+                    self::$key = $jwt_config->key;
                 }
                 else
                 {
                     //  If the key was not read correctly log the problem and throw an error.
                     $msg = 'The JWT token key could not be read or has not been set.';
-                    $this->logger->log(
-                        $this->logName,
+                    self::$logger->log(
+                        self::$logName,
                         $msg
                     );
                     throw new Exeption($msg);
@@ -58,14 +58,14 @@
                 if (is_string($key) && $key != '')
                 {
                     //  If it was a non-empty string set it as the key.
-                    $this->key = $key;
+                    self::$key = $key;
                 }
                 else
                 {
                     //  If it was not a non-empty string log it and throw an error.
                     $msg = 'JWT key must be a non-empty string.';
-                    $this->logger->log(
-                        $this->logName,
+                    self::$logger->log(
+                        self::$logName,
                         $msg
                     );
                     throw new Exeption($msg);
@@ -73,11 +73,11 @@
             }
 
             //  Evauate the strength of the key.
-            if (!preg_match('/[A-Za-z].*[0-9]|[0-9].*[A-Za-z]/', $this->key))
+            if (!preg_match('/[A-Za-z].*[0-9]|[0-9].*[A-Za-z]/', self::$key))
             {
                 //  If the key was weak log a warning.
-                $this->logger->log(
-                    $this->logName,
+                self::$logger->log(
+                    self::$logName,
                     'WARNING : JWT key is weak!'
                 );
             }
@@ -116,8 +116,8 @@
             {
                 //  If not log the error and return false.
                 $this->error = 'WARNING: Suspected atempt to create token for non-user: '.$this->error;
-                $this->logger->log(
-                    $this->logName,
+                self::$logger->log(
+                    self::$logName,
                     $this->error
                 );
                 return false;
@@ -129,7 +129,7 @@
                 //  If the user is not currently active add a timestamp
                 //  to the object before encoding it.
     			$object->timestamp = time();
-    			$token = $this->JWT->encode($object, $this->key);
+    			$token = $this->JWT->encode($object, self::$key);
 
                 //  Connect to the database.
     			$mysql = parent::connect();
@@ -183,8 +183,8 @@
                     //  If connecting to the database was unsuccessful
                     //  log the error and return fasle.
                     $this->error = 'ERROR: Could not connect to the database: '.$mysql->connection->error;
-                    $this->logger->log(
-                        $this->logName,
+                    self::$logger->log(
+                        self::$logName,
                         $this->error
                     );
                     return false;
@@ -222,14 +222,14 @@
                 //  If the tokens match try to decode the one from the database.
                 $decoded_token;
                 try { $decoded_token = $this->JWT->decode(
-                    $active_entry, $this->key, true); }
+                    $active_entry, self::$key, true); }
                 catch (Exeption $e)
                 {
                     //  If there was an error decoding the token
                     //  log it and return false.
                     $this->error = 'WARNING: Unable to decode JWT: '.$e->errno.' : '.$e;
-                    $this->logger->log(
-                        $this->logName,
+                    self::$logger->log(
+                        self::$logName,
                         $this->error
                     );
                     return false;
@@ -243,7 +243,7 @@
                     //  If the time had not expired
                     //  update the timestamp and encode the token again.
                     $decoded_token->timestamp = time();
-                    $new_token = $this->encode($decoded_token, $this->key);
+                    $new_token = $this->encode($decoded_token, self::$key);
 
                     //  Write the new token to the database.
                     if ($this->updateToken($id, $new_token))
@@ -282,8 +282,8 @@
                 //  the token has been altered or is forged.
                 //  Log the error and return false.
                 $this->error = 'WARNING: Token missmatch! Suspected token forgery.';
-                $this->logger->log(
-                    $this->logName,
+                self::$logger->log(
+                    self::$logName,
                     $this->error
                 );
                 return false;
@@ -353,8 +353,8 @@
                 //  If the database connection was unsuccessful
                 //  log the error and return fasle.
                 $this->error = 'ERROR: Could not connect to the database: '.$mysql->connection->error;
-                $this->logger->log(
-                    $this->logName,
+                self::$logger->log(
+                    self::$logName,
                     $this->error
                 );
                 return false;
@@ -428,8 +428,8 @@
                 //  If the database connection was unsuccessful
                 //  log the error and return fasle.
                 $this->error = 'ERROR: Could not connect to the database: '.$mysql->connection->error;
-                $this->logger->log(
-                    $this->logName,
+                self::$logger->log(
+                    self::$logName,
                     $this->error
                 );
                 return false;
@@ -499,8 +499,8 @@
                 //  If the database connection was unsuccessful
                 //  log the error and return fasle.
                 $this->error = 'ERROR: Could not connect to the database: '.$mysql->connection->error;
-                $this->logger->log(
-                    $this->logName,
+                self::$logger->log(
+                    self::$logName,
                     $this->error
                 );
                 return false;
@@ -567,8 +567,8 @@
                 //  If the database connection was unsuccessful
                 //  log the error and return fasle.
                 $this->error = 'ERROR: Could not connect to the database: '.$mysql->connection->error;
-                $this->logger->log(
-                    $this->logName,
+                self::$logger->log(
+                    self::$logName,
                     $this->error
                 );
                 return false;
@@ -593,8 +593,8 @@
                 //  If the passed JWT did not match the specification
                 //  log the problem and return false.
                 $this->error = 'WARNING: The passed JWT did not match original construct.';
-				$this->logger->log(
-                    $this->logName,
+				self::$logger->log(
+                    self::$logName,
                     $this->error
                 );
 				return false;
@@ -664,8 +664,8 @@
                 //  If the database connection was unsuccessful
                 //  log the error and return fasle.
                 $this->error = 'ERROR: Could not connect to the database: '.$mysql->connection->error;
-                $this->logger->log(
-                    $this->logName,
+                self::$logger->log(
+                    self::$logName,
                     $this->error
                 );
                 return false;
@@ -733,8 +733,8 @@
                 //  If the database connection was unsuccessful
                 //  log the error and return fasle.
                 $this->error = 'ERROR: Could not connect to the database: '.$mysql->connection->error;
-                $this->logger->log(
-                    $this->logName(),
+                self::$logger->log(
+                    self::$logName(),
                     $this->error
                 );
                 return false;

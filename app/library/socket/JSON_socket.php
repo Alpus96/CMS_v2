@@ -19,8 +19,8 @@
         public function __construct ($lib_path = false, $mkdir = false)
 		{
             //  Inctance the logger and set the log file name.
-            $this->logger = new logger();
-            $this->logName = '_JSON_Socket_errorLog';
+            self::$logger = new logger();
+            self::$logName = '_JSON_Socket_errorLog';
 
             //  Check if a library path was passed as an argument.
             if ($lib_path)
@@ -47,8 +47,8 @@
                         //  If unable to create the directory
                         //  log the error before throwing it.
                         $msg = 'Unable to create the JSON library directory at '.$lib_path.'.'
-                        $this->logger->log(
-                            $this->logName,
+                        self::$logger->log(
+                            self::$logName,
                             $msg
                         );
                         throw new Exeption($msg);
@@ -57,8 +57,8 @@
                 //  If a JSON library directory path was passed
                 //  but did notexist and mkdir was not enabled throw an error.
                 $msg = 'Unable to set JSON library directory, no such directory : '.$lib_path.'. Please enable mkdir on construct or create the directory.';
-                $this->logger->log(
-                    $this->logName,
+                self::$logger->log(
+                    self::$logName,
                     $msg
                 );
                 throw new Exeption($msg);
@@ -102,8 +102,8 @@
                     //  If creating the file failed log
                     //  the error before returning false.
                     $msg = 'There was an error creating the new JSON file '.$name.' : '.$e;
-                    $this->logger->log(
-                        $this->logName,
+                    self::$logger->log(
+                        self::$logName,
                         $msg
                     );
                     $this->error = $msg;
@@ -137,8 +137,8 @@
             }
             //  If the file did not exist log the problem and return false.
             $msg = 'Unable to read, could not find file '.$name. ' in directory '.$this->libraryPath.'.';
-            $this->logger->log(
-                $this->logName,
+            self::$logger->log(
+                self::$logName,
                 $msg
             );
             $this->error = $msg;
@@ -171,8 +171,8 @@
             }
             //  If the file did not exist log the problem before returning false.
             $msg = 'Unable to update, did not find file '.$name. ' in directory '.$this->libraryPath.'.';
-            $this->logger->log(
-                $this->logName,
+            self::$logger->log(
+                self::$logName,
                 $msg
             );
             $this->error = $msg;
@@ -197,8 +197,8 @@
             }
             //  If the file did not exist log the problem before returning false.
             $msg = 'Unable to delete, did not find file '.$name. ' in directory '.$this->libraryPath.'.';
-            $this->logger->log(
-                $this->logName,
+            self::$logger->log(
+                self::$logName,
                 $msg
             );
             $this->error = $msg;
