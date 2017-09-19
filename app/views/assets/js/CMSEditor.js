@@ -49,7 +49,11 @@ class CMS_Editor {
 		const post = JSON.encode();
 		AJAX.post('/savePost', post, (err, res) => {
 			if (!err) {
-				//	Success!
+				if (res.success) {
+					//	Success!
+				} else {
+					//	Something wrong with the request?
+				}
 			} else {
 				//	Something went wrong! :(
 			}
