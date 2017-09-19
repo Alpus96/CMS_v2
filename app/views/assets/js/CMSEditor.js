@@ -26,17 +26,8 @@ class CMS_Editor {
 	*
 	* */
 	startPost () {
-		console.log('New post...');
-
-		// Show the input for a new post and the buttons for 'Select image', 'Add image' and 'Publish post'.
-
-		AJAX.get('ajaxTest', (err, res) => {
-			if (!err) {
-				console.log(res.msg)
-			} else {
-				console.log(err);
-			}
-		});
+		//	Show the input for a new post and the buttons 
+		//	for 'Select image', 'Add image' and 'Publish post'.
 	}
 
 	/*
