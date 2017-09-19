@@ -4,6 +4,10 @@
     *
     *   TODO:   Complete routes to define the structure and implementation of
     *           the porject.
+    *
+    *   NOTE:   Confirm token here for paths where it is nessesary.
+    *
+    *   TODO:   Add paths for miltiple item loading.
     * */
     class Router
     {
@@ -16,6 +20,7 @@
             if (substr($url, 0, 6) === '/login')
             {
                 //  TODO: Load login html here.
+
             }
             //	Load post(s)
             else if (substr($url, 0, 5) === '/post')
