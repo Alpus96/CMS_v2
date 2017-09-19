@@ -1,5 +1,6 @@
 <?php
-    /*  TODO:   Require all files in the project. (library, models, views,
+    /*
+    *   TODO:   Require all files in the project. (library, models, views,
     *           controllers in that order)
     *
     *   TODO:   Complete routes to define the structure and implementation of
@@ -11,16 +12,24 @@
     * */
     class Router
     {
+        private static $index;
+        private static $login;
+        private static $manage;
+
+        function __construct () {
+            self::$index = dirname(dirname(__FILE__)).'/views/index.html';
+            self::$login = dirname(dirname(__FILE__)).'/views/login.html';
+            self::$manage = dirname(dirname(__FILE__)).'/views/manage.html';
+        }
+
         function get ($url)
         {
-            echo 'NOTE: GET has not yet been fully implemented.<br>';
             //  NOTE:   The CMS be a subdomain to the "pages"?
 
 			//	Load login page
-            if (substr($url, 0, 6) === '/login')
-            {
-                //  TODO: Load login html here.
-
+            if (substr($url, 0, 1) === '/' && strlen($url) === 1) {
+                header('Content-Type: text/html');
+                echo file_get_contents(self::$index);
             }
             //	Load post(s)
             else if (substr($url, 0, 5) === '/post')
@@ -42,11 +51,28 @@
             {
 
             }
-            //  Load manage page.
+            //  Load the login page.
+            else if (substr($url, 0, 6) === '/login')
+            {
+                //
+                header('Content-Type: text/html');
+                echo file_get_contents(self::$login);
+            }
+            //  Load the manage page.
             else if (substr($url, 0, 7) === '/manage')
             {
                 //
+                header('Content-Type: text/html');
+                echo file_get_contents(self::$manage);
             }
+            else
+            {
+                //  If the route was not defined above, serve the index page.
+                header('Content-Type: text/html');
+                echo file_get_contents(self::$index);
+            }
+            
+            echo 'NOTE: GET has not yet been fully implemented.<br>';
         }
 
         function post ($url)
