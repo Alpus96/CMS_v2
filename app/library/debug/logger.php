@@ -55,7 +55,7 @@
 		*	a timestamp on the log entry.
 		**/
 		function log($logFile, $str){
-			echo $this->file_date.$logFile.$this->log_filetype;
+			//echo $this->file_date.$logFile.$this->log_filetype;
 			$file = fopen(dirname(__FILE__).'/logs/'.$this->file_date.$logFile.$this->log_filetype, $this->log_mode);
 			if (!$file) { return; }
 			fwrite($file, $this->logE.$this->log_time.$this->logS.$str);/*$this->logE.$this->log_time.$this->logS.$str*/
