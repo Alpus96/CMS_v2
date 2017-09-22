@@ -4,6 +4,8 @@ $(document).ready(() => {
 });
 
 /*
+*   TODO:   Rewrite to combine id and category.
+*
 *   TODO:   Add response handeling.
 * */
 class ContentLoader {
@@ -11,36 +13,20 @@ class ContentLoader {
         this.error= '';
     }
 
-    loadPost (id) {
+    loadPost (parameter) {
         this.error = '';
-        if (!is_numeric(id)) {
-            this.error = 'loadPost(id) : Invalid id passed, must be numeric.';
+        let getVal;
+        if (typeof parameter === 'number')) {
+            getVal = 'amount='+parameter;
+        } else if (typeof parameter === 'string') {
+            getVal = 'category='+parameter;
+        } else {
+            this.error = 'loadPost(id) : Invalid parameter passed, must be numeric or string.';
             console.error(this.error);
             return false;
         }
 
-        AJAX.get('/post/'+id, (err, res) => {
-            if (!err) {
-                if (res.success) {
-
-                } else {
-
-                }
-            } else {
-
-            }
-        });
-    }
-
-    loadPosts (category) {
-        this.error = '';
-        if (!is_string(category) || category === '') {
-            this.error = 'loadPosts(category) : Invalid category passed, must be non-empty string.';
-            console.error(this.error);
-            return false;
-        }
-
-        AJAX.get('/posts/'+category, (err, res) => {
+        AJAX.get('/post?'+getVal, (err, res) => {
             if (!err) {
                 if (res.success) {
 
@@ -74,26 +60,6 @@ class ContentLoader {
         });
     }
 
-    loadArticles (category) {
-        if (!is_string(category) || category === '') {
-            this.error = 'loadArticles(category) : Invalid category passed, must be non-empty string.';
-            console.error(this.error);
-            return false;
-        }
-
-        AJAX.get('/articles/'+category, (err, res) => {
-            if (!err) {
-                if (res.success) {
-
-                } else {
-
-                }
-            } else {
-
-            }
-        });
-    }
-
     loadImagePost (id) {
         this.error = '';
         if (!is_numeric(id)) {
@@ -115,26 +81,6 @@ class ContentLoader {
         });
     }
 
-    loadImagePosts (category) {
-        if (!is_string(category) || category === '') {
-            this.error = 'loadImagePosts(category) : Invalid category passed, must be non-empty string.';
-            console.error(this.error);
-            return false;
-        }
-
-        AJAX.get('/imageposts/'+category, (err, res) => {
-            if (!err) {
-                if (res.success) {
-
-                } else {
-
-                }
-            } else {
-
-            }
-        });
-    }
-
     loadImageLink (id) {
         this.error = '';
         if (!is_numeric(id)) {
@@ -144,26 +90,6 @@ class ContentLoader {
         }
 
         AJAX.get('/imagelink/'+id, (err, res) => {
-            if (!err) {
-                if (res.success) {
-
-                } else {
-
-                }
-            } else {
-
-            }
-        });
-    }
-
-    loadImageLinks (category) {
-        if (!is_string(category) || category === '') {
-            this.error = 'loadImageLinks(category) : Invalid category passed, must be non-empty string.';
-            console.error(this.error);
-            return false;
-        }
-
-        AJAX.get('/imagelinks/'+category, (err, res) => {
             if (!err) {
                 if (res.success) {
 
