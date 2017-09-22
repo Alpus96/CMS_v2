@@ -24,7 +24,7 @@
             self::$login = dirname(dirname(__FILE__)).'/views/login.html';
             self::$manage = dirname(dirname(__FILE__)).'/views/manage.html';
 
-            require_once '/users/alpus96/sites/projects/CMS_v2/app/library/debug/logger.php';
+            require_once 'app/library/debug/logger.php';
             self::$logger = new logger();
             self::$logName = '_routesLog';
         }
@@ -39,22 +39,22 @@
                 echo file_get_contents(self::$index);
             }
             //	Load post(s)
-            else if (substr($url, 0, 6) === '/post/')
+            else if (substr($url, 0, 5) === '/post')
             {
                 // tag or specific
             }
             //	Load article(s)
-            else if (substr($url, 0, 9) === '/article/')
+            else if (substr($url, 0, 8) === '/article')
             {
                 // tag or specific
             }
 			//	Load image post(s)
-            else if (substr($url, 0, 11) === '/imagepost/')
+            else if (substr($url, 0, 10) === '/imagepost')
             {
                 // tag or specific
             }
 			//	Load Image(s)
-            else if (substr($url, 0, 7) === '/image/')
+            else if (substr($url, 0, 6) === '/image')
             {
 
             }
@@ -85,7 +85,7 @@
         function post ($url)
         {
             $data = json_decode(file_get_contents('php://input'));
-            $data->username = base64_decode($data->username);
+            /*$data->username = base64_decode($data->username);
             $data->password = base64_decode($data->password);
             $res = (object)[
                 'success' => true,
@@ -93,19 +93,24 @@
             ];
             $res = json_encode($res);
             header('Content-Type: text/javascript');
-            echo $res;
+            echo $res;*/
 
-            /*if (substr($url, 0, 6) === '/login') {
-                $res = (object)[
-                    'success' => true,
-                    'data' => $_POST
+            if (substr($url, 0, 6) === '/login')
+            {
+                header('Content-Type: text/javascript');
+                require_once 'app/library/socket/JSON_socket.php';
+                require_once 'app/library/socket/MySQL_socket.php';
+                require_once 'app/models/user/user_model.php';
+                require_once 'app/controllers/new_users.php';
+
+                $decoded_login = [
+                    'username' => base64_decode($data->username),
+                    'password' => base64_decode($data->password)
                 ];
-                self::$logger->log(
-                    self::$logName,
-                    '$res : '.json_encode($res)
-                );
-                echo json_encode($res);
-            }*/
+
+                $user = new User();
+                echo json_encode(['success' => $user->authenticate($decoded_login)]);
+            }
 
             //  Login
             //  Logout
@@ -129,9 +134,9 @@
             //echo 'NOTE: POST has not yet been implemented.<br>';
         }
 
-        private function req ($files)
+        private function req ($files = false)
         {
-
+            return $files;
         }
     }
 ?>

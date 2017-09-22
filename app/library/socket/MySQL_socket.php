@@ -30,10 +30,10 @@
 
             //  Instance the JSON socket to read the MySQL cridentials configuration.
             $JSON_socket = new JSON_socket();
-            self::$socketConfig = $JSON_Socket->read('MySQL_Config');
+            self::$socketConfig = $JSON_socket->read('MySQL_Config');
 
             //  Confirm there was no error reading the configuration file.
-            if ($JSON_socket->error)
+            if ($JSON_socket->error !== '')
             {
                 //  If the file was not read log the error and throw it.
                 $msg = 'Error reading the MySQL configuration : '.$JSON_socket->error;
@@ -43,7 +43,7 @@
                 );
                 throw new Exeption($msg);
             }
-            else if (array_keys((array)self::$socketConfig) != ['cridentials','charset'] && array_keys((array)self::$socketConfig->cridentials) != ['host','user','pw','db'] )
+            else if (array_keys((array)self::$socketConfig) !== ["cridentials","charset"] && array_keys((array)self::$socketConfig->cridentials) !== ["host","user","pw","db"])
             {
                 //  If there was no error reading the file
                 //  but it did not contain the required information,
@@ -74,7 +74,7 @@
             );
 
             //  Confirm there was no error connecting to the database.
-            if (!$connection->connect_error && $connection->set_charset(self::$socketConfig->charset))
+            if ($connection && $connection->set_charset(self::$socketConfig->charset))
             {
                 //  If all is ok, return the object with a connection.
                 return (object) [
@@ -85,7 +85,7 @@
             else
             {
                 //  If there was an error handel it.
-                $this->error = 'Error connecting to the MySQL database; '.$connection->error;
+                $this->error = 'Error connecting to the MySQL database; '.mysqli_connect_error();
                 self::$logger->log(
                     self::$logName,
                     $this->error

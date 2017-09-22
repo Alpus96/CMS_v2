@@ -13,7 +13,7 @@
         /**
         *
         */
-        public function __construct($key = null)
+        public function __construct($key = false)
         {
             //  Construct the parent class.
             parent::__construct();
@@ -73,11 +73,12 @@
             //  confirms that a user was found and that the passwords can be matched.
             if ($user && password_verify($password, $user->password))
             {
+                return true;
                 //  If the cridentials where valid generates a key.
                 //  When the key has been generated saves it together with the username.
                 //  NOTE:   How to know key is not stolen?
-                $ActiveUsers = new ActiveUsers();
-                return $ActiveUsers->add($user->username, $this->genKey(256));
+                //$ActiveUsers = new ActiveUsers();
+                //return $ActiveUsers->add($user->username, $this->genKey(256));
             }
             //  If a user was not found or the passwords did not match return false.
             return false;

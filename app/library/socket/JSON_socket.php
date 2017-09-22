@@ -9,7 +9,7 @@
         static private $logName;
 
         private $libraryPath;    //  Path to JSON library directory.
-        protected $error;        //  Class error variable.
+        public $error;        //  Class error variable.
 
         /*
         *   @description    The constructor sets the dafult values of the class variables.
@@ -23,7 +23,7 @@
             self::$logName = '_JSON_Socket_errorLog';
 
             //  Check if a library path was passed as an argument.
-            if ($lib_path)
+            if (is_string($lib_path))
             {
                 //  Confirm that the path is an existing directory.
                 if (file_exists($lib_path))
@@ -32,7 +32,7 @@
                     //  if it was an existing directory.
                     $this->libraryPath = $lib_path;
                 }
-                else if ($mkdir)
+                else if ($mkdir === true)
                 {
                     //  If the path was not an existing directory try to create it.
                     try
@@ -46,7 +46,7 @@
                     {
                         //  If unable to create the directory
                         //  log the error before throwing it.
-                        $msg = 'Unable to create the JSON library directory at '.$lib_path.'.'
+                        $msg = 'Unable to create the JSON library directory at '.$lib_path.'.';
                         self::$logger->log(
                             self::$logName,
                             $msg
@@ -54,24 +54,21 @@
                         throw new Exeption($msg);
                     }
                 }
-                //  If a JSON library directory path was passed
-                //  but did notexist and mkdir was not enabled throw an error.
-                $msg = 'Unable to set JSON library directory, no such directory : '.$lib_path.'. Please enable mkdir on construct or create the directory.';
-                self::$logger->log(
-                    self::$logName,
-                    $msg
-                );
-                throw new Exeption($msg);
+                else
+                {
+                    $msg = 'Unable to set JSON library directory, no such directory : '.$lib_path.'. Please enable mkdir on construct or create the directory.';
+                    throw new Exeption($msg);
+                }
             }
             else
             {
                 //  If there was no path passed Set the default
                 //  absolute path to the JSON library.
-    			$this->libraryPath = dirname(dirname(__FILE__)).'/JSON/';
+    			$this->libraryPath = "app/library/JSON/";
             }
 
             //  Set the default error status to false,
-            $this->error = false;
+            $this->error = '';
         }
 
         /*
@@ -84,6 +81,7 @@
         * */
         public function create ($name, $content)
         {
+            $this->error = '';
             //  Set the absolute path to the file being created.
             $path = $this->libraryPath.$name.'.json';
             //  Confirm it does not already exist.
@@ -124,6 +122,7 @@
         * */
         public function read ($name)
         {
+            $this->error = '';
             //  Set the absolute path to the file to read.
             $path = $this->libraryPath.$name.'.json';
 
@@ -136,12 +135,11 @@
                 return json_decode($jsonfile);
             }
             //  If the file did not exist log the problem and return false.
-            $msg = 'Unable to read, could not find file '.$name. ' in directory '.$this->libraryPath.'.';
+            $this->error = 'Unable to read, could not find file '.$name.' in directory '.$this->libraryPath.'.';
             self::$logger->log(
                 self::$logName,
-                $msg
+                $this->error
             );
-            $this->error = $msg;
             return false;
         }
 

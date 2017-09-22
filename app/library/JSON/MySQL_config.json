@@ -1,9 +1,9 @@
 {
-    "" : {
+    "cridentials" : {
         "host": "localhost",
         "user": "root",
-        "pw": "",
-        "db": ""
+        "pw": "1234",
+        "db": "cms"
     },
     "charset" : "utf8"
 }
