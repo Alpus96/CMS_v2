@@ -6,11 +6,16 @@
         <!--    Tab icon?       -->
 
         <!--    jQuery?         -->
+        <script src="app/views/assets/lib/jquery.min.js"></script>
+
         <!--    Bootstrap?      -->
         <!--    Own js?         -->
+        <script src="app/views/assets/lib/ajax.js"></script>
+        <script src="app/views/assets/lib/cookies.js"></script>
+        <script src="app/views/assets/js/CMSAuth.js"></script>
 
-    	<!--CSS document link-->
-    	<link rel="stylesheet" type="text/css" href="assets/css/main.css">
+    	<!--CSS document link
+    	<link rel="stylesheet" type="text/css" href="assets/css/main.css">-->
 
     	<!--Meta settings-->
     	<meta charset="UTF-8">
@@ -26,5 +31,10 @@
     </head>
     <body>
         <h1>login</h1>
+        <div id="form">
+            <input type="text" name="username" id="username">
+            <input type="password" name="password" id="password">
+            <button name="login" id="login">Login</button>
+        </div>
     </body>
 </html>
