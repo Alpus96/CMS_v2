@@ -1,12 +1,12 @@
 $(document).ready(() => {
-    const AJAX = new Ajex();
+    if (!AJAX) { const AJAX = new Ajax(); }
     const content_loader = new ContentLoader();
 });
 
 /*
-*   TODO:   Rewrite to combine id and category.
-*
 *   TODO:   Add response handeling.
+*
+*   TODO:   Review code and write comments.
 * */
 class ContentLoader {
     construct () {
@@ -39,15 +39,20 @@ class ContentLoader {
         });
     }
 
-    loadArticle (id) {
+    loadArticle (parameter) {
         this.error = '';
-        if (!is_numeric(id)) {
-            this.error = 'loadArticle(id) : Invalid id passed, must be numeric.';
+        let getVal;
+        if (typeof parameter === 'number')) {
+            getVal = 'amount='+parameter;
+        } else if (typeof parameter === 'string') {
+            getVal = 'category='+parameter;
+        } else {
+            this.error = 'loadArticle(parameter) : Invalid id passed, must be numeric.';
             console.error(this.error);
             return false;
         }
 
-        AJAX.get('/article/'+id, (err, res) => {
+        AJAX.get('/article?'+getVal, (err, res) => {
             if (!err) {
                 if (res.success) {
 
@@ -60,15 +65,20 @@ class ContentLoader {
         });
     }
 
-    loadImagePost (id) {
+    loadImagePost (parameter) {
         this.error = '';
-        if (!is_numeric(id)) {
-            this.error = 'loadImagePost(id) : Invalid id passed, must be numeric.';
+        let gatVal;
+        if (typeof parameter === 'number')) {
+            getVal = 'amount='+parameter;
+        } else if (typeof parameter === 'string') {
+            getVal = 'category='+parameter;
+        } else {
+            this.error = 'loadImagePost(parameter) : Invalid id passed, must be numeric.';
             console.error(this.error);
             return false;
         }
 
-        AJAX.get('/imagepost/'+id, (err, res) => {
+        AJAX.get('/imagepost?'+getVal, (err, res) => {
             if (!err) {
                 if (res.success) {
 
@@ -81,15 +91,20 @@ class ContentLoader {
         });
     }
 
-    loadImageLink (id) {
+    loadImageLink (parameter) {
         this.error = '';
-        if (!is_numeric(id)) {
-            this.error = 'loadImageLink(id) : Invalid id passed, must be numeric.';
+        let getVal;
+        if (typeof parameter === 'number')) {
+            getVal = 'amount='+parameter;
+        } else if (typeof parameter === 'string') {
+            getVal = 'category='+parameter;
+        } else {
+            this.error = 'loadImageLink(parameter) : Invalid id passed, must be numeric.';
             console.error(this.error);
             return false;
         }
 
-        AJAX.get('/imagelink/'+id, (err, res) => {
+        AJAX.get('/imagelink?'+getVal, (err, res) => {
             if (!err) {
                 if (res.success) {
 
