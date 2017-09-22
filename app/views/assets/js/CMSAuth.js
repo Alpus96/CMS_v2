@@ -1,34 +1,30 @@
-$(document).ready(() => {
-    const AJAX = new Ajax();
-    const cookie = new Cookies(10*60*1000);
-    const page = new CMS_auth();
-    const editor = new CMS_editor();
-});
-
 class CMS_auth {
 
-    construct () {
+    constructor () {
         this.addListeners();
+        //cookie.delete('token');
     }
 
     addListeners () {
-        $('#login').on('click', this.loginRequest);
-        
+        $('#login').on('click', () => { this.loginRequest(); });
+
         //  NOTE: Add after logged in?
         $('#logout').on('click', this.logoutRequest);
     }
 
     loginRequest () {
+        console.log('login request: ');
         //  TODO: Get the data from the login form.
 
         //  NOTE: window.btoa base64 encodes strings to not send in clear text.
         const form_data = {
-            username : window.btoa(),
-            password : window.btoa()
+            username : window.btoa($('#username').val()),
+            password : window.btoa($('#password').val())
         };
 
-        AJAX.post('/login', form_data, (err, res) => {
+        AJAX.post('/projects/CMS_v2/login', form_data, (err, res) => {
             if (!err) {
+                console.log(res);
                 //  TODO: Decide how the response should be structured.
                 //  NOTE: Going with {bool success, object data} for now.
                 if (res.success) {
@@ -60,3 +56,9 @@ class CMS_auth {
         });
     }
 }
+
+$(document).ready(()=>{
+    const page = new CMS_auth();
+});
+
+const cookie = new Cookies(10*60*1000);
