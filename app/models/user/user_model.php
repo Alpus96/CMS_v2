@@ -28,26 +28,35 @@
             if (!$mysql->error)
             {
                 //  Prepare the query.
-                if ($query = $mysql->connection->prepare('SELECT * FROM USERS WHERE USERNAME = ?'))
+                if ($query = $mysql->connection->prepare('SELECT * FROM USERS WHERE USERNAME = ? LIMIT 1'))
                 {
                     //  Bind the passed username to the query and run it.
                     $query->bind_param('s', $username);
                     $query->execute();
 
                     //  Fetch the result.
-                    $query->bind_result($user);
-                    $query->fetch();
+                    $query->bind_result($id, $name, $hash, $type);
+                    while ($query->fetch())
+                    {
+                        $user = (object)[
+                            'id' => $id,
+                            'username' => $name,
+                            'hash' => $hash,
+                            'type' => $type
+                        ];
+                    }
 
                     //  Close the query and the connection before returning
                     //  the result.
                     $query->close();
-                    $connection->close();
-                    return $user;
+                    $mysql->connection->close();
+                    return $user ? $user : false;
                 } else {
                     self::$logger->log(
                         self::$logName,
                         'unable to prepare query.'
                     );
+                    return false;
                 }
             }
             else
