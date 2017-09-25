@@ -17,14 +17,9 @@
             //  TODO: Verify $cridentials parameters and escape SQL-injection.
             $user = parent::getByUsername($cridentials->username);
             $hash = $user ? $user->hash : '';
-            if ($user && password_verify($cridentials->password, $hash))
-            {
-                return true;
-            }
-            else
-            {
-                return false;
-            }
+            if (password_verify($cridentials->password, $hash))
+            { return true; }
+            else { return false; }
         }
 
     }
