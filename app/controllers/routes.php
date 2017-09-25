@@ -64,6 +64,7 @@
                 //
                 header('Content-Type: text/html');
                 echo file_get_contents(self::$login);
+                //echo password_hash('pw', PASSWORD_DEFAULT);
             }
             //  Load the manage page.
             else if (substr($url, 0, 7) === '/manage' && strlen($url) === 7)
@@ -85,31 +86,30 @@
         function post ($url)
         {
             $data = json_decode(file_get_contents('php://input'));
-            /*$data->username = base64_decode($data->username);
-            $data->password = base64_decode($data->password);
-            $res = (object)[
-                'success' => true,
-                'data' => $data
-            ];
-            $res = json_encode($res);
-            header('Content-Type: text/javascript');
-            echo $res;*/
 
             if (substr($url, 0, 6) === '/login')
             {
-                header('Content-Type: text/javascript');
                 require_once 'app/library/socket/JSON_socket.php';
                 require_once 'app/library/socket/MySQL_socket.php';
+                require_once 'app/library/socket/activeUser_socket.php';
                 require_once 'app/models/user/user_model.php';
                 require_once 'app/controllers/new_users.php';
 
-                $decoded_login = [
+                $decoded_login = (object)[
                     'username' => base64_decode($data->username),
                     'password' => base64_decode($data->password)
                 ];
 
+                //self::$logger->log(self::$logName, json_encode($decoded_login));
+
                 $user = new User();
-                echo json_encode(['success' => $user->authenticate($decoded_login)]);
+                $is_user = $user->authenticate($decoded_login);
+
+
+                $res = json_encode(['success' => $is_user]);
+
+                header("Content-Type: application/json");
+                echo $res;
             }
 
             //  Login
