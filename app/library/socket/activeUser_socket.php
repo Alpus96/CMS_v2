@@ -9,7 +9,7 @@
         static private $logName;
 
         static private $key;    //  The encoding key for JWT.
-        protected $error;       //  The error message variable.
+        public $error;       //  The error message variable.
 
 		/*
         *   @description    The construct function handels the initial setup
@@ -335,7 +335,7 @@
                     //  Confirm that the query was successful
                     //  and return true if so, false if not.
     				$result = $this->readActive(key($JWT));
-    				if (mysql_num_rows($result) == 0) { return true; }
+    				if (!$result) { return true; }
     				else { return false; }
     			}
                 else
@@ -389,7 +389,7 @@
 			$mysql = parent::connect();
 
             //  Confirm the connection to the database.
-            if (!mysql->error)
+            if (!$mysql->error)
             {
                 //  If the connection was successfull prepare the query
                 //  to fetch the hash of the passed username.
@@ -454,7 +454,7 @@
             {
                 //  Set the error and return false
                 //  if the username was not a non-empty string.
-                this->error = 'Invalid username passed, must be an non-empty string.';
+                $this->error = 'Invalid username passed, must be an non-empty string.';
                 return false;
             }
 
@@ -482,7 +482,7 @@
 
                     //  If the query returned no retult
                     //  return true for inactive, otherwise return false.
-                    if (mysql_num_rows($id) == 0) { return true; }
+                    if (!$id) { return true; }
                     else { return false; }
                 }
                 else
