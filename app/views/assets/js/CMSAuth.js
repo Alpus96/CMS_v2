@@ -13,31 +13,33 @@ class CMS_auth {
     }
 
     loginRequest () {
-        console.log('login request: ');
-        //  TODO: Get the data from the login form.
-
+        //  Get the data from the login form.
         //  NOTE: window.btoa base64 encodes strings to not send in clear text.
         const form_data = {
             username : window.btoa($('#username').val()),
             password : window.btoa($('#password').val())
         };
 
+        //  Send the login request.
+        //  TODO:   Change the url on relese.
         AJAX.post('/projects/CMS_v2/login', form_data, (err, res) => {
             if (!err) {
-                console.log(res);
                 //  TODO: Decide how the response should be structured.
-                //  NOTE: Going with {bool success, object data} for now.
+                //  NOTE: Going with {bool success, object token} for now.
                 if (res.success) {
                     //  NOTE:   Persumes if success
-                    //          res.data = {*id* => 'token'}
-                    const id = Object.keys(res.data)[0];
-                    cookie.create('token', res.data);
+                    //          res.token = {*id* => 'token string'}
+                    cookie.create('token', res.token);
+                    console.log(res);
+                    window.location.href = 'projects/CMS_v2/edit';
                     //  TODO: Show login success/redirect.
                 } else {
                     //  TODO: Authorization failed.
+                    console.log('Request success false : '+res.error);
                 }
             } else {
                 //  TODO: Request failed.
+                console.error('Request failed : '+err);
             }
         });
     }
@@ -46,12 +48,12 @@ class CMS_auth {
         AJAX.post('/logout', cookie.read('token'), (err, res) => {
             if (!err) {
                 if (res.success) {
-
+                    console.log('success');
                 } else {
-
+                    console.log('fail');
                 }
             } else {
-
+                console.log('error');
             }
         });
     }
