@@ -91,22 +91,51 @@
             {
                 require_once 'app/library/socket/JSON_socket.php';
                 require_once 'app/library/socket/MySQL_socket.php';
-                require_once 'app/library/socket/activeUser_socket.php';
+
                 require_once 'app/models/user/user_model.php';
                 require_once 'app/controllers/new_users.php';
+
+                require_once 'app/library/plugin/jwt/JWT.php';
+                require_once 'app/models/user/token_model.php';
+                require_once 'app/library/socket/activeUser_socket.php';
 
                 $decoded_login = (object)[
                     'username' => base64_decode($data->username),
                     'password' => base64_decode($data->password)
                 ];
 
-                //self::$logger->log(self::$logName, json_encode($decoded_login));
-
+                //  NOTE:   $is_user should ba an object with {id, username, hash, type}
                 $user = new User();
                 $is_user = $user->authenticate($decoded_login);
 
+                $res = (object)['success' => false];
 
-                $res = json_encode(['success' => $is_user]);
+                if ($is_user)
+                {
+                    $JWT_handler = new activeUser_socket();
+                    $token = $JWT_handler->create($is_user);
+                    if ($token)
+                    {
+                        $res->success = true;
+                        $res->token = $token->toJSON();
+                    }
+                    else if (strpos($JWT_handler->error, 'already active'))
+                    {
+                        $res->error = 'You are already logged in.';
+                    }
+                    else
+                    {
+                        $res->error = 'An error occured, please try again later.';
+                    }
+                }
+                else
+                {
+                    $res->error = 'Wrong username or password.';
+                }
+
+                header("Content-Type: application/json");
+                echo json_encode($res);
+            }
 
                 header("Content-Type: application/json");
                 echo $res;
