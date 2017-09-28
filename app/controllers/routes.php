@@ -66,6 +66,18 @@
                 echo file_get_contents(self::$login);
                 //echo password_hash('pw', PASSWORD_DEFAULT);
             }
+            //  Load the editable version of the index page.
+            else if (substr($url, 0 , 5) === '/edit' && strlen($url) === 5)
+            {
+                $index = file_get_contents(self::$index);
+                $index = str_replace(
+                    "<!-- edit -->",
+                    "<script src=\"projects/CMS_v2/app/views/assets/lib/cookies.js\"></script><script src=\"projects/CMS_v2/app/views/assets/lib/ajax.js\"></script><script src=\"projects/CMS_v2/app/views/assets/lib/jquery.js\"></script><script src=\"projects/CMS_v2/app/views/assets/js/CMSEditor.js\"></script>",
+                    $index
+                );
+                //header('Content-Type: text/html');
+                echo $index;
+            }
             //  Load the manage page.
             else if (substr($url, 0, 7) === '/manage' && strlen($url) === 7)
             {
@@ -80,7 +92,7 @@
                 echo file_get_contents(self::$index);
             }
 
-            echo 'NOTE: GET has not yet been fully implemented.<br>';
+            //echo 'NOTE: GET has not yet been fully implemented.<br>';
         }
 
         function post ($url)
@@ -136,12 +148,22 @@
                 header("Content-Type: application/json");
                 echo json_encode($res);
             }
+            else if (substr($url, 0, 7) === '/logout')
+            {
+                require_once 'app/library/socket/JSON_socket.php';
+                require_once 'app/library/socket/MySQL_socket.php';
+
+                require_once 'app/models/user/user_model.php';
+                require_once 'app/controllers/new_users.php';
+
+                require_once 'app/library/plugin/jwt/JWT.php';
+                require_once 'app/models/user/token_model.php';
+                require_once 'app/library/socket/activeUser_socket.php';
 
                 header("Content-Type: application/json");
-                echo $res;
+                echo json_encode($res);
             }
 
-            //  Login
             //  Logout
 
 			//	New post
