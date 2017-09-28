@@ -57,7 +57,7 @@ class Cookies {
         duration = this.assertDuration(duration);
         //  Set time to after duration.
         const date = new Date();
-        date.setTime(date.getTime() + duration);
+        date.setTime(date.getTime() + duration + (-1*date.getTimezoneOffset()*60*1000));
         //  Return the string of time after duration.
         return date.toUTCString();
     }
@@ -108,12 +108,12 @@ class Cookies {
         //  Otherwise cache all current cookies.
         const cookies = document.cookie.split('; ');
         this.cache = {};
-        for (let i = cookies.length - 1; i >= 0; i--) {
+        for (let i = 0; i < cookies.length; i++) {
             //  Only split the name and the value for the first occurance of '='.
             const cookieName = cookies[i].substr(0, cookies[i].indexOf('='));
             const cookieJSON = cookies[i].substr(cookies[i].indexOf('=')+1);
             //  Decode the JSON string.
-            const cookieValue = typeof cookieJSON !== 'undefined' && cookieJSON !== 'undefined' && cookieJSON ? JSON.parse(cookieJSON) : null;
+            const cookieValue = typeof cookieJSON !== 'undefined' && cookieJSON !== 'undefined' && cookieJSON ? JSON.parse(cookieJSON) : undefined;
             this.cache[cookieName] = cookieValue;
         }
         //  Then return the cookie if it exists, otherwise return null.
