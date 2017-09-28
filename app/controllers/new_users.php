@@ -18,7 +18,7 @@
             $user = parent::getByUsername($cridentials->username);
             $hash = $user ? $user->hash : '';
             if (password_verify($cridentials->password, $hash))
-            { return true; }
+            { return $user; }
             else { return false; }
         }
 
