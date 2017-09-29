@@ -143,7 +143,7 @@
                         $mysql->connection->close();
 
                         //  Get the id of the new token entry.
-                        $id = $this->getNewId($object->username);
+                        $id = $this->getId($object->username);
 
                         //  Confirm the id was successfully aquired.
                         if ($id != null && is_int($id))
@@ -185,8 +185,12 @@
             }
             else
             {
-                $this->error = 'Request to create token for already active user.';
-                return false;
+                $active_id = $this->getId($object->username);
+                $active_entry = $this->activeEntry($active_id);
+                $is_active = $this->confirm($active_entry);
+
+                if ($is_active instanceof Token) { return $is_active; }
+                else { return $this->create($object); }
             }
         }
 
@@ -212,7 +216,7 @@
             $active_entry = $this->activeEntry($JWT->getId());
 
             //  Compare the token from the database to the given token.
-            if ($active_entry && $active_entry->getToken() === $JWT->getToken())
+            if ($active_entry && $active_entry->sameAs($JWT))
             {
                 //  If the decoding did not fail
                 //  check that the timestamp is from within 10 minuites.
@@ -226,7 +230,7 @@
                     $active_entry->updateTimestamp();
 
                     //  Write the new token to the database.
-                    if ($this->updateToken($active_entry->getId(), $active_entry->getToken()))
+                    if ($this->updateToken($active_entry->getId(), $active_entry->getToken(), $active_entry->getTimestamp()))
                     {
                         //  If the token was updated successfully
                         //  return the decoded token and the new encoded token.
@@ -428,7 +432,7 @@
         *                   to find the id of.
         *   @returns        The id as an integer of false i unsuccessful.
         * */
-        private function getNewId($username)
+        private function getId($username)
         {
             //  Reset the error string.
             $this->error = '';
