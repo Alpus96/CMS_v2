@@ -31,8 +31,7 @@ class CMS_auth {
                     //          res.token = {*id* => 'token string'}
                     cookie.create('token', res.token);
                     console.log(res);
-                    window.location.href = 'projects/CMS_v2/edit';
-                    //  TODO: Show login success/redirect.
+                    window.location.href = 'edit';
                 } else {
                     //  TODO: Authorization failed.
                     console.log('Request success false : '+res.error);
