@@ -14,7 +14,6 @@ class Cookies {
         this.duration = this.assertDuration(duration);
         //  Finish initiation by caching pre-existing cookies.
         this.read('');
-        console.log(this.cache);
     }
 
     /**
