@@ -16,7 +16,7 @@ class ContentLoader {
     loadPost (parameter) {
         this.error = '';
         let getVal;
-        if (typeof parameter === 'number')) {
+        if (typeof parameter === 'number') {
             getVal = 'amount='+parameter;
         } else if (typeof parameter === 'string') {
             getVal = 'category='+parameter;
@@ -42,7 +42,7 @@ class ContentLoader {
     loadArticle (parameter) {
         this.error = '';
         let getVal;
-        if (typeof parameter === 'number')) {
+        if (typeof parameter === 'number') {
             getVal = 'amount='+parameter;
         } else if (typeof parameter === 'string') {
             getVal = 'category='+parameter;
@@ -68,7 +68,7 @@ class ContentLoader {
     loadImagePost (parameter) {
         this.error = '';
         let gatVal;
-        if (typeof parameter === 'number')) {
+        if (typeof parameter === 'number') {
             getVal = 'amount='+parameter;
         } else if (typeof parameter === 'string') {
             getVal = 'category='+parameter;
@@ -94,7 +94,7 @@ class ContentLoader {
     loadImageLink (parameter) {
         this.error = '';
         let getVal;
-        if (typeof parameter === 'number')) {
+        if (typeof parameter === 'number') {
             getVal = 'amount='+parameter;
         } else if (typeof parameter === 'string') {
             getVal = 'category='+parameter;
