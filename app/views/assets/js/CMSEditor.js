@@ -3,11 +3,11 @@
 /*
 *	NOTE:	Change state by making a form filled in
 *			with the data from the post, or blank if new post.
+*
+*	TODO:	Split this class into four classes, one for each content type.
 * */
 
 class Editor {
-
-
 
 	constructor () {
 		//	TODO: Fill the templates array. (Load them dynamicaly?)
