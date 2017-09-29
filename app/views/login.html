@@ -5,17 +5,20 @@
     	<title>Page title</title>
         <!--    Tab icon?       -->
 
-        <!--    jQuery?         -->
-        <script src="app/views/assets/lib/jquery.min.js"></script>
+        <!--    jQuery  -->
+        <script src="/projects/CMS_v2/app/views/assets/lib/jquery.js"></script>
 
-        <!--    Bootstrap?      -->
+        <!--    bootstrap   -->
+        <script src="/projects/CMS_v2/app/views/assets/lib/bootstrap/js/bootstrap.min.js"></script>
+        <link rel="stylesheet" href="/projects/CMS_v2/app/views/assets/lib/bootstrap/css/bootstrap.min.css">
+
+    	<!--   CSS document link    -->
+    	<link rel="stylesheet" href="/projects/CMS_v2/app/views/assets/css/main.css">
+
         <!--    Own js?         -->
         <script src="app/views/assets/lib/ajax.js"></script>
         <script src="app/views/assets/lib/cookies.js"></script>
         <script src="app/views/assets/js/CMSAuth.js"></script>
-
-    	<!--CSS document link
-    	<link rel="stylesheet" type="text/css" href="assets/css/main.css">-->
 
     	<!--Meta settings-->
     	<meta charset="UTF-8">
@@ -30,11 +33,13 @@
     	<meta name="author" content="author info"  />
     </head>
     <body>
-        <h1>login</h1>
-        <div id="form">
-            <input type="text" name="username" id="username">
-            <input type="password" name="password" id="password">
-            <button name="login" id="login">Login</button>
+        <div class="container">
+            <h1>login</h1>
+            <div id="form">
+                <input type="text" name="username" id="username">
+                <input type="password" name="password" id="password">
+                <button name="login" id="login">Login</button>
+            </div>
         </div>
     </body>
 </html>
