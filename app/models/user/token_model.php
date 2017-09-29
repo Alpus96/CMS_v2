@@ -54,5 +54,16 @@
                 'timestamp' => self::$timestamp
             ]);
         }
+
+        static function sameAs ($other_token)
+        {
+            $ot = $other_token;
+            if ($other_token instanceof Token)
+            {
+                if (self::$id === $ot->getId() && self::$token === $ot->getToken() && self::$timestamp === $ot->getTimestamp()) { return true; }
+            }
+            return false;
+        }
+
     }
 ?>
