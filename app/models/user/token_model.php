@@ -16,13 +16,35 @@
 
         static function getId () { return self::$id; }
 
-        static function setToken($new_token) { self::$token = $new_token; }
+        static function setToken ($new_token) { self::$token = $new_token; }
 
         static function getToken () { return self::$token; }
 
         static function updateTimestamp () { self::$timestamp = time(); }
 
         static function getTimestamp () { return self::$timestamp; }
+
+        static function fromJSON ($json)
+        {
+            if (!is_string($json)) { return false; }
+
+            $json_obj;
+            try { $json_obj = json_decode($json); }
+            catch (Exeption $e) { throw new Exeption('Unable to parse json string to Token.'); }
+
+            if (property_exists('id') && property_exists('token') && property_exists('timestamp'))
+            {
+                if (is_numeric($json_obj->id) && is_string($json_obj->token) && $json_obj->token !== '' && is_numeric($json_obj->timestamp))
+                {
+                    self::$id = $json_obj->id;
+                    self::$token = $json_obj->token;
+                    self::$timestamp = $json_obj->timestamp;
+
+                    return true;
+                }
+            }
+            return false;
+        }
 
         static function toJSON ()
         {
