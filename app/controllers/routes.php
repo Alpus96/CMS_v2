@@ -15,6 +15,7 @@
         private static $index;
         private static $login;
         private static $manage;
+        private static $src_editor;
 
         private static $logger;
         private static $logName;
@@ -23,6 +24,7 @@
             self::$index = dirname(dirname(__FILE__)).'/views/index.html';
             self::$login = dirname(dirname(__FILE__)).'/views/login.html';
             self::$manage = dirname(dirname(__FILE__)).'/views/manage.html';
+            self::$src_editor = "<script src=\"/projects/CMS_v2/app/views/assets/js/CMSEditor.js\"></script>";
 
             require_once 'app/library/debug/logger.php';
             self::$logger = new logger();
@@ -35,7 +37,7 @@
 
 			//	Load login page
             if (substr($url, 0, 1) === '/' && strlen($url) === 1) {
-                header('Content-Type: text/html');
+                //header('Content-Type: text/html');
                 echo file_get_contents(self::$index);
             }
             //	Load post(s)
@@ -69,14 +71,34 @@
             //  Load the editable version of the index page.
             else if (substr($url, 0 , 5) === '/edit' && strlen($url) === 5)
             {
-                $index = file_get_contents(self::$index);
-                $index = str_replace(
-                    "<!-- edit -->",
-                    "<script src=\"projects/CMS_v2/app/views/assets/lib/cookies.js\"></script><script src=\"projects/CMS_v2/app/views/assets/lib/ajax.js\"></script><script src=\"projects/CMS_v2/app/views/assets/lib/jquery.js\"></script><script src=\"projects/CMS_v2/app/views/assets/js/CMSEditor.js\"></script>",
-                    $index
-                );
-                //header('Content-Type: text/html');
-                echo $index;
+                require_once 'app/models/user/token_model.php';
+                require_once 'app/library/socket/JSON_socket.php';
+                require_once 'app/library/socket/MySQL_socket.php';
+                require_once 'app/library/plugin/jwt/JWT.php';
+                require_once 'app/library/socket/activeUser_socket.php';
+
+                $cookie = json_decode($_COOKIE['token']);
+                $JWT = json_decode($cookie->value);
+                $token = new Token($JWT->id, $JWT->token, $JWT->timestamp);
+
+                $active_users = new activeUser_socket();
+                $is_active = $active_users->confirm($token);
+
+                if ($is_active)
+                {
+                    $index = file_get_contents(self::$index);
+                    $index = str_replace(
+                        "<!-- edit -->",
+                        self::$src_editor,
+                        $index
+                    );
+                    //header('Content-Type: text/html');
+                    echo $index;
+                }
+                else
+                {
+                    header('location: /projects/CMS_v2/login');
+                }
             }
             //  Load the manage page.
             else if (substr($url, 0, 7) === '/manage' && strlen($url) === 7)
