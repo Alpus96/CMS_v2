@@ -1,16 +1,13 @@
+/*
+*   TODO:   Write code to handle negative resonse.
+*
+*   TODO:   Write comments.
+* */
 class CMS_auth {
 
-    constructor () {
-        this.addListeners();
-        //cookie.delete('token');
-    }
+    constructor () { this.addListener(); }
 
-    addListeners () {
-        $('#login').on('click', () => { this.loginRequest(); });
-
-        //  NOTE: Add after logged in?
-        $('#logout').on('click', this.logoutRequest);
-    }
+    addListener () { $('#login').on('click', () => { this.loginRequest(); }); }
 
     loginRequest () {
         //  Get the data from the login form.
@@ -24,13 +21,11 @@ class CMS_auth {
         //  TODO:   Change the url on relese.
         AJAX.post('/projects/CMS_v2/login', form_data, (err, res) => {
             if (!err) {
-                //  TODO: Decide how the response should be structured.
                 //  NOTE: Going with {bool success, object token} for now.
                 if (res.success) {
                     //  NOTE:   Persumes if success
                     //          res.token = {*id* => 'token string'}
                     cookie.create('token', res.token);
-                    console.log(res);
                     window.location.href = 'edit';
                 } else {
                     //  TODO: Authorization failed.
@@ -43,23 +38,7 @@ class CMS_auth {
         });
     }
 
-    logoutRequest () {
-        AJAX.post('/logout', cookie.read('token'), (err, res) => {
-            if (!err) {
-                if (res.success) {
-                    console.log('success');
-                } else {
-                    console.log('fail');
-                }
-            } else {
-                console.log('error');
-            }
-        });
-    }
 }
 
-$(document).ready(()=>{
-    const page = new CMS_auth();
-});
-
 const cookie = new Cookies(10*60*1000);
+$(document).ready(()=>{ const page = new CMS_auth(); });
