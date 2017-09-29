@@ -520,15 +520,16 @@
                 //  If the connection was successful
                 //  prepare the query to read the specified row.
                 if ($query = $mysql->connection->prepare(
-                    'SELECT ID, TOKEN, TIMESTAMP FROM ACTIVE_USERS WHERE ID = ? LIMIT 1'))
+                    'SELECT TOKEN, TIMESTAMP FROM ACTIVE_USERS WHERE ID = ? LIMIT 1'))
     			{
                     //  Bind the id as the paramater and run the query.
     				$query->bind_param('i', $id);
     				$query->execute();
 
                     //  Bind the result and fetch it.
-    				$query->bind_result($id, $token, $timestamp);
+    				$query->bind_result($token, $timestamp);
     				$query->fetch();
+
 
                     //  Close the query and the connection
                     //  before returning the result of the query.
@@ -593,18 +594,29 @@
                     $query->bind_param('si', $new_token, $id);
                     $query->execute();
 
-                    //  Then close the query and the connection.
-                    $query->close();
-                    $mysql->connection->close();
+                    if ($query = $mysql->connection->prepare("UPDATE ACTIVE_USERS SET TIMESTAMP = now()"))
+                    {
+                        $query->execute();
 
-                    //  Confirm that the query was successful
-                    //  by reading the current value.
-                    $active_entry = $this->activeEntry($id);
+                        //  Then close the query and the connection.
+                        $query->close();
+                        $mysql->connection->close();
 
-                    //  If the current value matches the new token
-                    //  return true, if not return false.
-                    if ($active_entry->getToken() === $new_token) { return true; }
-                    else { return false; }
+                        //  Confirm that the query was successful
+                        //  by reading the current value.
+                        $active_entry = $this->activeEntry($id);
+
+                        //  If the current value matches the new token
+                        //  return true, if not return false.
+                        if ($active_entry->getToken() === $new_token) { return true; }
+                        else { return false; }
+                    }
+                    else
+                    {
+                        $this->error = 'Unable to query timestamp update: '.$mysql->connection->error;
+                        $mysql->connection->close();
+                        return false;
+                    }
                 }
                 else
                 {
