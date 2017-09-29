@@ -5,23 +5,44 @@
 *			with the data from the post, or blank if new post.
 * */
 
-class CMS_Editor {
+class Editor {
+
+
 
 	constructor () {
+		//	TODO: Fill the templates array. (Load them dynamicaly?)
+		this.htmlTemplates = {
+			'settingsLink': '<a class="settings_link" href="manage">Settings</a>',
+			'logoutLink': '<a class="logout_button" href="logout">Logout</a>',
+			'newPost' : '',
+			'newArticle': '',
+			'newImagePost': '',
+			'newImage': ''
+		};
+
+		//	Manage and configure links.
+		this.addSettingsLink();
+
 		//	Adding event listeners for actions.
 		this.postEvents();
 		this.articleEvents();
 		this.imagePostEvents();
 		this.imageEvents();
+	}
 
-		this.htmlTemplates = []; //	TODO: Fill the templates array. (Load them dynamicaly?)
+	/*
+	*	@description	This function adds a link to the settings page.
+	* */
+	addSettingsLink () {
+		$('.container').prepend(this.htmlTemplates.settingsLink);
+		$('.container').prepend(this.htmlTemplates.logoutButton);
 	}
 
 	/*
 	*
 	* */
 	postEvents () {
-		$("#startPost").on('click', this.startPost);	//	Start making a new post.
+		$("#startPost").on('click', this.newPost);	//	Start making a new post.
 		$('#editPost').on('click', this.editPost);		//	Edit an existing post.
 		$('#savePost').on('click', this.savePost);		//	Save new or edited post.
 		$('#removePost').on('click', this.removePost);	//	Remove an existing post.
@@ -30,7 +51,7 @@ class CMS_Editor {
 	/*
 	*
 	* */
-	startPost () {
+	newPost () {
 		//	Show the input for a new post and the buttons
 		//	for 'Select image', 'Add image' and 'Publish post'.
 	}
@@ -46,13 +67,14 @@ class CMS_Editor {
 	*
 	* */
 	savePost () {
-		const post = JSON.encode();
+		//	TODO:	Get the input from the form and handle the response.
+		const post = '';
 		AJAX.post('/savePost', post, (err, res) => {
 			if (!err) {
 				if (res.success) {
 					//	Success!
 				} else {
-					//	Something wrong with the request?
+					//	Bad request?
 				}
 			} else {
 				//	Something went wrong! :(
@@ -64,10 +86,14 @@ class CMS_Editor {
 	*
 	* */
 	removePost () {
-		const postID = JSON.encode();
+		//	TODO:	Get the id from the DOM and hanle the response.
 		AJAX.post('/removePost', postID, (err, res) => {
 			if (!err) {
-				//	Success!
+				if (res.success) {
+					//	Success!
+				} else {
+					//	Bad request?
+				}
 			} else {
 				//	Something went wrong! :(
 			}
@@ -78,16 +104,20 @@ class CMS_Editor {
 	*
 	* */
 	articleEvents () {
-		$('#addArticle').on('click', this.startArticle);		//	Start making a new article.
-		$('#editArticle').on('click', this.editArticle);		//	Edit an existing article.
-		$('#saveArticle').on('click', this.saveArticle);		//	Save a new or edited article.
-		$('#removeArticle').on('click', this.removeArticle);	//	Remove an existing article.
+		//	Start making a new article.
+		$('#addArticle').on('click', this.newArticle);
+		//	Edit an existing article.
+		$('#editArticle').on('click', this.editArticle);
+		//	Save a new or edited article.
+		$('#saveArticle').on('click', this.saveArticle);
+		//	Remove an existing article.
+		$('#removeArticle').on('click', this.removeArticle);
 	}
 
 	/*
 	*
 	* */
-	startArticle () {
+	newArticle () {
 
 	}
 
@@ -196,3 +226,5 @@ class CMS_Editor {
 	}
 
 }
+
+$(document).ready(() => { const editor = new Editor(); });
