@@ -13,7 +13,6 @@ class Editor {
 		//	TODO: Fill the templates array. (Load them dynamicaly?)
 		this.htmlTemplates = {
 			'settingsLink': '<a class="settings_link" href="manage">Settings</a>',
-			'logoutLink': '<a class="logout_button" href="logout">Logout</a>',
 			'newPost' : '',
 			'newArticle': '',
 			'newImagePost': '',
@@ -35,7 +34,6 @@ class Editor {
 	* */
 	addSettingsLink () {
 		$('.container').prepend(this.htmlTemplates.settingsLink);
-		$('.container').prepend(this.htmlTemplates.logoutButton);
 	}
 
 	/*
