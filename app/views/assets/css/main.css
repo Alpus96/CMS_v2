@@ -1,5 +1,6 @@
 /*  CSS  */
 .login-bg {
+    /*  TODO:   Make the size of this image smaller.    */
     background-image: url("../images/bg-img.png");
     background-size: 100%;
     background-size: 100vw 100vh;
@@ -17,9 +18,7 @@
     margin: 15px 0;
 }
 
-/*  TODO:   Change color and padding    */
-.well {
-    color: white;
-    background-color:darkgray ;
-    border: 0;
+.form {
+    color: #DDE;
 }
+
