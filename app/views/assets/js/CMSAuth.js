@@ -7,7 +7,12 @@ class CMS_auth {
 
     constructor () { this.addListener(); }
 
-    addListener () { $('#login').on('click', () => { this.loginRequest(); }); }
+    addListener () {
+        $('form#login').submit('submit', (event) => {
+            event.preventDefault();
+            this.loginRequest();
+        });
+    }
 
     loginRequest () {
         //  Get the data from the login form.
@@ -20,20 +25,34 @@ class CMS_auth {
         //  Send the login request.
         //  TODO:   Change the url on relese.
         AJAX.post('/projects/CMS_v2/login', form_data, (err, res) => {
+            //  NOTE:   Backend gives res null instead of error code.
             if (!err) {
-                //  NOTE: Going with {bool success, object token} for now.
                 if (res.success) {
-                    //  NOTE:   Persumes if success
-                    //          res.token = {*id* => 'token string'}
                     cookie.create('token', res.token);
                     window.location.href = 'edit';
                 } else {
-                    //  TODO: Authorization failed.
-                    console.log('Request success false : '+res.error);
+                    if ($('p#msg-text').hasClass('hidden'))
+                    { $('p#msg-text').removeClass('hidden'); }
+
+                    if ($('p#msg-text').hasClass('alert-danger'))
+                    { $('p#msg-text').removeClass('alert-danger'); }
+
+                    $('p#msg-text').addClass('alert-warning');
+                    $('p#msg-text').text(
+                        'Fel användarnamn eller lösenord!'
+                    );
                 }
             } else {
-                //  TODO: Request failed.
-                console.error('Request failed : '+err);
+                if ($('p#msg-text').hasClass('hidden'))
+                { $('p#msg-text').removeClass('hidden'); }
+
+                if ($('p#msg-text').hasClass('alert-warning'))
+                { $('p#msg-text').removeClass('alert-warning'); }
+
+                $('p#msg-text').addClass('alert-danger');
+                $('p#msg-text').text(
+                    'Fel uppstod, försök igen senare!'
+                );
             }
         });
     }
