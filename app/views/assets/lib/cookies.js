@@ -155,3 +155,5 @@ class Cookies {
     }
 
 }
+
+const cookie = new Cookies(10*60*1000);
