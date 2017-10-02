@@ -79,26 +79,30 @@
 
                 $cookie = json_decode($_COOKIE['token']);
                 $JWT = json_decode($cookie->value);
-                $token = new Token($JWT->id, $JWT->token, $JWT->timestamp);
 
-                $active_users = new activeUser_socket();
-                $is_active = $active_users->confirm($token);
+                $token;
+                try { $token = new Token($JWT->id, $JWT->token, $JWT->timestamp); }
+                catch (Exception $e) { self::$logger->log(self::$logName, $e); }
 
-                if ($is_active)
+                $is_active;
+                if ($token)
                 {
-                    $index = file_get_contents(self::$index);
-                    $index = str_replace(
-                        "<!-- edit -->",
-                        self::$src_editor,
-                        $index
-                    );
-                    //header('Content-Type: text/html');
-                    echo $index;
+                    $active_users = new activeUser_socket();
+                    $is_active = $active_users->confirm($token);
+
+                    if ($is_active)
+                    {
+                        $index = file_get_contents(self::$index);
+                        $index = str_replace(
+                            "<!-- edit -->",
+                            self::$src_editor,
+                            $index
+                        );
+                        //header('Content-Type: text/html');
+                        echo $index;
+                    }
                 }
-                else
-                {
-                    header('location: /projects/CMS_v2/login');
-                }
+                if (!$token || !$is_active) { header('location: /projects/CMS_v2/login'); }
             }
             //  Load the manage page.
             else if (substr($url, 0, 7) === '/manage' && strlen($url) === 7)
