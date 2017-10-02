@@ -7,21 +7,21 @@
     background-repeat: no-repeat;
 }
 
-.absCenter {
+.center {
     position: absolute;
-    top: 45vh;
+    top: 40vh;
     left: 50vw;
     transform: translate(-50%,-50%);
 }
 
-.margin-bottom-md {
-    margin: 15px 0;
-}
+.margin-bottom-md { margin: 15px 0; }
 
-.form {
-    color: #555;
-}
+.form { color: #404040; }
 
-.hidden {
-    display: none;
+.hidden { display: none; }
+
+.wrap {
+    padding-top: 6px;
+    border-radius: 12px;
+    background-color: rgba(210, 200, 200, 0.8);
 }
