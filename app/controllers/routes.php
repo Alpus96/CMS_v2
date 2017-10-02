@@ -186,6 +186,27 @@
                 require_once 'app/models/user/token_model.php';
                 require_once 'app/library/socket/activeUser_socket.php';
 
+                $res = (object)['success' => false, 'error' => 'Unable to parse token.'];
+                $token;
+                try
+                {
+                    $json = json_decode($data);
+                    $token = new Token($json->id, $json->token, $json->timestamp);
+                    $active_user = new activeUser_socket();
+                    $res->success = $active_user->delete($token);
+
+                    if (!$res->success)
+                    {
+                        $res->error = $active_user->error;
+                    }
+                    else
+                    {
+                        $res->success = true;
+                        unset($res->error);
+                    }
+                }
+                catch (Exception $e) { self::$logger->log(self::$logName, $e); }
+
                 header("Content-Type: application/json");
                 echo json_encode($res);
             }
@@ -215,5 +236,11 @@
         {
             return $files;
         }
+
+        private function is_loggedin()
+        {
+
+        }
+
     }
 ?>
