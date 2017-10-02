@@ -14,8 +14,10 @@
     {
         private static $index;
         private static $login;
-        private static $manage;
+        private static $settings;
+
         private static $src_editor;
+        private static $edit_menu;
 
         private static $logger;
         private static $logName;
@@ -23,8 +25,9 @@
         function __construct () {
             self::$index = dirname(dirname(__FILE__)).'/views/index.html';
             self::$login = dirname(dirname(__FILE__)).'/views/login.html';
-            self::$manage = dirname(dirname(__FILE__)).'/views/settings.html';
-            self::$src_editor = "<script src=\"/projects/CMS_v2/app/views/assets/lib/cookies.js\"></script>\n<script src=\"/projects/CMS_v2/app/views/assets/js/CMS.js\"></script>\n<script src=\"/projects/CMS_v2/app/views/assets/js/ContentEditor.js\"></script>";
+            self::$settings = dirname(dirname(__FILE__)).'/views/settings.html';
+            self::$src_editor = "<script src=\"/projects/CMS_v2/app/views/assets/lib/cookies.js\"></script>\n<script src=\"/projects/CMS_v2/app/views/assets/js/CMS.js\"></script>\n<script src=\"/projects/CMS_v2/app/views/assets/js/ContentRequests.js\"></script>\n<script src=\"/projects/CMS_v2/app/views/assets/js/ContentHandler.js\"></script>";
+            self::$edit_menu = '<div class="edit_menu"><a href="settings" class="settings_link">Settings</a><button class="btn btn-default" id="logout">Logga ut</button></div>';
 
             require_once 'app/library/debug/logger.php';
             self::$logger = new logger();
@@ -98,6 +101,11 @@
                             self::$src_editor,
                             $index
                         );
+                        $index = str_replace(
+                            "<!-- edit_menu -->",
+                            self::$edit_menu,
+                            $index
+                        );
                         //header('Content-Type: text/html');
                         echo $index;
                     }
@@ -105,11 +113,11 @@
                 if (!$token || !$is_active) { header('location: /projects/CMS_v2/login'); }
             }
             //  Load the manage page.
-            else if (substr($url, 0, 7) === '/manage' && strlen($url) === 7)
+            else if (substr($url, 0, 9) === '/settings' && strlen($url) === 9)
             {
                 //
                 header('Content-Type: text/html');
-                echo file_get_contents(self::$manage);
+                echo file_get_contents(self::$settings);
             }
             else
             {
