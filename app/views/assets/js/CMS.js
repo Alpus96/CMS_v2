@@ -1,17 +1,26 @@
 /*
-*   TODO:   Write code to handle negative resonse.
-*
-*   TODO:   Write comments.
+*   TODO:   Write comments and review code.
 * */
-class CMS_auth {
+class CMS {
+    constructor () {
+        if (window.location.href.indexOf('/login')) {
+            this.addLoginListner();
+        } else if (window.location.href.indexOf('/edit'||'/manage')) {
+            if (!cookie.read('token')) { window.location.href = '/projects/CMS_v2/login'; }
+            //  NOTE: Logout button should be added in backend.
+            this.addLogoutListner();
+        }
+    }
 
-    constructor () { this.addListener(); }
-
-    addListener () {
+    addLoginListner () {
         $('form#login').submit('submit', (event) => {
             event.preventDefault();
             this.loginRequest();
         });
+    }
+
+    addLogoutListner () {
+        $('#logout').on('click', this.logoutRequest);
     }
 
     loginRequest () {
@@ -57,6 +66,22 @@ class CMS_auth {
         });
     }
 
+    logoutRequest () {
+        AJAX.post('/projects/CMS_v2/logout', cookie.read('token'), (err, res) => {
+            console.log(res);
+            if (!err) {
+                if (res.success) {
+                    cookie.delete('token');
+                    window.location.href = '/projects/CMS_v2/';
+                } else {
+
+                }
+            } else {
+                console.log(err);
+            }
+        });
+    }
+
 }
 
-$(document).ready( ()=>{ const page = new CMS_auth(); } );
+$(document).ready(() => { const cms = new CMS(); });

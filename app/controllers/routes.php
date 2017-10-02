@@ -23,8 +23,8 @@
         function __construct () {
             self::$index = dirname(dirname(__FILE__)).'/views/index.html';
             self::$login = dirname(dirname(__FILE__)).'/views/login.html';
-            self::$manage = dirname(dirname(__FILE__)).'/views/manage.html';
-            self::$src_editor = "<script src=\"/projects/CMS_v2/app/views/assets/lib/cookies.js\"></script>\n<script src=\"/projects/CMS_v2/app/views/assets/js/CMS_logout.js\"></script>\n<script src=\"/projects/CMS_v2/app/views/assets/js/CMSEditor.js\"></script>";
+            self::$manage = dirname(dirname(__FILE__)).'/views/settings.html';
+            self::$src_editor = "<script src=\"/projects/CMS_v2/app/views/assets/lib/cookies.js\"></script>\n<script src=\"/projects/CMS_v2/app/views/assets/js/CMS.js\"></script>\n<script src=\"/projects/CMS_v2/app/views/assets/js/ContentEditor.js\"></script>";
 
             require_once 'app/library/debug/logger.php';
             self::$logger = new logger();

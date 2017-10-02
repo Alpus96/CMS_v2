@@ -1,18 +1,17 @@
-//$(() => { new CMS_Editor(); });
+/*
+*	NOTE: TODO:	Settings link should be added in backend.
+* */
 
 /*
 *	NOTE:	Change state by making a form filled in
 *			with the data from the post, or blank if new post.
-*
-*	TODO:	Split this class into four classes, one for each content type.
 * */
 
-class Editor {
+class ContentEditor {
 
 	constructor () {
-		//	TODO: Fill the templates array. (Load them dynamicaly?)
+		//	TODO: Fill the templates array.
 		this.htmlTemplates = {
-			'settingsLink': '<a class="settings_link" href="manage">Settings</a>',
 			'newPost' : '',
 			'newArticle': '',
 			'newImagePost': '',
@@ -27,13 +26,6 @@ class Editor {
 		this.articleEvents();
 		this.imagePostEvents();
 		this.imageEvents();
-	}
-
-	/*
-	*	@description	This function adds a link to the settings page.
-	* */
-	addSettingsLink () {
-		$('.container').prepend(this.htmlTemplates.settingsLink);
 	}
 
 	/*
@@ -225,4 +217,4 @@ class Editor {
 
 }
 
-$(document).ready(() => { const editor = new Editor(); });
+$(document).ready(() => { const editor = new ContentEditor(); });
