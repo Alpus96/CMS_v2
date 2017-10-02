@@ -3,13 +3,13 @@
 * */
 class CMS {
     constructor () {
-        if (window.location.href.indexOf('/login')) {
+        if (window.location.href.indexOf('/login') != -1) {
             this.addLoginListner();
-        } else if (window.location.href.indexOf('/edit'||'/manage')) {
+        } else if (window.location.href.indexOf('/edit') != -1) {
             if (!cookie.read('token')) { window.location.href = '/projects/CMS_v2/login'; }
             //  NOTE: Logout button should be added in backend.
             this.addLogoutListner();
-        }
+        } else { console.warn('CMS class not applicable.'); }
     }
 
     addLoginListner () {
@@ -20,7 +20,7 @@ class CMS {
     }
 
     addLogoutListner () {
-        $('#logout').on('click', this.logoutRequest);
+        $('button#logout').on('click', this.logoutRequest);
     }
 
     loginRequest () {
