@@ -211,10 +211,7 @@
                 header("Content-Type: application/json");
                 echo json_encode($res);
             }
-            else
-            {
-                http_response_code(404);
-            }
+            else { http_response_code(404); }
 			//	New post
 			//	Update post
 			//	Delete post

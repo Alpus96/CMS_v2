@@ -17,7 +17,7 @@ class Ajax {
 		//	Handle when the request succeds.
 		request.onload = () => {
 			//  Returns the result as result through the callback function.
-			if (request.status === 200) {
+			if (request.status < 400) {
 				callback(null, request.response);
 			} else {
 				callback(true, request.status)
@@ -27,7 +27,7 @@ class Ajax {
 		request.onerror = () => {
 			//  Log and return the error through the callback.
 			const msg = request.status + ':' + request.statusText;
-			console.error(msg);
+			//console.error(msg);
 			callback(true, msg);
 		};
 		//  Pass the input data parameter converted to JSON when sending the request.
