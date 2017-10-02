@@ -8,7 +8,7 @@
         function __construct ($active_id, $token_string, $time = null)
         {
             if (!is_numeric($active_id)||!is_string($token_string)||$token_string === '')
-            { throw new Exeption('Invalid token id or token string.'); }
+            { throw new Exception('Invalid token id or token string.'); }
             self::$id = $active_id;
             self::$token = $token_string;
             self::$timestamp = $time ? $time : time();
