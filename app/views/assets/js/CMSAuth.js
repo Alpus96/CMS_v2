@@ -40,5 +40,4 @@ class CMS_auth {
 
 }
 
-const cookie = new Cookies(10*60*1000);
-$(document).ready(()=>{ const page = new CMS_auth(); });
+$(document).ready( ()=>{ const page = new CMS_auth(); } );
