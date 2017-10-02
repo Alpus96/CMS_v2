@@ -38,9 +38,10 @@
                 <div class="col-lg-3 col-md-4 col-sm-5 col-xs-6 absCenter">
                     <div class="col-xs-10 col-xs-offset-1 form">
                         <h2 class="margin-bottom-md">Logga in</h2>
-                        <div class="form-horizontal">
+                        <p id="msg-text" class="hidden alert"></p>
+                        <form id="login" name="login" class="form-horizontal">
                             <div class="form-group">
-                                <input type="text" class="form-control" placeholder="Användarnamn" name="username" id="username">
+                                <input type="text" class="form-control" placeholder="Användarnamn" name="username" id="username" autofocus>
                             </div>
 
                             <div class="form-group">
@@ -48,9 +49,9 @@
                             </div>
 
                             <div class="form-group">
-                                <button class="btn btn-default pull-right" name="login" id="login">Login</button>
+                                <input type="submit" class="btn btn-default pull-right" name="submit" value="Logga in">
                             </div>
-                        </div>
+                        </form>
                     </div>
                 </div>
             </div>
