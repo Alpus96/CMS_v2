@@ -19,7 +19,6 @@ class ContentEditor {
 		};
 
 		//	Manage and configure links.
-		this.addSettingsLink();
 
 		//	Adding event listeners for actions.
 		this.postEvents();
