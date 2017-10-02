@@ -24,9 +24,9 @@
 
         function __construct () {
             self::$index = dirname(dirname(__FILE__)).'/views/index.html';
-            self::$login = dirname(dirname(__FILE__)).'/views/login.html';
-            self::$settings = dirname(dirname(__FILE__)).'/views/settings.html';
-            self::$src_editor = "<script src=\"/projects/CMS_v2/app/views/assets/lib/cookies.js\"></script>\n<script src=\"/projects/CMS_v2/app/views/assets/js/CMS.js\"></script>\n<script src=\"/projects/CMS_v2/app/views/assets/js/ContentRequests.js\"></script>\n<script src=\"/projects/CMS_v2/app/views/assets/js/ContentHandler.js\"></script>";
+            self::$login = dirname(dirname(__FILE__)).'/views/assets/CMS/static/login.html';
+            self::$settings = dirname(dirname(__FILE__)).'/views/assets/CMS/static/settings.html';
+            self::$src_editor = "<script src=\"/projects/CMS_v2/app/views/assets/lib/cookies.js\"></script>\n<script src=\"/projects/CMS_v2/app/views/assets/CMS/js/CMS.js\"></script>\n<script src=\"/projects/CMS_v2/app/views/assets/CMS/js/ContentRequests.js\"></script>\n<script src=\"/projects/CMS_v2/app/views/assets/CMS/js/ContentHandler.js\"></script>";
             self::$edit_menu = '<div class="edit_menu"><a href="settings" class="settings_link">Settings</a><button class="btn btn-default" id="logout">Logga ut</button></div>';
 
             require_once 'app/library/debug/logger.php';

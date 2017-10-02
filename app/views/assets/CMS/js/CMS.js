@@ -5,7 +5,7 @@ class CMS {
     constructor () {
         if (window.location.href.indexOf('/login') != -1) {
             this.addLoginListner();
-        } else if (window.location.href.indexOf('/edit') != -1) {
+        } else if (window.location.href.indexOf('/edit') != -1 || window.location.href.indexOf('/settings') != -1) {
             if (!cookie.read('token')) { window.location.href = '/projects/CMS_v2/login'; }
             //  NOTE: Logout button should be added in backend.
             this.addLogoutListner();

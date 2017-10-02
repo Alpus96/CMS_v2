@@ -4,4 +4,4 @@
 
 class Settings { constructor () {} }
 
-$(document).ready(() => { const Settings = new Settings(); });
+$(document).ready(() => { const settings = new Settings(); });
