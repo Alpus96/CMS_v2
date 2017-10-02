@@ -113,6 +113,7 @@
             }
             else
             {
+                //  TODO:   Show 404 page with 5 sec redirect delay to /.
                 //  If the route was not defined above, serve the index page.
                 header('Content-Type: text/html');
                 echo file_get_contents(self::$index);
@@ -210,9 +211,10 @@
                 header("Content-Type: application/json");
                 echo json_encode($res);
             }
-
-            //  Logout
-
+            else
+            {
+                http_response_code(404);
+            }
 			//	New post
 			//	Update post
 			//	Delete post
