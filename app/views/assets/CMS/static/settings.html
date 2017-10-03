@@ -35,9 +35,24 @@
     </head>
     <body>
         <div class="container">
-            <div class="edit_menu"><a href="edit" class="settings_link">Edit</a><button class="btn btn-default" id="logout">Logga ut</button></div>
-            <!--    TODO:   Specify what settings should be editable here.    -->
-            <h1>Manage</h1>
+            <nav class="navbar navbar-inverse navbar-fixed-top">
+                <div class="container-fluid">
+                    <!--<div class="navbar-header">
+                        <a class="navbar-brand" href="#">WebSiteName</a>
+                    </div>-->
+                    <ul class="nav navbar-nav">
+                        <li class="active"><a href="settings">Settings</a></li>
+                        <li><a href="edit">Edit</a></li>
+                    </ul>
+
+                    <button class="btn btn-danger navbar-btn pull-right" id="logout">Logga ut</button>
+                </div>
+            </nav>
+            <div class="nav-offset"></div>
+            <div class="row">
+                <!--    TODO:   Specify what settings should be editable here.    -->
+                <h1>Manage</h1>
+            </div>
         </div>
     </body>
 </html>
