@@ -71,6 +71,29 @@
             else if (substr($url, 0, 5) === '/post')
             {
                 // tag or specific
+                if ($_GET['category'] && $_GET['amount'])
+                {
+                    $entry = (object)[
+                        'id' => 324,
+                        'content' => '<p>content text etc.</p>',
+                        'timestamp' => time(),
+                        'edited' => false
+                    ];
+
+                    $test = (object) [
+                        '1st' => $entry
+                    ];
+                    
+                    echo json_encode(['success' => true, 'data' => json_encode($test)]);
+                }
+                else if ($_GET['id'])
+                {
+
+                }
+                else
+                {
+                    http_response_code(404);
+                }
             }
             //	Load article(s)
             else if (substr($url, 0, 8) === '/article')
