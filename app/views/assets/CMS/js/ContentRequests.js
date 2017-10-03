@@ -13,7 +13,33 @@ class ContentRequests {
         //  TODO: Confirm content is valid.
         const url = '/create'+type;
         AJAX.post(url, content, (err, res) => {
+            if (!err) {
+                if (res.success) {
+                    return res;
+                } else {
+                    return false;
+                }
+            } else {
+                //  What to do on error?
+                return false;
+            }
+        });
+    }
 
+    readMD (type, id) {
+        //  TODO: Confirm type and id is valid.
+        const url = '/read'+type+'?id='+id;
+        AJAX.post(url, content, (err, res) => {
+            if (!err) {
+                if (res.success) {
+                    return res;
+                } else {
+                    return false;
+                }
+            } else {
+                //  What to do on error?
+                return false;
+            }
         });
     }
 
@@ -21,7 +47,16 @@ class ContentRequests {
         //  TODO: Confirm content is valid. (+has id)
         const url = '/update'+type;
         AJAX.post(url, content, (err, res) => {
-
+            if (!err) {
+                if (res.success) {
+                    return res;
+                } else {
+                    return false;
+                }
+            } else {
+                //  What to do on error?
+                return false;
+            }
         });
     }
 
@@ -29,7 +64,16 @@ class ContentRequests {
         //  TODO: Confirm id is valid.
         const url = '/delete'+type;
         AJAX.post(url, id, (err, res) => {
-
+            if (!err) {
+                if (res.success) {
+                    return res;
+                } else {
+                    return false;
+                }
+            } else {
+                //  What to do on error?
+                return false;
+            }
         });
     }
 }
