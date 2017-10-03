@@ -9,7 +9,7 @@ class CMS {
             if (!cookie.read('token')) { window.location.href = '/projects/CMS_v2/login'; }
             //  NOTE: Logout button should be added in backend.
             this.addLogoutListner();
-        } else { console.warn('CMS class not applicable.'); }
+        } else { console.warn('CMS class not applicable or has not been implemented.'); }
     }
 
     addLoginListner () {
