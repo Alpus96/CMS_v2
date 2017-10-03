@@ -19,6 +19,7 @@
         private static $index;
         private static $login;
         private static $settings;
+        private static $fourOfour;
 
         private static $src_editor;
         private static $edit_menu;
@@ -35,6 +36,8 @@
             self::$index = $config->index;
             self::$login = $config->login;
             self::$settings = $config->settings;
+            self::$fourOfour = $config->fourOfour;
+
             self::$src_editor = $config->src_editor;
             self::$edit_menu = $config->edit_menu;
         }
@@ -48,6 +51,22 @@
                 //header('Content-Type: text/html');
                 echo file_get_contents(self::$index);
             }
+            //  Load the login page.
+            else if (substr($url, 0, 6) === '/login' && strlen($url) === 6)
+            { echo file_get_contents(self::$login); }
+            //  Load the editable version of the index page.
+            else if (substr($url, 0 , 5) === '/edit' && strlen($url) === 5)
+            {
+                if ($this->is_loggedin()) {
+                    $index = file_get_contents(self::$index);
+                    $index = str_replace("<!-- edit -->", self::$src_editor, $index);
+                    $index = str_replace("<!-- edit_menu -->", self::$edit_menu, $index);
+                    echo $index;
+                }
+            }
+            //  Load the manage page.
+            else if (substr($url, 0, 9) === '/settings' && strlen($url) === 9)
+            { if ($this->is_loggedin()) { echo file_get_contents(self::$settings); } }
             //	Load post(s)
             else if (substr($url, 0, 5) === '/post')
             {
@@ -68,35 +87,11 @@
             {
 
             }
-            //  Load the login page.
-            else if (substr($url, 0, 6) === '/login' && strlen($url) === 6)
-            {
-                //
-                header('Content-Type: text/html');
-                echo file_get_contents(self::$login);
-                //echo password_hash('pw', PASSWORD_DEFAULT);
-            }
-            //  Load the editable version of the index page.
-            else if (substr($url, 0 , 5) === '/edit' && strlen($url) === 5)
-            {
-                if ($this->is_loggedin()) {
-                    $index = file_get_contents(self::$index);
-                    $index = str_replace("<!-- edit -->", self::$src_editor, $index);
-                    $index = str_replace("<!-- edit_menu -->", self::$edit_menu, $index);
-                    echo $index;
-                }
-            }
-            //  Load the manage page.
-            else if (substr($url, 0, 9) === '/settings' && strlen($url) === 9)
-            {
-                if ($this->is_loggedin()) { echo file_get_contents(self::$settings); }
-            }
             else
             {
-                //  TODO:   Show 404 page with 5 sec redirect delay to '/'.
-                //  If the route was not defined above, serve the index page.
-                header('Content-Type: text/html');
-                echo file_get_contents(self::$index);
+                //  If the route was not defined above,
+                //  show 404 page with 5 sec redirect delay to '/'.
+                echo file_get_contents(self::$fourOfour);
             }
         }
 
