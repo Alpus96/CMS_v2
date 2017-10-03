@@ -225,6 +225,7 @@
             $JWT = json_decode($cookie->value);
 
             $token;
+            //  TODO: handle not instancing a token with invalid parameters.
             try { $token = new Token($JWT->id, $JWT->token, $JWT->timestamp); }
             catch (Exception $e) { self::$logger->log(self::$logName, $e); }
 
