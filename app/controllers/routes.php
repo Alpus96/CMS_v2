@@ -7,12 +7,15 @@
     *           the project.
     *
     *   NOTE:   Confirm token here for paths where it is nessesary.
-    *   TODO:   Write function for confirming the user is active.
+    *   TODO:   Move functions to login, confirm active and logout user to user controller.
     *
     *   TODO:   Add paths for multiple item loading.
     * */
     class Routes
     {
+        private static $logger;
+        private static $logName;
+
         private static $index;
         private static $login;
         private static $settings;
@@ -20,15 +23,10 @@
         private static $src_editor;
         private static $edit_menu;
 
-        private static $logger;
-        private static $logName;
-
         function __construct () {
             require_once 'app/library/debug/logger.php';
             self::$logger = new logger();
             self::$logName = '_routesLog';
-
-            //  TODO:   Add this to a routes configuration json.
 
             require_once 'app/library/socket/JSON_socket.php';
             $JSON = new JSON_socket();
