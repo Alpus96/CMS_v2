@@ -12,7 +12,7 @@ class ContentEditor {
 	constructor () {
 		//	TODO: Fill the templates array.
 		this.htmlTemplates = {
-			'newPost' : '',
+			'newPost' : '<div class=""><form id="newPost">...',
 			'newArticle': '',
 			'newImagePost': '',
 			'newImage': ''
@@ -21,7 +21,9 @@ class ContentEditor {
 		//	Manage and configure links.
 
 		//	Adding event listeners for actions.
-		this.postEvents();
+		this.postsSetup();
+
+		//	TODO:	Change these to 'setup' functions.
 		this.articleEvents();
 		this.imagePostEvents();
 		this.imageEvents();
@@ -30,11 +32,15 @@ class ContentEditor {
 	/*
 	*
 	* */
-	postEvents () {
-		$("#startPost").on('click', this.newPost);	//	Start making a new post.
-		$('#editPost').on('click', this.editPost);		//	Edit an existing post.
-		$('#savePost').on('click', this.savePost);		//	Save new or edited post.
-		$('#removePost').on('click', this.removePost);	//	Remove an existing post.
+	postsSetup () {
+		//	TODO: Add new buttons in post containers and columns.
+
+		//	Add the event handlers for posts actions.
+		//	NOTE:	Will not work in current content setup.
+		$("#newPost").on('click', this.newPost);
+		$('#editPost').on('click', this.editPost);
+		$('#savePost').on('click', this.savePost);
+		$('#removePost').on('click', this.deletePost);
 	}
 
 	/*
@@ -49,7 +55,7 @@ class ContentEditor {
 	*
 	* */
 	editPost () {
-		console.log('Edit post...');
+
 	}
 
 	/*
