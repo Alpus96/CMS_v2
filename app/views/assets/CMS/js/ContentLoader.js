@@ -15,10 +15,13 @@ class ContentLoader {
     *   @arguments      url:    The url with php get query.
     *   @returns        respose from backend or false on error.
     * */
-    read (type, category = false, id = false, amount = 0) {
+    read (type, category = false, amount = 0, id = false, asMD = false) {
+
+        this.error = '';
         let url;
         if (!category && id && amount === 0) {
             url = type+'?id='+id;
+            if (asMD) { url += '&asMD=true'; }
         } else if (!id && amount > 0 && category && category !== '') {
             url = type+'?category='+category+'&amount='+amount;
         } else {
@@ -26,16 +29,23 @@ class ContentLoader {
             return false;
         }
         //  Use the ajax class to send the request as a url.
-        AJAX.get(url, (err, res) => {
-            if (!err) {
-                //  If no error return the response.
-                return res;
-            } else {
-                //  On error set the error property
-                //  before returning false.
-                this.error = err;
-                return false;
-            }
+        return new Promise(resolve => {
+            AJAX.get(url, (err, res) => {
+                if (!err) {
+                    if (res.success) {
+                        //  If no error return the response.
+                        resolve(res.data);
+                    } else {
+                        this.error = res.error;
+                        resolve(false);
+                    }
+                } else {
+                    //  On error set the error property
+                    //  before returning false.
+                    this.error = err;
+                    resolve(false);
+                }
+            });
         });
     }
 
