@@ -4,11 +4,12 @@
     *           controllers in that order)
     *
     *   TODO:   Complete routes to define the structure and implementation of
-    *           the porject.
+    *           the project.
     *
     *   NOTE:   Confirm token here for paths where it is nessesary.
+    *   TODO:   Write function for confirming the user is active.
     *
-    *   TODO:   Add paths for miltiple item loading.
+    *   TODO:   Add paths for multiple item loading.
     * */
     class Routes
     {
@@ -88,13 +89,11 @@
             }
             else
             {
-                //  TODO:   Show 404 page with 5 sec redirect delay to /.
+                //  TODO:   Show 404 page with 5 sec redirect delay to '/'.
                 //  If the route was not defined above, serve the index page.
                 header('Content-Type: text/html');
                 echo file_get_contents(self::$index);
             }
-
-            //echo 'NOTE: GET has not yet been fully implemented.<br>';
         }
 
         function post ($url)
