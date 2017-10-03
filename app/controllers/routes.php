@@ -83,12 +83,23 @@
                     $test = (object) [
                         '1st' => $entry
                     ];
-                    
+
                     echo json_encode(['success' => true, 'data' => json_encode($test)]);
                 }
                 else if ($_GET['id'])
                 {
+                    if ($_GET['asMD']){
+                        $entry = (object)[
+                            'id' => 324,
+                            'content' => 'content text etc.',
+                            'timestamp' => time(),
+                            'edited' => true
+                        ];
 
+                        echo json_encode(['success' => true, 'data' => json_encode($entry)]);
+                    } else {
+                        echo json_encode(['success' => false]);
+                    }
                 }
                 else
                 {
