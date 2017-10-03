@@ -24,17 +24,21 @@
         private static $logName;
 
         function __construct () {
-            //  TODO:   Add this to a routes configuration json.
-            self::$index = dirname(dirname(__FILE__)).'/views/index.html';
-            self::$login = dirname(dirname(__FILE__)).'/views/assets/CMS/static/login.html';
-            self::$settings = dirname(dirname(__FILE__)).'/views/assets/CMS/static/settings.html';
-            self::$src_editor = "<link rel=\"stylesheet\" type=\"text/css\" href=\"/projects/CMS_v2/app/views/assets/CMS/static/style.css\"><script src=\"/projects/CMS_v2/app/views/assets/lib/cookies.js\"></script>\n<script src=\"/projects/CMS_v2/app/views/assets/CMS/js/CMS.js\"></script>\n<script src=\"/projects/CMS_v2/app/views/assets/CMS/js/ContentRequests.js\"></script>\n<script src=\"/projects/CMS_v2/app/views/assets/CMS/js/ContentHandler.js\"></script>";
-            self::$edit_menu = '<nav class="navbar navbar-inverse navbar-fixed-top">
-                <div class="container-fluid"><ul class="nav navbar-nav"><li><a href="settings">Settings</a></li><li class="active"><a href="edit">Edit</a></li></ul><button class="btn btn-danger navbar-btn pull-right" id="logout">Logga ut</button></div></nav><div class="nav-offset"></div>';
-
             require_once 'app/library/debug/logger.php';
             self::$logger = new logger();
             self::$logName = '_routesLog';
+
+            //  TODO:   Add this to a routes configuration json.
+
+            require_once 'app/library/socket/JSON_socket.php';
+            $JSON = new JSON_socket();
+            $config = $JSON->read('routesConfig');
+
+            self::$index = $config->index;
+            self::$login = $config->login;
+            self::$settings = $config->settings;
+            self::$src_editor = $config->src_editor;
+            self::$edit_menu = $config->edit_menu;
         }
 
         function get ($url)
