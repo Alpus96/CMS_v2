@@ -15,12 +15,16 @@
     	<!--   CSS    -->
     	<link rel="stylesheet" href="/projects/CMS_v2/app/views/assets/main/css/main.css">
 
-        <!--    OWN JS    -->
+        <!--    CMS    -->
+        <script src="/projects/CMS_v2/app/views/assets/lib/cookies.js"></script>
         <script src="/projects/CMS_v2/app/views/assets/lib/ajax.js"></script>
         <script src="/projects/CMS_v2/app/views/assets/CMS/js/contentLoader.js"></script>
-
-        <!--    CMS    -->
+        <script src="/projects/CMS_v2/app/views/assets/CMS/js/contentContainer.js"></script>
+        <script src="/projects/CMS_v2/app/views/assets/CMS/js/ContentEntry.js"></script>
         <!-- edit -->
+
+        <!--    OWN JS    -->
+        <script src="/projects/CMS_v2/app/views/assets/main/js/page.js"></script>
 
     	<!--    META SETTINGS    -->
     	<meta charset="UTF-8">
@@ -45,16 +49,33 @@
             </div>
 
             <div class="row">
-                <div class="col-md-6 posts" id="mainpage_posts">
-                </div>
+                <ul class="nav nav-tabs">
+                    <li class="active"><a data-toggle="tab" href="#posts1">Posts 1</a></li>
+                    <li><a data-toggle="tab" href="#posts2">Posts 2</a></li>
+                    <li><a data-toggle="tab" href="#posts3">Posts 3</a></li>
+                    <li><a data-toggle="tab" href="#posts4">Posts 4</a></li>
+                </ul>
 
-                <div class="col-md-6 articles" id="mainpage_articles">
-                </div>
+                <div class="tab-content">
+                    <div id="posts1" class="tab-pane fade in active">
+                        <h3>Posts 1</h3>
+                        <div class="contentContainer type_posts cat_first amount_10" id="main_posts"></div>
+                    </div>
 
-                <div class="col-md-6 imageposts" id="mainpage_imageposts">
-                </div>
+                    <div id="posts2" class="tab-pane fade">
+                        <h3>Posts 2</h3>
+                        <div class="contentContainer type_posts" id="secondary_posts"></div>
+                    </div>
 
-                <div class="col-md-6 images" id="mainpage_images">
+                    <div id="posts3" class="tab-pane fade">
+                        <h3>Posts 3</h3>
+                        <div class="contentContainer type_posts" id="some_posts"></div>
+                    </div>
+
+                    <div id="posts4" class="tab-pane fade">
+                        <h3>Posts 4</h3>
+                        <div class="contentContainer type_articles" id="main_articles"></div>
+                    </div>
                 </div>
             </div>
         </div>
