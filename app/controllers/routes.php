@@ -74,50 +74,17 @@
             //  Load the editable version of the index page.
             else if (substr($url, 0 , 5) === '/edit' && strlen($url) === 5)
             {
-                require_once 'app/models/user/token_model.php';
-                require_once 'app/library/socket/JSON_socket.php';
-                require_once 'app/library/socket/MySQL_socket.php';
-                require_once 'app/library/plugin/jwt/JWT.php';
-                require_once 'app/library/socket/activeUser_socket.php';
-
-                $cookie = json_decode($_COOKIE['token']);
-                $JWT = json_decode($cookie->value);
-
-                $token;
-                try { $token = new Token($JWT->id, $JWT->token, $JWT->timestamp); }
-                catch (Exception $e) { self::$logger->log(self::$logName, $e); }
-
-                $is_active;
-                if ($token)
-                {
-                    $active_users = new activeUser_socket();
-                    $is_active = $active_users->confirm($token);
-
-                    if ($is_active)
-                    {
-                        $index = file_get_contents(self::$index);
-                        $index = str_replace(
-                            "<!-- edit -->",
-                            self::$src_editor,
-                            $index
-                        );
-                        $index = str_replace(
-                            "<!-- edit_menu -->",
-                            self::$edit_menu,
-                            $index
-                        );
-                        //header('Content-Type: text/html');
-                        echo $index;
-                    }
+                if ($this->is_loggedin()) {
+                    $index = file_get_contents(self::$index);
+                    $index = str_replace("<!-- edit -->", self::$src_editor, $index);
+                    $index = str_replace("<!-- edit_menu -->", self::$edit_menu, $index);
+                    echo $index;
                 }
-                if (!$token || !$is_active) { header('location: /projects/CMS_v2/login'); }
             }
             //  Load the manage page.
             else if (substr($url, 0, 9) === '/settings' && strlen($url) === 9)
             {
-                //
-                header('Content-Type: text/html');
-                echo file_get_contents(self::$settings);
+                if ($this->is_loggedin()) { echo file_get_contents(self::$settings); }
             }
             else
             {
@@ -220,6 +187,7 @@
                 echo json_encode($res);
             }
             else { http_response_code(404); }
+
 			//	New post
 			//	Update post
 			//	Delete post
@@ -246,7 +214,32 @@
 
         private function is_loggedin()
         {
+            require_once 'app/models/user/token_model.php';
+            require_once 'app/library/socket/JSON_socket.php';
+            require_once 'app/library/socket/MySQL_socket.php';
+            require_once 'app/library/plugin/jwt/JWT.php';
+            require_once 'app/library/socket/activeUser_socket.php';
 
+            $cookie = json_decode($_COOKIE['token']);
+            $JWT = json_decode($cookie->value);
+
+            $token;
+            try { $token = new Token($JWT->id, $JWT->token, $JWT->timestamp); }
+            catch (Exception $e) { self::$logger->log(self::$logName, $e); }
+
+            $is_active = false;
+            if ($token)
+            {
+                $active_users = new activeUser_socket();
+                $is_active = $active_users->confirm($token);
+            }
+
+            if (!$token || !$is_active) {
+                header('location: /projects/CMS_v2/login');
+                return false;
+            } else {
+                return true;
+            }
         }
 
     }
