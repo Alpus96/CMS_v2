@@ -47,3 +47,8 @@
 }
 
 .form { color: #414343; }
+
+.editArea {
+    box-sizing: border-box;
+    resize: none;
+}
