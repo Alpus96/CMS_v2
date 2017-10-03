@@ -43,10 +43,9 @@ class ContentRequests {
         });
     }
 
-    update (type, content) {
+    update (content) {
         //  TODO: Confirm content is valid. (+has id)
-        const url = '/update'+type;
-        AJAX.post(url, content, (err, res) => {
+        AJAX.post('/update', content, (err, res) => {
             if (!err) {
                 if (res.success) {
                     return res;
@@ -54,7 +53,7 @@ class ContentRequests {
                     return false;
                 }
             } else {
-                //  What to do on error?
+                //  TODO:  What to do on error?
                 return false;
             }
         });
