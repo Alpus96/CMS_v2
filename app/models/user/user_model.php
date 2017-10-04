@@ -1,4 +1,7 @@
 <?php
+    /*
+    *   TODO:  Add comments.
+    * */
     class UserModel extends MySQL_socket
     {
         static private $logger;
@@ -24,6 +27,11 @@
             $this->identify($identifier);
         }
 
+        protected function identify ($identifier) {
+            if (is_int($identifier)) { $this->getById($identifier); }
+            else if (is_string($identifier)) { $this->getByUsername($identifier); }
+        }
+
         protected static function toObject() {
             if (self::$id && self::$username && self::$hash && self::$type) {
                 return (object) [
@@ -33,11 +41,6 @@
                     'type' => self::$type
                 ];
             } else { return false; }
-        }
-
-        protected function identify ($identifier) {
-            if (is_int($identifier)) { $this->getById($identifier); }
-            else if (is_string($identifier)) { $this->getByUsername($identifier); }
         }
 
         private function getById ($id) {
