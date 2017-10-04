@@ -11,6 +11,16 @@
     *
     *   TODO:   Add paths for multiple item loading.
     * */
+
+    require_once 'app/library/socket/JSON_socket.php';
+    require_once 'app/library/socket/MySQL_socket.php';
+
+    require_once 'app/library/plugin/jwt/JWT.php';
+    require_once 'app/models/user/token_model.php';
+    require_once 'app/library/socket/activeUser_socket.php';
+    require_once 'app/models/user/user_model.php';
+    require_once 'app/controllers/users.php';
+
     class Routes
     {
         private static $logger;
@@ -57,7 +67,11 @@
             //  Load the editable version of the index page.
             else if (substr($url, 0 , 5) === '/edit' && strlen($url) === 5)
             {
-                if ($this->is_loggedin()) {
+                $cookie = json_decode($_COOKIE['token']);
+                $JWT = json_decode($cookie->value);
+
+                $user = new User();
+                if ($user->is_active($JWT)) {
                     $index = file_get_contents(self::$index);
                     $index = str_replace("<!-- edit -->", self::$src_editor, $index);
                     $index = str_replace("<!-- edit_menu -->", self::$edit_menu, $index);
@@ -66,7 +80,12 @@
             }
             //  Load the manage page.
             else if (substr($url, 0, 9) === '/settings' && strlen($url) === 9)
-            { if ($this->is_loggedin()) { echo file_get_contents(self::$settings); } }
+            {
+                $cookie = json_decode($_COOKIE['token']);
+                $JWT = json_decode($cookie->value);
+
+                $user = new User();
+                if ($user->is_active($JWT)) { echo file_get_contents(self::$settings); } }
             //	Load post(s)
             else if (substr($url, 0, 5) === '/post')
             {
@@ -135,48 +154,21 @@
 
             if (substr($url, 0, 6) === '/login')
             {
-                require_once 'app/library/socket/JSON_socket.php';
-                require_once 'app/library/socket/MySQL_socket.php';
-
-                require_once 'app/models/user/user_model.php';
-                require_once 'app/controllers/new_users.php';
-
-                require_once 'app/library/plugin/jwt/JWT.php';
-                require_once 'app/models/user/token_model.php';
-                require_once 'app/library/socket/activeUser_socket.php';
-
                 $decoded_login = (object)[
                     'username' => base64_decode($data->username),
                     'password' => base64_decode($data->password)
                 ];
 
-                //  NOTE:   $is_user should ba an object with {id, username, hash, type}
-                $user = new User();
-                $is_user = $user->authenticate($decoded_login);
+                $user = new User($decoded_login->username);
+                $is_loggedin = $user->authenticate($decoded_login->password);
 
                 $res = (object)['success' => false];
 
-                if ($is_user)
-                {
-                    $JWT_handler = new activeUser_socket();
-                    $token = $JWT_handler->create($is_user);
-                    if ($token)
-                    {
-                        $res->success = true;
-                        $res->token = $token->toJSON();
-                    }
-                    else if (strpos($JWT_handler->error, 'already active'))
-                    {
-                        $res->error = 'You are already logged in.';
-                    }
-                    else
-                    {
-                        $res->error = 'An error occured, please try again later.';
-                    }
-                }
-                else
-                {
-                    $res->error = 'Wrong username or password.';
+                if ($is_loggedin) {
+                    $res->success = true;
+                    $res->token = $is_loggedin->toJSON();
+                } else {
+                    $res->error = $user->error;
                 }
 
                 header("Content-Type: application/json");
@@ -184,36 +176,11 @@
             }
             else if (substr($url, 0, 7) === '/logout')
             {
-                require_once 'app/library/socket/JSON_socket.php';
-                require_once 'app/library/socket/MySQL_socket.php';
-
-                require_once 'app/models/user/user_model.php';
-                require_once 'app/controllers/new_users.php';
-
-                require_once 'app/library/plugin/jwt/JWT.php';
-                require_once 'app/models/user/token_model.php';
-                require_once 'app/library/socket/activeUser_socket.php';
-
-                $res = (object)['success' => false, 'error' => 'Unable to parse token.'];
-                $token;
-                try
-                {
-                    $json = json_decode($data);
-                    $token = new Token($json->id, $json->token, $json->timestamp);
-                    $active_user = new activeUser_socket();
-                    $res->success = $active_user->delete($token);
-
-                    if (!$res->success)
-                    {
-                        $res->error = $active_user->error;
-                    }
-                    else
-                    {
-                        $res->success = true;
-                        unset($res->error);
-                    }
-                }
-                catch (Exception $e) { self::$logger->log(self::$logName, $e); }
+                $cookie = json_decode($_COOKIE['token']);
+                $JWT = json_decode($cookie->value);
+                
+                $user = new User();
+                $res = (object)['success' => $user->logout($JWT)];
 
                 header("Content-Type: application/json");
                 echo json_encode($res);
@@ -242,37 +209,6 @@
         private function req ($files = false)
         {
             return $files;
-        }
-
-        private function is_loggedin()
-        {
-            require_once 'app/models/user/token_model.php';
-            require_once 'app/library/socket/JSON_socket.php';
-            require_once 'app/library/socket/MySQL_socket.php';
-            require_once 'app/library/plugin/jwt/JWT.php';
-            require_once 'app/library/socket/activeUser_socket.php';
-
-            $cookie = json_decode($_COOKIE['token']);
-            $JWT = json_decode($cookie->value);
-
-            $token;
-            //  TODO: handle not instancing a token with invalid parameters.
-            try { $token = new Token($JWT->id, $JWT->token, $JWT->timestamp); }
-            catch (Exception $e) { self::$logger->log(self::$logName, $e); }
-
-            $is_active = false;
-            if ($token)
-            {
-                $active_users = new activeUser_socket();
-                $is_active = $active_users->confirm($token);
-            }
-
-            if (!$token || !$is_active) {
-                header('location: /projects/CMS_v2/login');
-                return false;
-            } else {
-                return true;
-            }
         }
 
     }

@@ -1,137 +1,97 @@
 <?php
-    class User_Model extends MySQL_Socket
+    class UserModel extends MySQL_socket
     {
         static private $logger;
         static private $logName;
-        /**
-        *   @desc   This function is run when a new instance of
-        *           this class is created, but only within a child
-        *           class. It creates an instance of the parent
-        *           class within itself.
-        */
-        protected function __construct()
-        {
+
+        private static $getByUsernameStmt;
+        private static $getByIdStmt;
+
+        private static $id;
+        private static $username;
+        private static $hash;
+        private static $type;
+
+        protected function __construct ($identifier) {
             parent::__construct();
+
             self::$logger = new logger();
-            self::$logName = '_userModel_errorLog';
+            self::$logName = '_userModel_log';
+
+            self::$getByUsernameStmt = 'SELECT * FROM USERS WHERE USERNAME = ? LIMIT 1';
+            self::$getByIdStmt = 'SELECT * FROM USERS WHERE ID = ? LIMIT 1';
+
+            if (is_int($identifier)) { $this->getById($identifier); }
+            else if (is_string($identifier)) { $this->getByUsername($identifier); }
+            else { return false; }
         }
 
-        /**
-        *   @desc   This function gets the information of a user in
-        *           the database if the given username is registered.
-        */
-        protected function getByUsername ($username)
-        {
-            //  Get the database connection from the parent.
-            $mysql = parent::connect();
+        protected static function toObject() {
+            if (self::$id && self::$username && self::$hash && self::$type) {
+                return (object) [
+                    'id' => self::$id,
+                    'username' => self::$username,
+                    'hash' => self::$hash,
+                    'type' => self::$type
+                ];
+            } else { return false; }
+        }
 
-            if (!$mysql->error)
-            {
-                //  Prepare the query.
-                if ($query = $mysql->connection->prepare('SELECT * FROM USERS WHERE USERNAME = ? LIMIT 1'))
-                {
-                    //  Bind the passed username to the query and run it.
-                    $query->bind_param('s', $username);
+        private function getById ($id) {
+            $mysql = parent::connect();
+            if (!$mysql->error) {
+                if ($query = $mysql->connection->prepare(self::$getByIdStmt)) {
+                    $query->bind_param('i', $id);
                     $query->execute();
 
-                    //  Fetch the result.
-                    $query->bind_result($id, $name, $hash, $type);
-                    while ($query->fetch())
-                    {
-                        $user = (object)[
-                            'id' => $id,
-                            'username' => $name,
-                            'hash' => $hash,
-                            'type' => $type
-                        ];
+                    $query->bind_result($id, $username, $hash, $type);
+                    while ($query->fetch()) {
+                        self::$id = (integer)$id;
+                        self::$username = $username;
+                        self::$hash = $hash;
+                        self::$type = $type;
                     }
 
-                    //  Close the query and the connection before returning
-                    //  the result.
                     $query->close();
                     $mysql->connection->close();
-                    return $user ? $user : false;
+                    return ;
                 } else {
-                    self::$logger->log(
-                        self::$logName,
-                        'unable to prepare query.'
-                    );
+                    $this->error = 'Unable to prepare get by id query.';
+                    self::$logger->log(self::$logName, $this->error);
                     return false;
                 }
-            }
-            else
-            {
-                //  If preparing the query was unsuccessful close the connection
-                //  and return false.
-                //$mysql->connection->close();
+            } else {
+                $this->error = 'Unable to connect to database, see MySQL_socket log for details.';
+                self::$logger->log(self::$logName, $this->error);
                 return false;
             }
         }
 
-        /**
-        *   @desc   This function changes the password for the specified
-        *           user to the given password.
-        */
-        protected function changePassword ($activeUser, $newPassword)
-        {
-            //  Get the database connection from the parent.
-            $connection = parent::connect();
-            //  Prepare the query.
-            if ($query = $connection->prepare('UPDATE users SET password = ? WHERE username = ?'))
-            {
-                //  Bind the new password and the given username to the
-                //  query and run it.
-                $query->bind_param('ss', $newPassword, $activeUser);
-                $query->execute();
+        private function getByUsername ($username) {
+            $mysql = parent::connect();
+            if (!$mysql->error) {
+                if ($query = $mysql->connection->prepare(self::$getByUsernameStmt)) {
+                    $query->bind_param('s', $username);
+                    $query->execute();
 
-                //  Fetch the result.
-                //  NOTE: Uneccessary? Could be true or false?
-                $query->bind_result($success);
-                $query->fetch();
+                    $query->bind_result($id, $username, $hash, $type);
+                    while ($query->fetch()) {
+                        self::$id = $id;
+                        self::$username = $username;
+                        self::$hash = $hash;
+                        self::$type = $type;
+                    }
 
-                //  Close the query and the database connection before
-                //  retuning the result.
-                $query->close();
-                $connection->close();
-                return $success;
+                    $query->close();
+                    $mysql->connection->close();
+                } else {
+                    $this->error = 'Unable to prepare get by username query.';
+                    self::$logger->log(self::$logName, $this->error);
+                }
+            } else {
+                $this->error = 'Unable to connect to database, see MySQL_socket log for details.';
+                self::$logger->log(self::$logName, $this->error);
             }
-            //  If preparing the query was unsuccessful close the
-            //  connection and return false.
-            $connection->close();
-            return false;
-        }
-
-        /**
-        *   @desc   This function chnges the username of the
-        *           specified user to the given username.
-        */
-        protected function changeUsername ($activeUser, $newUsername)
-        {
-            //  Get the database connection from the parent.
-            $connection = parent::connect();
-            //  Prepare the query.
-            if ($query = $connection->prepare('UPDATE users SET username = ? WHERE username = ?'))
-            {
-                //  Bind the new username and the old username to
-                //  the query and run it.
-                $query->bind_param('ss', $newUsername, $activeUser);
-                $query->execute();
-
-                //  Fetch the result.
-                //  NOTE: Uneccessary? Could be true or false?
-                $query->bind_result($success);
-                $query->fetch();
-
-                //  Close the query and the connection before returning
-                //  the result.
-                $query->close();
-                $connection->close();
-                return $success;
-            }
-            //  If preparing the query was unsuccessful close the connection
-            //  and return false.
-            $connection->close();
-            return false;
         }
 
     }
