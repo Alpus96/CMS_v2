@@ -28,18 +28,24 @@ class ContentRequests {
 
     readMD (type, id) {
         //  TODO: Confirm type and id is valid.
-        const url = '/read'+type+'?id='+id;
-        AJAX.post(url, content, (err, res) => {
-            if (!err) {
-                if (res.success) {
-                    return res;
+        const url = ''+type+'?id='+id+'&asMD=true';
+        return new Promise(resolve => {
+            AJAX.get(url, (err, res) => {
+                if (!err) {
+                    if (res.success) {
+                        //  If no error return the response.
+                        resolve(res.data);
+                    } else {
+                        this.error = res.error;
+                        resolve(false);
+                    }
                 } else {
-                    return false;
+                    //  On error set the error property
+                    //  before returning false.
+                    this.error = err;
+                    resolve(false);
                 }
-            } else {
-                //  What to do on error?
-                return false;
-            }
+            });
         });
     }
 
