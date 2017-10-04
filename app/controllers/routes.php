@@ -178,7 +178,7 @@
             {
                 $cookie = json_decode($_COOKIE['token']);
                 $JWT = json_decode($cookie->value);
-                
+
                 $user = new User();
                 $res = (object)['success' => $user->logout($JWT)];
 

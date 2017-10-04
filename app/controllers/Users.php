@@ -5,7 +5,7 @@
         static private $logger;
         static private $logName;
 
-        function __construct ($identifier = 0) {
+        function __construct ($identifier = null) {
             parent::__construct($identifier);
 
             self::$logger = new logger();
@@ -23,23 +23,26 @@
         }
 
         function is_active ($token) {
-            if (property_exists($token, 'id') && property_exists($token, 'token') && property_exists($token, 'timestamp')) {
-                $token = new Token($token->id, $token->token, $token->timestamp);
-
-                $is_active = false;
-                if ($token)
-                {
-                    $active_users = new activeUser_socket();
-                    $is_active = $active_users->confirm($token);
-                }
-
-                if ($token && $is_active) {
-                    return true;
-                }
+            if (!$token || !property_exists($token, 'id') || !property_exists($token, 'token') || !property_exists($token, 'timestamp')) {
+                header('location: /projects/CMS_v2/login');
+                return false;
             }
 
-            header('location: /projects/CMS_v2/login');
-            return false;
+            $token = new Token($token->id, $token->token, $token->timestamp);
+
+            $is_active = false;
+            if ($token)
+            {
+                $active_users = new activeUser_socket();
+                $is_active = $active_users->confirm($token);
+            }
+
+            if ($token && $is_active) {
+                return true;
+            } else {
+                header('location: /projects/CMS_v2/login');
+                return false;
+            }
         }
 
         function logout ($token) {

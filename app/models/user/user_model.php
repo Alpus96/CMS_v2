@@ -12,7 +12,7 @@
         private static $hash;
         private static $type;
 
-        protected function __construct ($identifier) {
+        protected function __construct ($identifier = null) {
             parent::__construct();
 
             self::$logger = new logger();
@@ -21,9 +21,7 @@
             self::$getByUsernameStmt = 'SELECT * FROM USERS WHERE USERNAME = ? LIMIT 1';
             self::$getByIdStmt = 'SELECT * FROM USERS WHERE ID = ? LIMIT 1';
 
-            if (is_int($identifier)) { $this->getById($identifier); }
-            else if (is_string($identifier)) { $this->getByUsername($identifier); }
-            else { return false; }
+            $this->identify($identifier);
         }
 
         protected static function toObject() {
@@ -35,6 +33,11 @@
                     'type' => self::$type
                 ];
             } else { return false; }
+        }
+
+        protected function identify ($identifier) {
+            if (is_int($identifier)) { $this->getById($identifier); }
+            else if (is_string($identifier)) { $this->getByUsername($identifier); }
         }
 
         private function getById ($id) {
@@ -54,16 +57,13 @@
 
                     $query->close();
                     $mysql->connection->close();
-                    return ;
                 } else {
                     $this->error = 'Unable to prepare get by id query.';
                     self::$logger->log(self::$logName, $this->error);
-                    return false;
                 }
             } else {
                 $this->error = 'Unable to connect to database, see MySQL_socket log for details.';
                 self::$logger->log(self::$logName, $this->error);
-                return false;
             }
         }
 
