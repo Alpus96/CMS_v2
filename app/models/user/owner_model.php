@@ -2,15 +2,17 @@
     /**
      *  TODO: Revew code.
      */
-    class Owner_Model extends MySQL_Socket
+    class Owner_Model extends UserModel
     {
         /**
         *   @desc   The __construct function is run when an instance
         *           of this class is made. It initiates an instance
         *           of the parent class.
         */
-        protected function __construct()
-        { parent::__construct(); }
+        protected function __construct($user) {
+            parent::__construct($user::toObject()->id);
+            if ($user::toObject()->type != 1) { return false; }
+        }
 
         /**
         *   @desc   This function returns the username, locked status
@@ -19,7 +21,7 @@
         protected function getAllUsers ()
         {
             //  Connect to the database using the parent class.
-            $connection = parent::connect();
+            $connection = MySQL_socket::connect();
             //  Try preparing the query.
             //  NOTE: No need to prepare, static query!
             if ($query = $connection->prepare('SELECT username, locked, userType FROM users'))
