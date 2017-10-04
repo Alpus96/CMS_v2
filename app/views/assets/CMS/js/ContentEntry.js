@@ -62,8 +62,12 @@ class ContentEntry {
             this.abort();
             $('#'+this.type+'_'+this.id).append('<p id="contentMsg" class="alert alert-success">Innehållet har uppdaterats!</p>');
             //  Show success message for 5sec.
+            setTimeout(() => {$('#contentMsg').remove()}, 5000);
         } else {
             //  Show error message for 5sec.
+            this.abort();
+            $('#'+this.type+'_'+this.id).append('<p id="contentMsg" class="alert alert-warning">Innehållet har inte uppdaterats!</p>');
+            setTimeout(() => {$('#contentMsg').remove()}, 5000);
         }
     }
 
