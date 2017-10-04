@@ -29,8 +29,7 @@ class ContentEntry {
     newEditListner () { $('#'+this.type+'_'+this.id).on('click', () => { this.startEdit(); }); }
 
     async startEdit () {
-        const loader = new ContentRequest();
-        const contentJsonAsMD = await loader.read(this.type, false, 0, this.id, true);
+        const contentJsonAsMD = await contentRequest.readMD(this.type, this.id);
         const currentContent = JSON.parse(contentJsonAsMD);
         //  TODO: Complete form and fill with current content.
         const editForm = '<div id="'+this.type+'_'+this.id+'"><div class="form-group"><textarea class="form-control editArea" autofocus>'+currentContent.content+'</textarea></div><div class="btn-group pull-right"><input type="button" class="btn btn-danger" value="Ta bort" id="editDelete"><input type="button" class="btn btn-warning" value="Avbryt" id="editAbort"><input type="button" class="btn btn-success" value="Spara" id="editSave"></div></div>';
@@ -59,8 +58,7 @@ class ContentEntry {
 
     update () {
         const content = {id: this.id, type: this.type, content: $('textarea.editArea').val()};
-        const cR = new contentRequest();
-        if (cp.update(content)) {
+        if (contentRequest.update(content)) {
             this.abort();
             $('#'+this.type+'_'+this.id).append('<p id="contentMsg" class="alert alert-success">Innehållet har uppdaterats!</p>');
             //  Show success message for 5sec.
