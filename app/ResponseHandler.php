@@ -67,6 +67,7 @@ class ResponseHandler {
                     $settings = file_get_contents(self::$config->settings);
                     $admin = new Admin($token);
                     if ($admin->is_admin()) {
+                        $settings = str_replace("<!--  admin_scripts  -->", self::$config->admin_scripts, $settings);
                         $settings = str_replace("<!--  admin_menu  -->", self::$config->admin_menu, $settings);
                         $settings = str_replace("<!--  admin_tabs  -->", self::$config->admin_tabs, $settings);
                     }
@@ -95,27 +96,27 @@ class ResponseHandler {
                 $token ? 'token' : 'error' => $token ? $token : 'Fel användarnamn eller lösenord!'
             ];
             echo json_encode($res);
-        }
-        else if (self::$url === '/logout') {
-            $res = (object)['success' => false];
+        } else if (self::$url === '/logout') {
             if ($token) {
                 $user = new User($token);
-                $res->success = $user->logout();
+                $user->getToken() ? $user->logout() : null;
             }
+            $res = (object)['success' => true];
             echo json_encode($res);
-        }
-        else if (self::$url === '/setPW') {
+        } else if (self::$url === '/setPW') {
             $newPass = base64_decode($data->password);
             $user = new User($token);
             echo json_encode((object)['success' => $user->newPassword($newPass)]);
-        }
-        else if (self::$url === '/getUsers') {
-
+        } else if (self::$url === '/getUsers') {
+            $admin = new Admin($token);
+            $users = $admin->getAllUsers();
+            $res = (object)[
+                'success' => $users ? true : false,
+                 'data' => $users
+            ];
+            echo json_encode($res);
         }
         else if (self::$url === '/newUser') {
-
-        }
-        else if (self::$url === '/setUserPW') {
 
         }
         else if (self::$url === '/toggleUserLock') {
