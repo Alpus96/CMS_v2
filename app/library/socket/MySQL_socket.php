@@ -85,11 +85,8 @@
             else
             {
                 //  If there was an error handel it.
-                $this->error = 'Error connecting to the MySQL database; '.mysqli_connect_error();
-                self::$logger->log(
-                    self::$logName,
-                    $this->error
-                );
+                $msg = 'Error connecting to the MySQL database; '.$connection->connect_error;
+                self::$logger->log(self::$logName, $msg);
 
                 //  Then return the object with error set to true.
                 return (object) [

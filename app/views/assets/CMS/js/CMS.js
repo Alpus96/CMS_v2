@@ -1,87 +1,57 @@
-/*
-*   TODO:   Write comments and review code.
-* */
 class CMS {
     constructor () {
-        if (window.location.href.indexOf('/login') != -1) {
-            this.addLoginListner();
-        } else if (window.location.href.indexOf('/edit') != -1 || window.location.href.indexOf('/settings') != -1) {
-            if (!cookie.read('token')) { window.location.href = '/projects/CMS_v2/login'; }
-            //  NOTE: Logout button should be added in backend.
-            this.addLogoutListner();
-        } else { console.warn('CMS class not applicable or has not been implemented.'); }
+        this.contentContainerIDs = [];
+        this.contentContainers = [];
+
+        this.getContainerIDs();
+        this.initalizeContainers();
+        this.loadAll();
     }
 
-    addLoginListner () {
-        $('form#login').submit('submit', (event) => {
-            event.preventDefault();
-            this.loginRequest();
+    getContainerIDs () {
+        $.each($('div.contentContainer'), (i, obj) => {
+            let skip = false;
+            for (let existing of this.contentContainerIDs) {
+                if (existing == obj.id) {
+                    skip = true;
+                }
+            }
+            if (!skip) { this.contentContainerIDs.push(obj.id); }
+            else { console.warn('Skipped content container with duplicate id. ("'+obj.id+'")'); }
         });
     }
 
-    addLogoutListner () {
-        $('button#logout').on('click', this.logoutRequest);
-    }
-
-    loginRequest () {
-        //  Get the data from the login form.
-        //  NOTE: window.btoa base64 encodes strings to not send in clear text.
-        const form_data = {
-            username : window.btoa($('#username').val()),
-            password : window.btoa($('#password').val())
-        };
-
-        //  Send the login request.
-        //  TODO:   Change the url on relese.
-        AJAX.post('/projects/CMS_v2/login', form_data, (err, res) => {
-            //  NOTE:   Backend gives res null instead of error code.
-            if (!err) {
-                if (res.success) {
-                    cookie.create('token', res.token);
-                    window.location.href = 'edit';
-                } else {
-                    if ($('p#msg-text').hasClass('hidden'))
-                    { $('p#msg-text').removeClass('hidden'); }
-
-                    if ($('p#msg-text').hasClass('alert-danger'))
-                    { $('p#msg-text').removeClass('alert-danger'); }
-
-                    $('p#msg-text').addClass('alert-warning');
-                    $('p#msg-text').text(
-                        'Fel användarnamn eller lösenord!'
-                    );
+    initalizeContainers () {
+        for (let id of this.contentContainerIDs) {
+            let classes = $('#'+id).attr('class').split(/\s+/);
+            let pars = {type: '', category: '', amount: 0};
+            //  NOTE:  type = 'type_*', category = 'cat_*', amount = 'amount_*'
+            for (let clname of classes) {
+                if (clname == 'contentContainer') { continue; }
+                if (clname.substr(0, 5) === 'type_') {
+                    pars.type = clname.substring('type_'.length);
+                } else if (clname.substr(0, 4) === 'cat_') {
+                    pars.category = clname.substring('cat_'.length);
+                } else if (clname.substr(0, 7) === 'amount_') {
+                    pars.amount = clname.substring('amount_'.length);
                 }
-            } else {
-                if ($('p#msg-text').hasClass('hidden'))
-                { $('p#msg-text').removeClass('hidden'); }
-
-                if ($('p#msg-text').hasClass('alert-warning'))
-                { $('p#msg-text').removeClass('alert-warning'); }
-
-                $('p#msg-text').addClass('alert-danger');
-                $('p#msg-text').text(
-                    'Fel uppstod, försök igen senare!'
+            }
+            if (pars.type != '' && pars.category != '' && pars.amount > 0) {
+                this.contentContainers.push(
+                    new ContentContainer(id, pars.type, pars.category, pars.amount)
                 );
+            } else {
+                console.warn('insufficient info for conatiner "'+id+'".');
             }
-        });
+        }
     }
 
-    logoutRequest () {
-        AJAX.post('/projects/CMS_v2/logout', cookie.read('token'), (err, res) => {
-            console.log(res);
-            if (!err) {
-                if (res.success) {
-                    cookie.delete('token');
-                    window.location.href = '/projects/CMS_v2/';
-                } else {
-
-                }
-            } else {
-                console.log(err);
-            }
-        });
+    loadAll () {
+        for (let container of this.contentContainers) {
+            container.loadContent();
+        }
     }
 
 }
 
-$(document).ready(() => { const cms = new CMS(); });
+$(document).ready(() => { const page = new CMS(); })

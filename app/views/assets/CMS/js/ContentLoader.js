@@ -16,7 +16,6 @@ class ContentLoader {
     *   @returns        respose from backend or false on error.
     * */
     read (type, category = false, amount = 0, id = false) {
-
         this.error = '';
         let url;
         if (!category && id && amount === 0) {
