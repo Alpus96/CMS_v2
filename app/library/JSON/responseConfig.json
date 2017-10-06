@@ -4,7 +4,8 @@
     "settings": "app/views/assets/CMS/html/settings.html",
     "fourOfour": "app/views/assets/CMS/html/fourOfour.html",
     "src_editor": "<link rel=\"stylesheet\" type=\"text/css\" href=\"/projects/CMS_v2/app/views/assets/CMS/css/style.css\">\n<script src=\"/projects/CMS_v2/app/views/assets/CMS/js/UserHandler.js\"></script>\n<script src=\"/projects/CMS_v2/app/views/assets/CMS/js/ContentRequests.js\"></script>\n",
-    "edit_menu": "<nav class=\"navbar navbar-inverse navbar-fixed-top\"><div class=\"container-fluid\"><ul class=\"nav navbar-nav\"><li class=\"active\"><a href=\"edit\">Redigera</a></li><li><a href=\"settings\">Inställningar</a></li></ul><button class=\"btn btn-danger navbar-btn pull-right\" id=\"logout\">Logga ut</button></div></nav><div class=\"nav-offset\"></div>",
-    "admin_menu": "<li><a href=\"#users\" data-toggle=\"tab\">Användare</a></li><li><a href=\"#config\" data-toggle=\"tab\">Konfiguration</a></li>",
+    "edit_menu": "<nav class=\"navbar navbar-inverse navbar-fixed-top\"><div class=\"container-fluid\"><ul class=\"nav navbar-nav\"><li class=\"active\"><a href=\"edit\">Redigera</a></li><li><a href=\"settings\">Alternativ</a></li></ul><button class=\"btn btn-danger navbar-btn pull-right\" id=\"logout\">Logga ut</button></div></nav><div class=\"nav-offset\"></div>",
+    "admin_scripts": "<script src=\"/projects/CMS_v2/app/views/assets/CMS/js/AdminHandler.js\"></script>",
+    "admin_menu": "<li><a href=\"#users\" data-toggle=\"tab\">Användare</a></li><li><a href=\"#config\" data-toggle=\"tab\">Inställningar</a></li>",
     "admin_tabs": ""
 }
