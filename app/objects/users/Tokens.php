@@ -46,8 +46,9 @@
                 $connObj = parent::connect();
                 if (!$connObj->error) {
                     $connection = $connObj->connection;
-                    $queryStr = self::$id ? str_replace('?', self::$id, self::$deleteTokenQuery):'';
-                    if ($queryStr != '') { return $connection->query($queryStr); }
+                    $queryStr = str_replace('?', self::$id, self::$deleteTokenQuery);
+                    $connection->query($queryStr);
+                    return self::active(self::$username);
                 }
             }
             return false;
