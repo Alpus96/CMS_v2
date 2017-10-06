@@ -8,14 +8,9 @@
         static private $logger;
         static private $logName;
 
-        static private $id;
-        static private $username;
-        static private $hash;
-        static private $type;
-        static private $locked;
-
         static private $getQuery;
         static private $token;
+        static private $user;
         static private $setPWQuery;
 
         function __construct ($identifier) {
@@ -27,8 +22,12 @@
             self::$getQuery = 'SELECT * FROM USERS WHERE USERNAME = ?';
             self::$setPWQuery = 'UPDATE USERS SET HASH = ? WHERE ID = ?';
 
-            if (is_string($identifier)) { self::$token = new Token($identifier); }
-            else if (is_object($identifier)) { self::getValidUser($identifier); }
+            if (is_string($identifier)) {
+                self::$token = new Token($identifier);
+                if (self::$token->toJSON()) { self::$user = self::$token->decodedToken(); }
+            } else if (is_object($identifier)) {
+                self::getValidUser($identifier);
+            }
         }
 
         function getToken() {
@@ -43,12 +42,11 @@
             if (!is_string($password) || strlen($password) < 6) { return false; }
             if (self::$token->toJSON()) {
                 $password = password_hash($password, PASSWORD_DEFAULT);
-                self::$id = self::$token->decodedToken()->id;
                 $connObj = parent::connect();
                 if (!$connObj->error) {
                     $connection = $connObj->connection;
                     if ($query = $connection->prepare(self::$setPWQuery)) {
-                        $query->bind_param('si', $password, self::$id);
+                        $query->bind_param('si', $password, self::$user->id);
                         $query->execute();
                         $success = $query->affected_rows > 0 ? true : false;
                         $query->close();
@@ -72,13 +70,21 @@
                     $query->bind_param('s', $identifier->username);
                     $query->execute();
                     $query->bind_result(
-                        self::$id,
-                        self::$username,
-                        self::$hash,
-                        self::$type,
-                        self::$locked
+                        $id,
+                        $username,
+                        $hash,
+                        $type,
+                        $locked
                     );
-                    $query->fetch();
+                    while ($query->fetch()) {
+                        self::$user = (object)[
+                            'id' => $id,
+                            'username' => $username,
+                            'hash' => $hash,
+                            'type' => $type,
+                            'locked' => $locked
+                        ];
+                    }
                     $query->close();
                     $connection->close();
                 } else { $connection->close(); }
@@ -88,16 +94,9 @@
                 throw new Exception($msg);
             }
 
-            if (isset(self::$id) && isset(self::$username) && isset(self::$hash) && isset(self::$type) && isset(self::$locked)) {
-                if (password_verify($identifier->password, self::$hash)) {
-                    $userObj = (object) [
-                        'id' => self::$id,
-                        'username' => self::$username,
-                        'hash' => self::$hash,
-                        'type' => self::$type,
-                        'locked' => self::$locked
-                    ];
-                    self::$token = new Token($userObj);
+            if (isset(self::$user->id) && isset(self::$user->username) && isset(self::$user->hash) && isset(self::$user->type) && isset(self::$user->locked)) {
+                if (password_verify($identifier->password, self::$user->hash)) {
+                    self::$token = new Token(self::$user);
                     return;
                 }
             }
