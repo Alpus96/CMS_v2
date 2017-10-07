@@ -117,16 +117,34 @@ class ResponseHandler {
             echo json_encode($res);
         }
         else if (self::$url === '/newUser') {
-
-        }
-        else if (self::$url === '/toggleUserLock') {
-
-        }
-        else if (self::$url === '/setUserType') {
-
+            $res = (object)['success' => false];
+            if (property_exists($data, 'username') && property_exists($data, 'password') && property_exists($data, 'type')) {
+                $admin = new Admin($token);
+                $res->success = $admin->createUser($data);
+            }
+            echo json_encode($res);
+        } else if (self::$url === '/toggleUserLock') {
+            $res = (object)['success' => false];
+            if (property_exists($data, 'username')) {
+                $admin = new Admin($token);
+                $res->success = $admin->toggleLockedUser($data->username);
+            }
+            echo json_encode($res);
+        } else if (self::$url === '/setUserType') {
+            $res = (object)['success' => false];
+            if (property_exists($data, 'username') && property_exists($data, 'type')) {
+                $admin = new Admin($token);
+                $res->success = $admin->changeUserType($data->username, $data->type);
+            }
+            echo json_encode($res);
         }
         else if (self::$url === '/deleteUser') {
-
+            $res = (object)['success' => false];
+            if (property_exists($data, 'username')) {
+                $admin = new Admin($token);
+                $res->success = $admin->deleteUser($data->username);
+            }
+            echo json_encode($res);
         }
         else if (self::$url === '/DBCredentials') {
 

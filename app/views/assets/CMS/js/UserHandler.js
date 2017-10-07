@@ -74,11 +74,10 @@ class UserHandler {
 
     logoutRequest () {
         AJAX.post('/projects/CMS_v2/logout', cookie.read('token'), (err, res) => {
-            console.log(res);
             if (!err) {
                 if (res.success) {
                     cookie.delete('token');
-                    window.location.href = '/projects/CMS_v2/';
+                    window.location.href = '/projects/CMS_v2/login';
                 } else {
 
                 }

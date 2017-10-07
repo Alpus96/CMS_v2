@@ -76,7 +76,8 @@
                         $type,
                         $locked
                     );
-                    while ($query->fetch()) {
+                    $query->fetch();
+                    if (!$locked) {
                         self::$user = (object)[
                             'id' => $id,
                             'username' => $username,

@@ -97,9 +97,8 @@
 
 .nav-offset {
     width: 100%;
-    width: 100vw;
-    height:1px;
-    padding-top: 40px;
+    min-height: 1px;
+    margin-top: 40px;
 }
 
 .wrap {

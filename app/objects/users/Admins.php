@@ -14,7 +14,9 @@
         static private $is_admin;
 
         static private $getUsersQuery;
+        static private $isUserQuery;
         static private $insertUserQuery;
+        static private $changeUserTypeQuery;
         static private $toggleLockedQuery;
         static private $deleteUserQuery;
 
@@ -29,9 +31,11 @@
             self::$logName = '_admin_errorLog';
 
             self::$getUsersQuery = 'SELECT USERNAME, TYPE, LOCKED FROM USERS';
+            self::$isUserQuery = 'SELECT ID FROM USERS WHERE USERNAME = ?';
             self::$insertUserQuery = 'INSERT INTO USERS SET USERNAME = ?, HASH = ?, TYPE = ?';
+            self::$changeUserTypeQuery = 'UPDATE USERS SET TYPE = ? WHERE USERNAME = ?';
             self::$toggleLockedQuery = 'UPDATE USERS SET LOCKED = NOT LOCKED WHERE USERNAME = ?';
-            self::$deleteUserQuery = 'DELETE * FROM USERS WHERE USERNAME = ?';
+            self::$deleteUserQuery = 'DELETE FROM USERS WHERE USERNAME = ?';
         }
 
         function is_admin () { return self::$is_admin; }
@@ -46,103 +50,101 @@
                     $query->bind_result($username, $type, $locked);
                     $users = (array)[];
                     while ($query->fetch()) {
-                        $user = (object)[
-                            'username' => $username,
-                            'type' => $type,
-                            'locked' => $locked
-                        ];
-                        array_push($users, $user);
+                        if ($username != self::$user->username && $username != 'admin') {
+                            $user = (object)[
+                                'username' => $username,
+                                'type' => $type,
+                                'locked' => $locked
+                            ];
+                            array_push($users, $user);
+                        }
                     }
                     $query->close();
                     $connection->close();
                     return $users;
                 }
                 $connection->close();
-            } else {
-                $msg = 'Unable to connect to the database : '.$connObj->connection;
-                self::$logger->log(self::$logName, $msg);
-                throw new Exception($msg);
-            }
+            } else { self::databaseError($connObj->connection); }
             return false;
         }
 
         function createUser ($newUser) {
             if (!self::$is_admin) { return false; }
-            if (!property_exists($newUser, 'username') || !property_exists($newUser, 'passowrd') || !property_exists($newUser, 'type')) { return false; }
-            $newUser->hash = password_hash($newUser->password, PASSWORD_DEFAULT);
-            $connObj = parent::connect();
-            if (!$connObj->error) {
-                $connection = $connObj->connection;
-                if ($query = $connection->prepare(self::$insertUserQuery)) {
-                    $query->bind_param('ssi', $newUser->username, $newUser->hash, $newUser->type);
-                    $query->execute();
-                    $success = $query->affected_rows > 0 ? true : false;
-                    $query->close();
-                    $connection->close();
-                    return $success;
-                } else { $connection->close(); }
-            } else {
-                $msg = 'Unable to connect to the database : '.$connObj->connection;
-                self::$logger->log(self::$logName, $msg);
-                throw new Exception($msg);
-            }
-            return false;
-        }
-
-        function toggleLockedUser ($username) {
-            //  TODO:  Check not own username.
-            if (!self::$is_admin) { return false; }
-            if (!is_string($username) || strlen($username) === 0) { return false; }
-            $connObj = parent::connect();
-            if (!$connObj->error) {
-                $connection = $connObj->connection;
-                if ($query = $connection->prepare(self::$toggleLockedQuery)) {
-                    $query->bind_param('s', $username);
-                    $query->execute();
-                    return $query->affected_rows > 0 ? true : false;
-                } else { $connection->close(); }
-            } else {
-                $msg = 'Unable to connect to the database : '.$connObj->connection;
-                self::$logger->log(self::$logName, $msg);
-                throw new Exception($msg);
+            if (!property_exists($newUser, 'username') || !property_exists($newUser, 'password') || !property_exists($newUser, 'type')) { return false; }
+            if (!self::isUser($newUser->username)) {
+                $newUser->hash = password_hash($newUser->password, PASSWORD_DEFAULT);
+                $connObj = parent::connect();
+                if (!$connObj->error) {
+                    $connection = $connObj->connection;
+                    if ($query = $connection->prepare(self::$insertUserQuery)) {
+                        $query->bind_param('ssi', $newUser->username, $newUser->hash, $newUser->type);
+                        $query->execute();
+                        $success = $query->affected_rows != -1 ? true : false;
+                        $query->close();
+                        $connection->close();
+                        return $success;
+                    } else { $connection->close(); }
+                } else { self::databaseError($connObj->connection); }
             }
             return false;
         }
 
         function changeUserType ($username, $type) {
             if (!self::$is_admin) { return false; }
-            if (!is_string($username) || !is_numeric($type)) { return false; }
-            $connObj = parent::connect();
-            if (!$connObj->error) {
-                $connection = $connObj->connection;
-                if ($query = $connection->prepare(self::$toggleLockedQuery)) {
-                    $query->bind_param('si', $username, $type);
-                    $query->execute();
-                    return $query->affected_rows > 0 ? true : false;
-                } else { $connection->close(); }
-            } else {
-                $msg = 'Unable to connect to the database : '.$connObj->connection;
-                self::$logger->log(self::$logName, $msg);
-                throw new Exception($msg);
+            if (!is_string($username) || strlen($username) === 0 || $username === self::$user->username || $username === 'admin' || !is_numeric($type)) { return false; }
+            if (self::isUser($username)) {
+                $connObj = parent::connect();
+                if (!$connObj->error) {
+                    $connection = $connObj->connection;
+                    if ($query = $connection->prepare(self::$changeUserTypeQuery)) {
+                        $query->bind_param('is', $type, $username);
+                        $query->execute();
+                        $success = $query->affected_rows != -1 ? true : false;
+                        $query->close();
+                        $connection->close();
+                        return $success;
+                    } else { $connection->close(); }
+                } else { self::databaseError($connObj->connection); }
+            }
+            return false;
+        }
+
+        function toggleLockedUser ($username) {
+            if (!self::$is_admin) { return false; }
+            if (!is_string($username) || strlen($username) === 0 || $username === self::$user->username || $username === 'admin') { return false; }
+            if (self::isUser($username)) {
+                $connObj = parent::connect();
+                if (!$connObj->error) {
+                    $connection = $connObj->connection;
+                    if ($query = $connection->prepare(self::$toggleLockedQuery)) {
+                        $query->bind_param('s', $username);
+                        $query->execute();
+                        $success = $query->affected_rows != -1 ? true : false;
+                        $query->close();
+                        $connection->close();
+                        return $success;
+                    } else { $connection->close(); }
+                } else { self::databaseError($connObj->connection); }
             }
             return false;
         }
 
         function deleteUser ($username) {
             if (!self::$is_admin) { return false; }
-            if (!is_string($username)) { return false; }
-            $connObj = parent::connect();
-            if (!$connObj->error) {
-                $connection = $connObj->connection;
-                if ($query = $connection->prepare(self::$deleteUserQuery)) {
-                    $query->bind_param('s', $username);
-                    $query->execute();
-                    return $query->affected_rows > 0 ? true : false;
-                } else { $connection->close(); }
-            } else {
-                $msg = 'Unable to connect to the database : '.$connObj->connection;
-                self::$logger->log(self::$logName, $msg);
-                throw new Exception($msg);
+            if (!is_string($username) || $username === self::$user->username || $username === 'admin') { return false; }
+            if (self::isUser($username)) {
+                $connObj = parent::connect();
+                if (!$connObj->error) {
+                    $connection = $connObj->connection;
+                    if ($query = $connection->prepare(self::$deleteUserQuery)) {
+                        $query->bind_param('s', $username);
+                        $query->execute();
+                        $success = $query->affected_rows != -1 ? true : false;
+                        $query->close();
+                        $connection->close();
+                        return $success;
+                    } else { $connection->close(); }
+                } else { self::databaseError($connObj->connection); }
             }
             return false;
         }
@@ -155,6 +157,26 @@
         function newTokenKey () {
             if (!self::$is_admin) { return false; }
 
+        }
+
+        private function isUser ($username) {
+            $connObj = parent::connect();
+            if (!$connObj->error) {
+                $connection = $connObj->connection;
+                if ($query = $connection->prepare(self::$isUserQuery)) {
+                    $query->bind_param('s', $username);
+                    $query->execute();
+                    $query->bind_result($resultId);
+                    $query->fetch();
+                    return $resultId ? true : false;
+                }
+            } else { self::databaseError($connObj->connection); }
+        }
+
+        private static function databaseError($error) {
+            $msg = 'Unable to connect to the database : '.$error;
+            self::$logger->log(self::$logName, $msg);
+            throw new Exception($msg);
         }
 
     }

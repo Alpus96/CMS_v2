@@ -80,29 +80,6 @@
                             </div>
 
                             <!--  admin_tabs  -->
-                            <div class="tab-pane" id="users">
-                                <div class="row">
-                                    <div class="col-xs-12">
-                                        <p id="usersMsg" class="hidden text-center alert"></p>
-                                        <table class="table table-striped table-condensed">
-                                            <thead>
-                                                <th class="col-xs-4">Användare</th>
-                                                <th class="col-xs-4">Typ</th>
-                                                <th class="col-xs-1">Låst</th>
-                                                <th class="col-xs-3"></th>
-                                            </thead>
-
-                                            <tbody id="usersTable">
-                                            </tbody>
-                                        </table>
-                                    </div>
-                                </div>
-                                <div class="col-xs-12 text-center">
-                                    <button id="createUserbtn" type="button" class="btn btn-default btn-lg" aria-label="Ny Användare">
-                                        <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
-                                    </button>
-                                </div>
-                            </div>
 
                             <div class="tab-pane" id="config">
                                 <p class="alert alert-info text-center">Konfigurationshantering inväntar implementation.</p>
@@ -113,6 +90,63 @@
                     <div class="clearfix"></div>
 
                 </div>
+
+                    <!-- Modal -->
+                    <div id="newUserPass" class="modal fade" role="dialog">
+                        <div class="modal-dialog">
+
+                        <!-- Modal content-->
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                                <h4 class="modal-title">Välj ett lösenord</h4>
+                            </div>
+
+                            <div class="modal-body">
+                                <div class="form-group">
+                                    <input class="form-control newPassword" type="password" name="" placeholder="Nytt lösenord">
+                                </div>
+
+                                <div class="form-group">
+                                    <input class="form-control newPassConf" type="password" name="" placeholder="Bekräfta lösenord">
+                                </div>
+                            </div>
+
+                            <div class="modal-footer">
+                                <div class="btn-group">
+                                    <button type="button" class="cancel_new btn btn-warning" data-dismiss="modal"><span class="glyphicon glyphicon-remove" aria-hidden="true"></span></button>
+                                    <button type="button" class="ok_new btn btn-success" data-dismiss="modal"><span class="glyphicon glyphicon-ok" aria-hidden="true"></span></button>
+                                </div>
+                            </div>
+                        </div>
+
+                        </div>
+                    </div>
+
+                    <div id="deleteWarning" class="modal fade" role="dialog">
+                        <div class="modal-dialog">
+
+                        <!-- Modal content-->
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                                <h4 class="modal-title">Tabort en användare</h4>
+                            </div>
+
+                            <div class="modal-body">
+                                <h4>Detta kan inte ångras, är du säker på att du vill ta bort en användare?</h4>
+                            </div>
+
+                            <div class="modal-footer">
+                                <div class="btn-group">
+                                    <button type="button" class="btn btn-warning" data-dismiss="modal"><span class="glyphicon glyphicon-remove" aria-hidden="true"></span></button>
+                                    <button type="button" class="ok_delete btn btn-danger" data-dismiss="modal"><span class="glyphicon glyphicon-trash" aria-hidden="true"></span></button>
+                                </div>
+                            </div>
+                        </div>
+
+                        </div>
+                    </div>
 
             </div>
         </div>
