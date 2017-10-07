@@ -23,8 +23,11 @@ class AdminHandler {
             if (!err) {
                 if (res && res.success) {
                     for (let user of res.data) {
-                        console.log(user);
-
+                        let rowId = 'tr_'+user.username;
+                        let buttonId = 'user_'+user.username;
+                        let userRow = '<tr class="'+rowId+' vertical-center"><td class="padding-sm">'+user.username+'</td><td class="padding-sm">'+(user.type === 1 ? 'Admin' : 'Användare')+'</td><td class="padding-sm">'+(user.locked ? '<div class="vertical-center"><span class="glyphicon glyphicon-lock" aria-hidden="true"></span></div>' : '')+'</td><td class="padding-xs"><button type="button" class="'+buttonId+' btn btn-default pull-right"><span class="glyphicon glyphicon-pencil" aria-hidden="true"></span></button></td></tr>';
+                        $('#usersTable').append(userRow);
+                        this.addedEditListner(buttonId, rowId);
                     }
                 } else {
                     $('#usersMsg').text('Inga användare hittades.');
@@ -52,6 +55,17 @@ class AdminHandler {
             }
         });
     }
+
+    addedEditListner (button, row) {
+        $('.'+button).on('click', () => {
+            //  TODO:  Update DOM and add new listners.
+            $('#usersMsg').text('Edit started for '+row.replace('tr_', '')+'.');
+            if (!$('#usersMsg').hasClass('alert-success'))
+            { $('#usersMsg').addClass('alert-success'); }
+            $('#usersMsg').removeClass('hidden');
+        })
+    }
+
 }
 
 $(document).ready(() => { const cms = new AdminHandler(); });
@@ -61,9 +75,6 @@ $(document).ready(() => { const cms = new AdminHandler(); });
 <tr id="$id" class="text-center">
     <td class="col-xs-3 username">
         <h5>$username</h5>
-    </td>
-    <td class="col-xs-3 password">
-        <h5>********</h5>
     </td>
     <td class="col-xs-2 type">
         <h5>$type</h5>
