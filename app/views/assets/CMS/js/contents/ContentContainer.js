@@ -11,12 +11,13 @@ class ContentContainer {
             this.getOptions();
 
             if (this.data.marker != '' && this.data.amount != -1) {
+                this.entries = [];
                 this.loadContent();
                 if (cookie.read('token'))
                 { this.newEntryButton(); }
             } else {
                 console.warn('Insufficient data! ("'+this.id+'")');
-                $(id).append('<p class="'+id.replace('#', '')+'"></p>');
+                $(this.id).append('<p class="text-center alert '+id.replace('#', '')+'"></p>');
                 msgHelper.alert(this.id.replace('#', '.'), 'Otillräcklig information!', 'warning');
             }
         }
@@ -46,7 +47,7 @@ class ContentContainer {
                 this.data.includeDate = incDate ? true : false;
             } else if (opt.indexOf('entryWidth_') != -1) {
                 const entryWidth = opt.replace('entryWidth_', '');
-                this.entryWidth = entryWidth;
+                this.data.entryWidth = entryWidth;
             }
         }
     }
@@ -68,7 +69,7 @@ class ContentContainer {
                     msgHelper.alert(this.id.replace('#', '.'), 'Inga inlägg.');
                 }
             } else {
-                $(this.id).append('<p class="'+this.id.replace('#', '')+'"></p>');
+                $(this.id).append('<div class="clearfix"></div><p class="text-center alert '+this.id.replace('#', '')+'"></p>');
                 msgHelper.alert(this.id.replace('#', '.'), 'Kunde inte hämta inlägg.', 'danger');
             }
         });
@@ -97,12 +98,33 @@ class ContentContainer {
     }
 
     newEntryButton () {
-        const name = this.id.replace('#', '');
-        const button = '<div class="col-xs-12 text-center"><button class="'+name+' btn btn-primary"><span class="glyphicon glyphicon-plus"></span></button></div>';
+        const name = this.id.replace('#', '')+'_button';
+        const button = '<div class="col-xs-12 text-center bottom-margin-lg"><button class="' + name + ' btn btn-primary"><span class="glyphicon glyphicon-plus"></span></button></div>';
         $(this.id).prepend(button);
-        $('.'+name).on('click', () => {
-            this.entries.push(new ContentEntry(this.id, 'newEntry'));
+        $('.'+name).off();
+        $('.'+name).on('click', () => { this.startNewEntry(); });
+    }
+
+    startNewEntry () {
+        msgHelper.newModal('Nytt inlägg', '<div class="col-xs-12"></div><div class="form-group"><input class="form-control newEntry_title" type="text" name="" placeholder="Titel" autofocus></div><div class="form-group"><textarea class="form-control editArea newEntry_text" name="" placeholder="Innehåll..."></textarea></div><p class="hidden newEntryAlert"></p>', '<div class="btn-group"><button type="button" class="newEntryCancel btn btn-warning"><span class="glyphicon glyphicon-remove" aria-hidden="true"></span></button><button type="button" class="newEntrySave btn btn-success"><span class="glyphicon glyphicon-ok" aria-hidden="true"></span></button></div>');
+
+        const area = $('textarea.editArea');
+        area.height(0);
+        area.height(area[0].scrollHeight+parseInt(area.css('font-size'))+40);
+        area.keyup(() => {
+            area.height(0);
+            area.height(area[0].scrollHeight+parseInt(area.css('font-size')));
         });
+
+        $('.newEntryCancel').on('click', () => { msgHelper.removeModal(); });
+        $('.newEntrySave').on('click', () => {
+            this.saveNewEntry();
+            msgHelper.removeModal();
+        });
+    }
+
+    saveNewEntry () {
+        console.log('Saving...');
     }
 
 }

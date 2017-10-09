@@ -12,44 +12,36 @@ class ContentEntry {
             this.abort = true;
         }
 
-        this.parseWidth(containerInfo.entryWidth);
-
         if (!this.abort) {
             this.parentID = containerId;
             this.data = entryObject;
+            this.parseWidth(containerInfo.entryWidth);
 
-            if (entryObject === 'newEntry') {
-                this.prependAsEditable();
-            } else {
-                this.prependAsStatic();
-                if (cookie.read('token')) {
-                    this.addEditListner();
-                }
+            this.displayContent();
+            if (cookie.read('token')) {
+                this.addEditListner();
             }
         }
     }
 
     parseWidth (width) {
-        this.width = width.indexOf('p') ? parseInt(width.replace('p', '')) : parseInt(width);
-        this.widthType = width.indexOf('p') ? 1 : 0;
+        if (width && width >= 1 && width <= 12)
+        { this.width = width; }
+        else { this.width = false; }
     }
 
-    prependAsStatic () {
+    displayContent () {
         //  NOTE:  this.data = {id, entryContent, (auhtor), (posted), (lastEdited)}
         const name = 'entry_'+this.data.id;
         this.id = '.'+name;
-        const entry = '<div class="'+name+'"><p id="testEntry"></p></div>';
-        msgHelper.alert();
+        const entry = '<div class="'+name+'"><p id="testEntry">Just a testEntry</p></div>';
+        //msgHelper.alert();
         $(this.parentID).prepend(entry);
     }
-
-    prependAsEditable () {}
 
     addEditListner () {}
 
     startEdit () {}
-
-    cancelEdit () {}
 
     saveEdit () {}
 
