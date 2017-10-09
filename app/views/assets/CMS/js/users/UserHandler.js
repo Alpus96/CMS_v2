@@ -1,4 +1,4 @@
-//let baseURL = '/projects/CMS_v2';
+let baseURL = '/projects/CMS_v2';
 
 class UserHandler {
 
