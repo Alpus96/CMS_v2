@@ -89,16 +89,26 @@
 
 .login-bg {
     /*  TODO:  Make the file size of this image smaller.  */
-    background-image: url("../images/bg-img.jpg");
+    background-image: url("../images/bg-img-opt.jpg");
     background-size: 100%;
     background-size: 100vw 100vh;
     background-repeat: no-repeat;
 }
 
-.nav-offset {
-    width: 100%;
-    min-height: 1px;
-    margin-top: 40px;
+@media screen and (min-width: 767px) {
+    .nav-offset {
+        width: 100%;
+        min-height: 1px;
+        margin-top: 40px;
+    }
+}
+
+@media screen and (max-width: 767px) {
+    .nav-offset {
+        width: 100%;
+        min-height: 1px;
+        margin-top: 150px;
+    }
 }
 
 .wrap {
