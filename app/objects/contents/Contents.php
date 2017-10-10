@@ -27,7 +27,6 @@
                 self::$logger->log(self::$logName, 'Faulty content request: '.json_encode($options));
                 return false;
             }
-
             $connObj = parent::connect();
             if (!$connObj->error) {
                 $connection = $connObj->connection;

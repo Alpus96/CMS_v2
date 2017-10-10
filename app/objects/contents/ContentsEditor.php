@@ -26,6 +26,10 @@
             self::$updateContentsQuery = 'UPDATE CONTENTS SET CONTENT_TEXT = ? WHERE ID = ?';
         }
 
+        function createContents ($newContents) {
+
+        }
+
         function getAsMD ($id) {
             if (self::$token->toJSON() && is_numeric($id)) {
                 $connObj = parent::connect();
@@ -43,10 +47,6 @@
                 } else { self::databaseError($connObj->connection); }
             }
             return false;
-        }
-
-        function createContents ($newContents) {
-
         }
 
         function updateContents ($contents) {
