@@ -181,10 +181,10 @@ class ResponseHandler {
         }
         else if (self::$url === '/setAuthName') {
             $res = (object)['success' => false];
-            if (property_exists($data, 'authorName') && property_exists($data, 'password')) {
+            if (property_exists($data, 'password') && property_exists($data, 'authName')) {
                 $user = new User($token);
                 if ($user->getToken()) {
-                    $res->success = $user->setAuthorName(base64_decode($data->password), $data->authorName);
+                    $res->success = $user->setAuthorName(base64_decode($data->password), $data->authName);
                 }
             }
             echo json_encode($res);
