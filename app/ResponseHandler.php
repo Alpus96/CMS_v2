@@ -6,8 +6,10 @@ require_once 'app/library/socket/JSON_socket.php';
 require_once 'app/objects/users/Users.php';
 require_once 'app/objects/users/Admins.php';
 
-//  contents
-//  Xcontents
+require_once 'app/objects/contents/Contents.php';
+require_once 'app/objects/contents/ContentsEditor.php';
+//  ContentsIndex
+//  ContentsDeleted
 
 class ResponseHandler {
     static private $url;
@@ -84,7 +86,50 @@ class ResponseHandler {
         $data = json_decode(file_get_contents('php://input'));
         $token = $_COOKIE['token'] ? json_decode($_COOKIE['token'])->value : false;
 
-        if (self::$url === '/login') {
+        if (self::$url === '/getContents') {
+            $res = (object)['success' => false];
+            $contents = new Contents();
+            if (property_exists($data, 'marker')) {
+                $res->data = $contents->getByMarker($data);
+                $res->success = $res->data ? true : false;
+            } /*else if (property_exists($data, 'id')) {
+                $res->data = $contents->getById($data);
+                $res->success = $res->data ? true : false;
+            }*/
+            echo json_encode($res);
+        }
+        else if (self::$url === '/newContents') {
+            $res = (object)['success' => false];
+            if (property_exists($data, 'text') && property_exists($data, 'marker')) {
+                $contentsEditor = new ContentsEditor($token);
+                $contentsEditor->createContents($data);
+            }
+        }
+        else if (self::$url === '/getMD') {
+            $res = (object)['success' => false];
+            if (property_exists($data, 'id')) {
+                $contentsEditor = new ContentsEditor($token);
+                $contentsEditor->getAsMD($data);
+            }
+            echo json_encode($res);
+        }
+        else if (self::$url === '/updateContents') {
+            $res = (object)['success' => false];
+            if (property_exists($data, 'id') && property_exists($data, 'newText')) {
+                $contentsEditor = new ContentsEditor($token);
+                $contentsEditor->updateContents($data);
+            }
+            echo json_encode($res);
+        }
+        else if (self::$url === '/deleteContents') {
+            $res = (object)['success' => false];
+            if (property_exists($data, 'id')) {
+                $contentsEditor = new ContentsEditor($token);
+                $contentsEditor->deleteContents($data);
+            }
+            echo json_encode($res);
+        }
+        else if (self::$url === '/login') {
             $credentials = (object)[
                 'username' => base64_decode($data->username),
                 'password' => base64_decode($data->password)
@@ -96,18 +141,22 @@ class ResponseHandler {
                 $token ? 'token' : 'error' => $token ? $token : 'Fel användarnamn eller lösenord!'
             ];
             echo json_encode($res);
-        } else if (self::$url === '/logout') {
+        }
+        else if (self::$url === '/logout') {
             if ($token) {
                 $user = new User($token);
                 $user->getToken() ? $user->logout() : null;
             }
             $res = (object)['success' => true];
             echo json_encode($res);
-        } else if (self::$url === '/setPW') {
+        }
+        else if (self::$url === '/setPW') {
+            //  TODO:  Require to give current password as confirmation.
             $newPass = base64_decode($data->password);
             $user = new User($token);
             echo json_encode((object)['success' => $user->newPassword($newPass)]);
-        } else if (self::$url === '/getUsers') {
+        }
+        else if (self::$url === '/getUsers') {
             $admin = new Admin($token);
             $users = $admin->getAllUsers();
             $res = (object)[
@@ -123,14 +172,16 @@ class ResponseHandler {
                 $res->success = $admin->createUser($data);
             }
             echo json_encode($res);
-        } else if (self::$url === '/toggleUserLock') {
+        }
+        else if (self::$url === '/toggleUserLock') {
             $res = (object)['success' => false];
             if (property_exists($data, 'username')) {
                 $admin = new Admin($token);
                 $res->success = $admin->toggleLockedUser($data->username);
             }
             echo json_encode($res);
-        } else if (self::$url === '/setUserType') {
+        }
+        else if (self::$url === '/setUserType') {
             $res = (object)['success' => false];
             if (property_exists($data, 'username') && property_exists($data, 'type')) {
                 $admin = new Admin($token);
@@ -145,12 +196,6 @@ class ResponseHandler {
                 $res->success = $admin->deleteUser($data->username);
             }
             echo json_encode($res);
-        }
-        else if (self::$url === '/DBCredentials') {
-
-        }
-        else if (self::$url === '/tokenKey') {
-
         }
         else { http_response_code(404); }
     }
