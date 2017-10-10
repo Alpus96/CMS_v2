@@ -51,7 +51,6 @@
                         if (!property_exists($options, 'incAuth') || $options->incAuth == false) {
                             unset($content->author);
                         }
-                        self::$logger->log(self::$logName, json_encode($content));
                         if (!property_exists($options, 'incDate') || $options->incDate == false) {
                             unset($content->created);
                             unset($content->edited);
