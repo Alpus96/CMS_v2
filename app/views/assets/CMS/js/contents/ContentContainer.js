@@ -51,7 +51,7 @@ class ContentContainer {
     }
 
     loadContent () {
-        AJAX.post(baseURL+'/getContents', this.data, (err, res) => {
+        AJAX.post(baseURL+'/getContentsByMarker', this.data, (err, res) => {
             if (!err) {
                 if (res && res.success) {
                     let entryCount = 0;
