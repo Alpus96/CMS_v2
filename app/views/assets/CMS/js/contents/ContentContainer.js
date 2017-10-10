@@ -1,5 +1,3 @@
-let baseURL = '/projects/CMS_v2';
-
 class ContentContainer {
 
     constructor (id) {
@@ -97,13 +95,9 @@ class ContentContainer {
     }
 
     newEntryButton () {
-        console.log('adding new entry button');
         const name = this.id.replace('#', '')+'_button';
         const button = '<div class="col-xs-12 text-center bottom-margin-lg"><button class="' + name + ' btn btn-primary"><span class="glyphicon glyphicon-plus"></span></button></div>';
-        console.log(this.id);
         $(this.id).prepend(button);
-        //console.log(name);
-        //$('.'+name).off();
         $('.'+name).on('click', () => { this.startNewEntry(); });
     }
 
