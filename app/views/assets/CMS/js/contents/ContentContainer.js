@@ -102,7 +102,7 @@ class ContentContainer {
     }
 
     startNewEntry () {
-        msgHelper.newModal('Nytt inlägg', '<div class="col-xs-12"></div><div class="form-group"><textarea class="form-control editArea newEntry_text" name="" placeholder="Innehåll..." autofocus></textarea></div><p class="hidden newEntryAlert"></p>', '<div class="btn-group"><button type="button" class="newEntryCancel btn btn-warning"><span class="glyphicon glyphicon-remove" aria-hidden="true"></span></button><button type="button" class="newEntrySave btn btn-success"><span class="glyphicon glyphicon-ok" aria-hidden="true"></span></button></div>');
+        msgHelper.newModal('Nytt inlägg', '<div class="col-xs-12"></div><div class="form-group"><textarea class="form-control editArea newEntry_text" name="" placeholder="Innehåll..." autofocus></textarea></div><p class="hidden newEntryAlert"></p>', '<div class="btn-group"><button type="button" class="newEntryCancel btn btn-warning" data-dismiss="modal"><span class="glyphicon glyphicon-remove" aria-hidden="true"></span></button><button type="button" class="newEntrySave btn btn-success" data-dismiss="modal"><span class="glyphicon glyphicon-ok" aria-hidden="true"></span></button></div>');
 
         const area = $('textarea.editArea');
         area.height(0);
