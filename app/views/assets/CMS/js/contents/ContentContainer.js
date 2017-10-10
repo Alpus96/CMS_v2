@@ -1,4 +1,4 @@
-//let baseURL = '/projects/CMS_v2';
+if (typeof baseURL === 'undefined' || baseURL === null) { let baseURL = '/projects/CMS_v2'; }
 
 class ContentContainer {
 
@@ -29,8 +29,8 @@ class ContentContainer {
             marker: '',
             amount: -1,
             offset: 0,
-            includeAuthor: false,
-            includeDate: false
+            incAuth: false,
+            incDate: false
         };
         for (let opt of options) {
             if (opt.indexOf('marker_') != -1) {
@@ -41,10 +41,10 @@ class ContentContainer {
                 this.data.amount = isNaN(amount) ? 0 : parseInt(amount);
             } else if (opt.indexOf('incAuth_') != -1) {
                 const incAuth = opt.replace('incAuth_', '');
-                this.data.includeAuthor = incAuth ? true : false;
+                this.data.incAuth = incAuth && incAuth != 'false' ? true : false;
             } else if (opt.indexOf('incDate_') != -1) {
                 const incDate = opt.replace('incDate_', '');
-                this.data.includeDate = incDate ? true : false;
+                this.data.incDate = incDate && incDate != 'false' ? true : false;
             } else if (opt.indexOf('entryWidth_') != -1) {
                 const entryWidth = opt.replace('entryWidth_', '');
                 this.data.entryWidth = entryWidth;
@@ -55,7 +55,7 @@ class ContentContainer {
     loadContent () {
         AJAX.post(baseURL+'/getContents', this.data, (err, res) => {
             if (!err) {
-                if (res && count(res.data) > 0) {
+                if (res && res.success) {
                     let entryCount;
                     $(this.id).html('');
                     for (let entry of res.data) {
@@ -65,7 +65,7 @@ class ContentContainer {
                     if (entryCount == this.amount || this.data.offset != 0)
                     { this.addPageButtons(); }
                 } else {
-                    $(this.id).append('<p class="'+this.id.replace('#', '')+'"></p>');
+                    $(this.id).append('<div class="clearfix"></div><p class="text-center alert '+this.id.replace('#', '')+'"></p>');
                     msgHelper.alert(this.id.replace('#', '.'), 'Inga inlägg.');
                 }
             } else {
@@ -106,11 +106,11 @@ class ContentContainer {
     }
 
     startNewEntry () {
-        msgHelper.newModal('Nytt inlägg', '<div class="col-xs-12"></div><div class="form-group"><input class="form-control newEntry_title" type="text" name="" placeholder="Titel" autofocus></div><div class="form-group"><textarea class="form-control editArea newEntry_text" name="" placeholder="Innehåll..."></textarea></div><p class="hidden newEntryAlert"></p>', '<div class="btn-group"><button type="button" class="newEntryCancel btn btn-warning"><span class="glyphicon glyphicon-remove" aria-hidden="true"></span></button><button type="button" class="newEntrySave btn btn-success"><span class="glyphicon glyphicon-ok" aria-hidden="true"></span></button></div>');
+        msgHelper.newModal('Nytt inlägg', '<div class="col-xs-12"></div><div class="form-group"><textarea class="form-control editArea newEntry_text" name="" placeholder="Innehåll..." placeholder></textarea></div><p class="hidden newEntryAlert"></p>', '<div class="btn-group"><button type="button" class="newEntryCancel btn btn-warning"><span class="glyphicon glyphicon-remove" aria-hidden="true"></span></button><button type="button" class="newEntrySave btn btn-success"><span class="glyphicon glyphicon-ok" aria-hidden="true"></span></button></div>');
 
         const area = $('textarea.editArea');
         area.height(0);
-        area.height(area[0].scrollHeight+parseInt(area.css('font-size'))+40);
+        area.height(area[0].scrollHeight+parseInt(area.css('font-size'))+60);
         area.keyup(() => {
             area.height(0);
             area.height(area[0].scrollHeight+parseInt(area.css('font-size')));
