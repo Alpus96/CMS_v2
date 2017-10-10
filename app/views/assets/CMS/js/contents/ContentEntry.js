@@ -22,7 +22,7 @@ class ContentEntry {
             this.containerInfo = containerInfo;
             this.parseWidth(containerInfo.entryWidth);
 
-            $(this.parentID).prepend('<div class="entry_'+this.data.id+'"></div>');
+            $(this.parentID).append('<div class="entry_'+this.data.id+'"></div>');
             this.displayContent();
         }
     }
@@ -53,9 +53,8 @@ class ContentEntry {
         const entryString = '<div class="col-'+this.width+' '+name+'">'+this.data.text+'<p class="pull-right text-right"><small>'+authString+'</small><br><small>'+dateString+'</p></div>';
 
         $('.'+name).replaceWith(entryString);
-        if (cookie.read('token')) {
-            $('.'+name).on('click', () => { this.startEdit(); });
-        }
+        if (cookie.read('token') && window.location.href.indexOf('/edit') != -1)
+        { $('.'+name).on('click', () => { this.startEdit(); }); }
     }
 
     startEdit () {
