@@ -89,7 +89,7 @@ class ContentContainer {
         this.loadContent();
     }
 
-    previuosPage () {
+    previousPage () {
         this.data.offset = this.data.offset - this.data.amount;
         this.loadContent();
     }
