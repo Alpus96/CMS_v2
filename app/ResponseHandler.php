@@ -109,7 +109,8 @@ class ResponseHandler {
             $res = (object)['success' => false];
             if (property_exists($data, 'id')) {
                 $contentsEditor = new ContentsEditor($token);
-                $contentsEditor->getAsMD($data);
+                $res->data = $contentsEditor->getAsMD($data->id);
+                $res->success = $res->data ? true : false;
             }
             echo json_encode($res);
         }
@@ -117,7 +118,8 @@ class ResponseHandler {
             $res = (object)['success' => false];
             if (property_exists($data, 'id') && property_exists($data, 'newText')) {
                 $contentsEditor = new ContentsEditor($token);
-                $contentsEditor->updateContents($data);
+                $res->data = $contentsEditor->updateContents($data);
+                $res->success = $res->data ? true : false;
             }
             echo json_encode($res);
         }
