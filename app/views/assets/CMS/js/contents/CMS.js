@@ -1,5 +1,3 @@
-let baseURL = '/projects/CMS_v2';
-
 class CMS {
     constructor () {
         this.getContainerIDs();
