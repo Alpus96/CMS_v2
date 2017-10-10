@@ -132,6 +132,7 @@ class UserRow {
                     this.showRow();
                     this.requestSuccessful();
                     this.deleted = true;
+                    this.username = '';
                     setTimeout(() => { $(this.rowId).remove(); }, 1250);
                 } else { this.requestUnsuccessful(); }
             } else { this.requestFailed(); }

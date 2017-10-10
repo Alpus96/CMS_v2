@@ -44,6 +44,7 @@ class UsersList {
         if (newUser.username.indexOf(' ') === -1) {
             if (new_password.length >= 6) {
                 if (new_password === new_passConf) {
+                    this.listUsers();
                     for (let user of this.users) {
                         if (newUser.username === user.data.username) {
                             msgHelper.alert('.newUserAlert', 'Användarnamn måste vara unikt!', 'warning', 3000);
@@ -55,7 +56,7 @@ class UsersList {
                             if (res && res.success) {
                                 msgHelper.removeModal();
                                 this.listUsers();
-                                rowName = '.tr_'+newUser.username;
+                                const rowName = '.tr_'+newUser.username;
                                 $(rowName).addClass('success')
                                 setTimeout(() => { $(rowName).removeClass('success'); }, 1250);
                             } else {
