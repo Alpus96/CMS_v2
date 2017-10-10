@@ -61,7 +61,7 @@ class UserHandler {
     }
 
     confirmPass (forX) {
-        msgHelper.newModal('Bekräfta', '<div class="form-group"><input class="form-control" type="password" name="" id ="password" placeholder="Nuvarande lösenord"></div>', '<div class="btn-group"><button class="btn btn-warning confirm_cancel"><span class="glyphicon glyphicon-remove"></span></button><button class="btn btn-success confirm_ok"><span class="glyphicon glyphicon-ok"></span></button></div>');
+        msgHelper.newModal('Bekräfta', '<div class="form-group"><input class="form-control" type="password" name="" id ="password" placeholder="Nuvarande lösenord" autofocus></div>', '<div class="btn-group"><button class="btn btn-warning confirm_cancel"><span class="glyphicon glyphicon-remove"></span></button><button class="btn btn-success confirm_ok"><span class="glyphicon glyphicon-ok"></span></button></div>');
 
         $('.confirm_cancel').on('click', () => { msgHelper.removeModal(); });
         $('.confirm_ok').on('click', () => {
