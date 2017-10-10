@@ -87,6 +87,19 @@
 .margin-lg { margin: 20px; }
 .padding-lg { padding: 20px; }
 
+.top-margin-xl { margin-top: 40px; }
+.left-margin-xl { margin-left: 40px; }
+.bottom-margin-xl { margin-bottom: 40px; }
+.right-margin-xl { margin-right: 40px; }
+
+.top-padding-xl { padding-top: 40px; }
+.left-padding-xl { padding-left: 40px; }
+.bottom-padding-xl { padding-bottom: 40px; }
+.right-padding-xl { padding-right: 40px; }
+
+.margin-xl { margin: 40px; }
+.padding-xl { padding: 40px; }
+
 .tabs-left {
   border-bottom: none;
   padding-top: 2px;
