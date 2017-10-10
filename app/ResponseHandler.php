@@ -108,8 +108,10 @@ class ResponseHandler {
             $res = (object)['success' => false];
             if (property_exists($data, 'text') && property_exists($data, 'marker')) {
                 $contentsEditor = new ContentsEditor($token);
-                $contentsEditor->createContents($data);
+                $res->data = $contentsEditor->createContents($data);
+                $res->success = $res->data ? true : false;
             }
+            echo json_encode($res);
         }
         else if (self::$url === '/getMD') {
             $res = (object)['success' => false];
@@ -133,7 +135,7 @@ class ResponseHandler {
             $res = (object)['success' => false];
             if (property_exists($data, 'id')) {
                 $contentsEditor = new ContentsEditor($token);
-                $contentsEditor->deleteContents($data);
+                $res->success = $contentsEditor->deleteContents($data);
             }
             echo json_encode($res);
         }
