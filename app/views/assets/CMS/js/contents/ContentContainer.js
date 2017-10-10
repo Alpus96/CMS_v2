@@ -49,13 +49,14 @@ class ContentContainer {
     }
 
     loadContent () {
+        $(this.id).html('');
+        if (cookie.read('token') && window.location.href.indexOf('/edit') != -1)
+        { this.newEntryButton(); }
         AJAX.post(baseURL+'/getContentsByMarker', this.data, (err, res) => {
             if (!err) {
                 if (res && res.success) {
                     let entryCount = 0;
-                    $(this.id).html('');
-                    if (cookie.read('token') && window.location.href.indexOf('/edit') != -1)
-                    { this.newEntryButton(); }
+
                     for (let entry of res.data) {
                         this.entries.push(new ContentEntry(this.id, entry, this.data));
                         ++entryCount;
