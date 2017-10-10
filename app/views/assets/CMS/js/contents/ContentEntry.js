@@ -74,14 +74,8 @@ class ContentEntry {
                     $('.edit_delete').on('click', () => { this.removeEntry(); });
                     $('.edit_abort').on('click', () => { this.displayContent(); });
                     $('.edit_save').on('click', () => { this.saveEdit(); });
-                } else {
-                    $('.'+name).append('<p class="top-margin-xl text-center alert alert_'+this.data.id+'"></p>');
-                    msgHelper.alert('.alert_'+this.data.id, 'Gick inte att hämta markdown.', 'warning', 3000);
-                }
-            } else {
-                $('.'+name).append('<p class="nav-offset alert alert_'+this.data.id+'"></p>');
-                msgHelper.alert('.alert_'+this.data.id, 'Gick inte att skicka förfrågan.', 'warning', 3000);
-            }
+                } else { this.requestDenied(); }
+            } else { this.requestFailed(); }
         });
 
     }
@@ -94,25 +88,33 @@ class ContentEntry {
                 if (res && res.data) {
                     this.data.text = res.data;
                     this.displayContent();
-                } else {
-                    $('.'+name).append('<p class="nav-offset alert alert_'+this.data.id+'"></p>');
-                    msgHelper.alert('.alert_'+this.data.id, 'Gick inte att uppdatera innehåll.', 'warning', 3000);
-                }
-            } else {
-                $('.'+name).append('<p class="nav-offset alert alert_'+this.data.id+'"></p>');
-                msgHelper.alert('.alert_'+this.data.id, 'Gick inte att skicka förfrågan.', 'warning', 3000);
-            }
+                } else { this.requestDenied(); }
+            } else { this.requestFailed(); }
         });
     }
 
     removeEntry () {
-        console.log('Deleting...');
+        AJAX.post(baseURL+'/deleteContents', {id: this.data.id}, (err, res) => {
+            if (!err) {
+                if (res && res.success) {
+                    $('.entry_'+this.data.id).remove();
+                } else { this.requestDenied(); }
+            } else { this.requestFailed(); }
+        });
     }
 
-    errroAlert () {
-        const id = 'entry_error_' + Math.random()*1000;
-        $(this.parentID).prepend('<div class="'+id+'"></div>');
-        msgHelper.alert(id, 'Ingen data!', 'danger');
+    requestDenied () {
+        if ($('.error_'+this.data.id).length == 0) {
+            $('.entry_'+this.data.id).append('<p class="text-center top-margin-xl error_'+this.data.id+'"></p>')
+        }
+        msgHelper.alert('.error_'+this.data.id, 'Gick inte att uppdatera!', 'warning', 3000);
+    }
+
+    requestFailed () {
+        if ($('.error_'+this.data.id).length == 0) {
+            $('.entry_'+this.data.id).append('<p class="text-center top-margin-xl error_'+this.data.id+'"></p>')
+        }
+        msgHelper.alert('.error_'+this.data.id, 'Gick inte att skicka förfrågan!', 'danger', 3000);
     }
 
 }

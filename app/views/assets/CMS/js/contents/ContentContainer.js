@@ -60,21 +60,25 @@ class ContentContainer {
                         this.entries.push(new ContentEntry(this.id, entry, this.data));
                         ++entryCount;
                     }
+                    //  TODO: Know if there is contents for next page.
                     if (entryCount == this.data.amount || this.data.offset != 0)
                     { this.addPageButtons(); }
+                    $(this.id).change(() => {
+                        this.loadContent();
+                    });
                 } else {
                     $(this.id).append('<div class="clearfix"></div><p class="top-margin-lg text-center alert '+this.id.replace('#', '')+'"></p>');
-                    msgHelper.alert(this.id.replace('#', '.'), 'Inga inlägg.', 'info', 3000);
+                    msgHelper.alert(this.id.replace('#', '.'), 'Inga inlägg.', 'info');
                 }
             } else {
                 $(this.id).append('<div class="clearfix"></div><p class="top-margin-lg text-center alert '+this.id.replace('#', '')+'"></p>');
-                msgHelper.alert(this.id.replace('#', '.'), 'Kunde inte hämta inlägg.', 'danger', 3000);
+                msgHelper.alert(this.id.replace('#', '.'), 'Kunde inte hämta inlägg.', 'danger');
             }
         });
     }
 
     addPageButtons () {
-        //  TODO:  Add buttons for skipping next/previous page.
+        //  TODO:  Figure if to add both as clickable.
         const buttonNextId = this.id.replace('#', '')+'_next';
         const buttonPrevId = this.id.replace('#', '')+'_prev';
         $(this.id).append('<div class="top-margin-lg col-xs-12 text-center"><div class="btn-group"><button class="btn btn-primary '+buttonPrevId+'"><span class="glyphicon glyphicon-chevron-left"></span></button><button class="btn btn-primary '+buttonNextId+'"><span class="glyphicon glyphicon-chevron-right"></span></button></div></div>');
