@@ -120,7 +120,35 @@ class ContentContainer {
     }
 
     saveNewEntry () {
-        console.log('Saving...');
+        const newEntry = $('.newEntry_text').val();
+        const data = {
+            text: newEntry,
+            marker: this.data.marker
+        };
+        AJAX.post(baseURL+'/newContents', data, (err, res) => {
+            if (!err) {
+                if (res && res.success) {
+                    this.loadContent();
+                    msgHelper.removeModal();
+                } else {
+                    msgHelper.removeModal();
+                    setTimeout(() => {
+                        msgHelper.newModal('Fel uppstod!', 'Det gick tyvär inte att spara inlägget.', '<button class="save_error btn btn-warning" data-dismiss="modal"><span class="glyphicon glyphicon-remove"></span></button>');
+                        $('.save_error').on('click', () => {
+                            msgHelper.removeModal();
+                        })
+                    }, 175);
+                }
+            } else {
+                msgHelper.removeModal();
+                setTimeout(() => {
+                    msgHelper.newModal('Fel uppstod!', 'Det gick inte att skicka förfrågan!', '<button class="save_error btn btn-danger" data-dismiss="modal"><span class="glyphicon glyphicon-remove"></span></button>');
+                    $('.save_error').on('click', () => {
+                        msgHelper.removeModal();
+                    })
+                }, 175);
+            }
+        });
     }
 
 }

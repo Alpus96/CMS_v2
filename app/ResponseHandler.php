@@ -108,8 +108,7 @@ class ResponseHandler {
             $res = (object)['success' => false];
             if (property_exists($data, 'text') && property_exists($data, 'marker')) {
                 $contentsEditor = new ContentsEditor($token);
-                $res->data = $contentsEditor->createContents($data);
-                $res->success = $res->data ? true : false;
+                //$res->success = $contentsEditor->createContents($data);
             }
             echo json_encode($res);
         }

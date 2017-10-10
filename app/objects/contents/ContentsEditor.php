@@ -13,6 +13,10 @@
 
         static private $getMDQuery;
         static private $updateContentsQuery;
+        static private $createContentsQuery;
+        static private $getForDeleteQuery;
+        static private $insertInDeleteQuery;
+        static private $deleteFromContentsQuery;
 
         function __construct ($token) {
             parent::__construct();
@@ -24,10 +28,30 @@
 
             self::$getMDQuery = 'SELECT CONTENT_TEXT FROM CONTENTS WHERE ID = ?';
             self::$updateContentsQuery = 'UPDATE CONTENTS SET CONTENT_TEXT = ? WHERE ID = ?';
+            self::$createContentsQuery = 'INSERT INTO CONTENTS SET CONTENT_TEXT = ?, MARKER = ?, AUTHOR = ?';
+            self::$getForDeleteQuery = 'SELECT CONTENT_TEXT, MARKER FROM CONTENTS WHERE ID = ?';
+            self::$insertInDeleteQuery = 'INSERT INTO DELETED_CONTENTS SET CONTENT_TEXT = ?; MARKER = ?';
+            self::$deleteFromContentsQuery = 'DELETE FROM CONTENTS WHERE ID = ?';
         }
 
+        //  NOTE: $newContents = {text, marker}, add author name.
         function createContents ($newContents) {
-
+            if (self::$token->toJSON() && property_exists($newContents, 'text') && property_exists($newContents, 'marker')) {
+                $connObj = parent::connect();
+                if (!$connObj->error) {
+                    $connection = $connObj->connection;
+                    if ($query = $connection->prepare(self::$createContentsQuery)) {
+                        $authName = self::$token->decodedToken()->authName;
+                        $query->bind_param('sss', $newContents->text, $newContents->marker, $authName);
+                        $query->execute();
+                        $result = $query->affected_rows > 0 ? true : false;
+                        $query->close();
+                        $connection->close();
+                        return $result;
+                    }
+                } else { self::databaseError($connObj->connection); }
+            }
+            return false;
         }
 
         function getAsMD ($id) {
