@@ -89,7 +89,7 @@
                     $query->bind_result(
                         $id,
                         $username,
-                        $authName
+                        $authName,
                         $hash,
                         $type,
                         $locked
