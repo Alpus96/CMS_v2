@@ -95,7 +95,44 @@
         }
 
         function deleteContents ($id) {
-
+            //  TODO:  Move the contents to other table.
+            if (self::$token->toJSON() && is_numeric($id)) {
+                $connObj = parent::connect();
+                if (!$connObj->error) {
+                    $connection = $connObj->connection;
+                    if ($query = $connection->prepare(self::$getForDeleteQuery)) {
+                        $query->bind_param('i', $id);
+                        $query->execute();
+                        $query->bind_result($text, $marker);
+                        $query->fetch();
+                        $query->close();
+                        if (!$text || !$marker) {
+                            $connection->close();
+                            return false;
+                        }
+                        if ($query = $connection->prepare(self::$insertInDeleteQuery)) {
+                            $query->bind_param('ss', $text, $marker);
+                            $query->execute();
+                            $result = $query->affected_rows > 0 ? true : false;
+                            $query->close();
+                            if (!$result) {
+                                $connection->close();
+                                return false;
+                            }
+                            if ($query = $connection->prepare(self::$deleteFromContentsQuery)) {
+                                $query->bind_param('i', $id);
+                                $query->execute();
+                                $result = $query->affected_rows > 0 ? true : false;
+                                $query->close();
+                                $connection->close();
+                                return $result;
+                            }
+                        }
+                    }
+                } else { self::databaseError($connObj->connection); }
+            }
+            $connection->close();
+            return false;
         }
 
         private static function databaseError($error) {
