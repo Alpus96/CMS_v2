@@ -36,6 +36,10 @@
             return self::$token->toJSON();
         }
 
+        function getAuthorName () {
+            return self::$user->authName;
+        }
+
         function logout() {
             return self::$token->deleteToken();
         }

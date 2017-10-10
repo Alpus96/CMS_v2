@@ -170,6 +170,15 @@ class ResponseHandler {
             }
             echo json_encode($res);
         }
+        else if (self::$url === '/getAuthName') {
+            $res = (object)['success' => false];
+            $user = new User($token);
+            if ($user->getToken()) {
+                $res->data = $user->getAuthorName();
+                $res->success = $res->data ? true : false;
+            }
+            echo json_encode($res);
+        }
         else if (self::$url === '/setAuthName') {
             $res = (object)['success' => false];
             if (property_exists($data, 'authorName') && property_exists($data, 'password')) {
