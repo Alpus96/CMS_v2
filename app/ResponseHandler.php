@@ -161,10 +161,24 @@ class ResponseHandler {
             echo json_encode($res);
         }
         else if (self::$url === '/setPW') {
-            //  TODO:  Require to give current password as confirmation.
-            $newPass = base64_decode($data->password);
-            $user = new User($token);
-            echo json_encode((object)['success' => $user->newPassword($newPass)]);
+            $res = (object)['success' => false];
+            if (property_exists($data, 'password') && property_exists($data, 'newPass')) {
+                $user = new User($token);
+                if ($user->getToken()) {
+                    $res->success = $user->newPassword(base64_decode($data->password), base64_decode($data->newPass));
+                }
+            }
+            echo json_encode($res);
+        }
+        else if (self::$url === '/setAuthName') {
+            $res = (object)['success' => false];
+            if (property_exists($data, 'authorName') && property_exists($data, 'password')) {
+                $user = new User($token);
+                if ($user->getToken()) {
+                    $res->success = $user->setAuthorName(base64_decode($data->password), $data->authorName);
+                }
+            }
+            echo json_encode($res);
         }
         else if (self::$url === '/getUsers') {
             $admin = new Admin($token);
