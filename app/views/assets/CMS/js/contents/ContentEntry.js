@@ -75,7 +75,7 @@ class ContentEntry {
                     $('.edit_abort').on('click', () => { this.displayContent(); });
                     $('.edit_save').on('click', () => { this.saveEdit(); });
                 } else {
-                    $('.'+name).append('<p class="nav-offset alert alert_'+this.data.id+'"></p>');
+                    $('.'+name).append('<p class="top-margin-xl text-center alert alert_'+this.data.id+'"></p>');
                     msgHelper.alert('.alert_'+this.data.id, 'Gick inte att hämta markdown.', 'warning', 3000);
                 }
             } else {
@@ -103,10 +103,6 @@ class ContentEntry {
                 msgHelper.alert('.alert_'+this.data.id, 'Gick inte att skicka förfrågan.', 'warning', 3000);
             }
         });
-    }
-
-    quickParse () {
-
     }
 
     removeEntry () {
