@@ -17,8 +17,11 @@ class UserHandler {
         { $('button#logout').on('click', () => { this.logoutRequest(); }); }
 
         else if (window.location.href.indexOf('/settings') != -1) {
-            $('button#logout').on('click', () => { this.logoutRequest(); });
-            $('#changePW').on('click', () => { this.changePW(); });
+            this.showAuthName();
+
+            $('#logout').on('click', () => { this.logoutRequest(); });
+            $('#changePW').on('click', () => { this.confirmPass('password'); });
+            $('#changeAuthName').on('click', () => { this.confirmPass('authName'); });
         }
     }
 
@@ -59,8 +62,22 @@ class UserHandler {
         });
     }
 
-    changePW () {
-        const password = window.btoa($('#password').val())
+    confirmPass (forX) {
+        msgHelper.newModal('Bekräfta', '<div class="form-group"><input class="form-control" type="password" name="" id ="password" placeholder="Nuvarande lösenord"></div>', '<div class="btn-group"><button class="btn btn-warning confirm_cancel"><span class="glyphicon glyphicon-remove"></span></button><button class="btn btn-success confirm_ok"><span class="glyphicon glyphicon-ok"></span></button></div>');
+
+        $('.confirm_cancel').on('click', () => { msgHelper.removeModal(); });
+        $('.confirm_ok').on('click', () => {
+            const password = window.btoa($('#password').val())
+            if (forX === 'password') {
+                this.changePW(password);
+            } else if (forX === 'authName') {
+                this.changeAuthorName(password);
+            }
+            msgHelper.removeModal();
+        });
+    }
+
+    changePW (password) {
         const newPass = {
             password: window.btoa($('#newPassword').val()),
             confPass: window.btoa($('#newPassConf').val())
@@ -79,22 +96,48 @@ class UserHandler {
                 if (!err && res) {
                     if (res.success) {
                         msgHelper.alert('p#msg-text', 'Lösenordet har updaterats!', 'success', 3000);
-                        
+
                         $('#password').val('');
                         $('#newPassword').val('');
                         $('#newPassConf').val('');
                     } else {
-                        msgHelper.alert('p#msg-text', 'Lösenordet ej updaterat!', 'danger', 3000);
+                        msgHelper.alert('p#msg-text', 'Fel lösenord!', 'danger', 3000);
                     }
                 } else {
-                    msgHelper.alert('p#msg-text', 'Fel uppstod!', 'danger', 3000);
+                    msgHelper.alert('p#msg-text', 'Uppdatering misslyckades!', 'danger', 3000);
                 }
             });
         }
     }
 
-    changeAuthorName () {
+    showAuthName () {
+        AJAX.post(baseURL+'/getAuthName', {}, (err, res) => {
+            if (!err && res) {
+                if (res.success) {
+                    $('#authName').val(res.data);
+                } else {
+                    msgHelper.alert('p#msg-text-name', 'Inget namn satt!', 'warning');
+                }
+            } else {
+                msgHelper.alert('p#msg-tex-name', 'Fel uppstod!', 'danger', 30000);
+            }
+        });
+    }
 
+    changeAuthorName (password) {
+        const newName = $('#authName').val();
+        AJAX.post(baseURL+'/setAuthName', {authName: newName, password: password}, (err, res) => {
+            if (!err && res) {
+                if (res.success) {
+                    msgHelper.alert('p#msg-text-name', 'Förfatarnamn uppdaterat!', 'success', 3000);
+                    $('#namePass').val('');
+                } else {
+                    msgHelper.alert('p#msg-text-name', 'Fel lösenord!', 'warning', 3000);
+                }
+            } else {
+                msgHelper.alert('p#msg-tex-name', 'Uppdatering misslyckades!', 'danger', 30000);
+            }
+        });
     }
 
 }

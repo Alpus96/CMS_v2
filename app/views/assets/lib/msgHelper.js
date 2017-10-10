@@ -35,7 +35,7 @@ class MsgHelper {
             if ($(msgId).hasClass('alert-info'))
             { $(msgId).removeClass('alert-info'); }
             if ($(msgId).hasClass('alert-warning'))
-            { $(msgId).removeClass('alert-wanring'); }
+            { $(msgId).removeClass('alert-warning'); }
             if ($(msgId).hasClass('alert-danger'))
             { $(msgId).removeClass('alert-danger'); }
 

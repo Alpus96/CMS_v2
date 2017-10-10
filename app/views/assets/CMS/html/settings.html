@@ -67,23 +67,25 @@
                             </div>
 
                             <div class="tab-pane" id="account">
-                                <p class="alert alert-info text-center">Val av författarnamn inväntar implementation.</p>
                                 <div class="col-md-5" id="newPW">
                                     <h4>Byt lösenord</h4>
                                     <p id="msg-text" class="hidden alert"></p>
-                                    <h5>Nuvarande lösenord</h5>
-                                    <div class="form-group">
-                                        <input class="form-control" type="password" name="" id ="password" placeholder="Nytt lösenord">
-                                    </div>
-                                    <h5>Nytt lösenord</h5>
                                     <div class="form-group">
                                         <input class="form-control" type="password" name="" id ="newPassword" placeholder="Nytt lösenord">
                                     </div>
 
                                     <div class="form-group">
-                                        <input class="form-control" type="password" name="" id ="newPassConf" placeholder="Bekräfta lösenord">
+                                        <input class="form-control" type="password" name="" id ="newPassConf" placeholder="Bekräfta nytt lösenord">
                                     </div>
                                     <button type="button" type="button" class="col-xs-4 btn btn-success pull-right" id="changePW"><span class="glyphicon glyphicon-ok"></span></button>
+                                </div>
+                                <div class="col-md-offset-2 col-md-5" id="newAuthName">
+                                    <h4>Byt förfatarnamn</h4>
+                                    <p id="msg-text-name" class="hidden alert"></p>
+                                    <div class="form-group">
+                                        <input class="form-control" type="text" name="" id ="authName" placeholder="Förfatarnamn">
+                                    </div>
+                                    <button type="button" type="button" class="col-xs-4 btn btn-success pull-right" id="changeAuthName"><span class="glyphicon glyphicon-ok"></span></button>
                                 </div>
                             </div>
 
