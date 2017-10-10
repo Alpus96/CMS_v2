@@ -115,7 +115,6 @@ class ContentContainer {
         $('.newEntryCancel').on('click', () => { msgHelper.removeModal(); });
         $('.newEntrySave').on('click', () => {
             this.saveNewEntry();
-            msgHelper.removeModal();
         });
     }
 
