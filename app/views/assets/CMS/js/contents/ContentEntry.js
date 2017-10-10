@@ -1,3 +1,5 @@
+//let baseURL = '/projects/CMS_v2';
+
 class ContentEntry {
 
     constructor (containerId, entryObject, containerInfo) {
@@ -57,17 +59,57 @@ class ContentEntry {
     }
 
     startEdit () {
-        //  TODO: Get as MD.
         const name = 'entry_'+this.data.id;
-        const entryString = '<div class="col-'+this.width+' '+name+'"><textarea class="form-control editArea">'+this.data.text+'</textarea><div class="top-margin-sm pull-right btn-group"><button class="btn btn-danger edit_delete"><span class="glyphicon glyphicon-trash"></span></button><button class="btn btn-warning edit_abort"><span class="glyphicon glyphicon-remove"></span></button><button class="btn btn-success edit_save"><span class="glyphicon glyphicon-ok"></span></button></div></div>';
-        $('.'+name).replaceWith(entryString);
-        $('.edit_delete').on('click', () => { this.removeEntry(); });
-        $('.edit_abort').on('click', () => { this.displayContent(); });
-        $('.edit_save').on('click', () => { this.saveEdit(); });
+        AJAX.post(baseURL+'/getMD', {id: this.data.id}, (err, res) => {
+            if (!err) {
+                if (res && res.data) {
+                    const entryString = '<div class="col-'+this.width+' '+name+'"><textarea class="form-control editArea edit_'+this.data.id+'">'+res.data+'</textarea><div class="top-margin-sm pull-right btn-group"><button class="btn btn-danger edit_delete"><span class="glyphicon glyphicon-trash"></span></button><button class="btn btn-warning edit_abort"><span class="glyphicon glyphicon-remove"></span></button><button class="btn btn-success edit_save"><span class="glyphicon glyphicon-ok"></span></button></div></div>';
+                    $('.'+name).replaceWith(entryString);
+
+                    const area = $('textarea.editArea');
+                    area.height(0);
+                    area.height(area[0].scrollHeight+parseInt(area.css('font-size')));
+                    area.keyup(() => {
+                        area.height(0);
+                        area.height(area[0].scrollHeight+parseInt(area.css('font-size')));
+                    });
+
+                    $('.edit_delete').on('click', () => { this.removeEntry(); });
+                    $('.edit_abort').on('click', () => { this.displayContent(); });
+                    $('.edit_save').on('click', () => { this.saveEdit(); });
+                } else {
+                    $('.'+name).append('<p class="nav-offset alert alert_'+this.data.id+'"></p>');
+                    msgHelper.alert('.alert_'+this.data.id, 'Gick inte att hämta markdown.', 'warning', 3000);
+                }
+            } else {
+                $('.'+name).append('<p class="nav-offset alert alert_'+this.data.id+'"></p>');
+                msgHelper.alert('.alert_'+this.data.id, 'Gick inte att skicka förfrågan.', 'warning', 3000);
+            }
+        });
+
     }
 
     saveEdit () {
-        console.log('Saving...');
+        const name = 'entry_'+this.data.id;
+        const newText = $('.edit_'+this.data.id).val();
+        AJAX.post(baseURL+'/updateContents', {id: this.data.id, newText: newText}, (err, res) => {
+            if (!err) {
+                if (res && res.data) {
+                    this.data.text = res.data;
+                    this.displayContent();
+                } else {
+                    $('.'+name).append('<p class="nav-offset alert alert_'+this.data.id+'"></p>');
+                    msgHelper.alert('.alert_'+this.data.id, 'Gick inte att uppdatera innehåll.', 'warning', 3000);
+                }
+            } else {
+                $('.'+name).append('<p class="nav-offset alert alert_'+this.data.id+'"></p>');
+                msgHelper.alert('.alert_'+this.data.id, 'Gick inte att skicka förfrågan.', 'warning', 3000);
+            }
+        });
+    }
+
+    quickParse () {
+
     }
 
     removeEntry () {
