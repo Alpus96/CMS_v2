@@ -86,16 +86,22 @@ class ResponseHandler {
         $data = json_decode(file_get_contents('php://input'));
         $token = $_COOKIE['token'] ? json_decode($_COOKIE['token'])->value : false;
 
-        if (self::$url === '/getContents') {
+        if (self::$url === '/getContentsByMarker') {
             $res = (object)['success' => false];
-            $contents = new Contents();
             if (property_exists($data, 'marker')) {
+                $contents = new Contents();
                 $res->data = $contents->getByMarker($data);
                 $res->success = $res->data ? true : false;
-            } /*else if (property_exists($data, 'id')) {
-                $res->data = $contents->getById($data);
+            }
+            echo json_encode($res);
+        }
+        else if (self::$url === '/getContentsByID') {
+            $res = (object)['success' => false];
+            if (property_exists($data, 'id')) {
+                $contents = new Contents();
+                $res->data = $contents->getById($data->id);
                 $res->success = $res->data ? true : false;
-            }*/
+            }
             echo json_encode($res);
         }
         else if (self::$url === '/newContents') {
