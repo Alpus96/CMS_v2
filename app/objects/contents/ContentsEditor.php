@@ -30,7 +30,7 @@
             self::$updateContentsQuery = 'UPDATE CONTENTS SET CONTENT_TEXT = ? WHERE ID = ?';
             self::$createContentsQuery = 'INSERT INTO CONTENTS SET CONTENT_TEXT = ?, MARKER = ?, AUTHOR = ?';
             self::$getForDeleteQuery = 'SELECT CONTENT_TEXT, MARKER FROM CONTENTS WHERE ID = ?';
-            self::$insertInDeleteQuery = 'INSERT INTO DELETED_CONTENTS SET CONTENT_TEXT = ?; MARKER = ?';
+            self::$insertInDeleteQuery = 'INSERT INTO DELETED_CONTENTS SET CONTENT_TEXT = ?, MARKER = ?';
             self::$deleteFromContentsQuery = 'DELETE FROM CONTENTS WHERE ID = ?';
         }
 
