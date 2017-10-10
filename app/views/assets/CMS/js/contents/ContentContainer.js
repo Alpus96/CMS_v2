@@ -1,4 +1,4 @@
-if (typeof baseURL === 'undefined' || baseURL === null) { let baseURL = '/projects/CMS_v2'; }
+let baseURL = '/projects/CMS_v2';
 
 class ContentContainer {
 
@@ -54,32 +54,32 @@ class ContentContainer {
         AJAX.post(baseURL+'/getContents', this.data, (err, res) => {
             if (!err) {
                 if (res && res.success) {
-                    let entryCount;
+                    let entryCount = 0;
                     $(this.id).html('');
                     if (cookie.read('token') && window.location.href.indexOf('/edit') != -1)
                     { this.newEntryButton(); }
                     for (let entry of res.data) {
                         this.entries.push(new ContentEntry(this.id, entry, this.data));
-                        entryCount++;
+                        ++entryCount;
                     }
-                    if (entryCount == this.amount || this.data.offset != 0)
+                    if (entryCount == this.data.amount || this.data.offset != 0)
                     { this.addPageButtons(); }
                 } else {
-                    $(this.id).append('<div class="clearfix"></div><p class="text-center alert '+this.id.replace('#', '')+'"></p>');
-                    msgHelper.alert(this.id.replace('#', '.'), 'Inga inlägg.');
+                    $(this.id).append('<div class="clearfix"></div><p class="top-margin-lg text-center alert '+this.id.replace('#', '')+'"></p>');
+                    msgHelper.alert(this.id.replace('#', '.'), 'Inga inlägg.', 'info', 3000);
                 }
             } else {
-                $(this.id).append('<div class="clearfix"></div><p class="text-center alert '+this.id.replace('#', '')+'"></p>');
-                msgHelper.alert(this.id.replace('#', '.'), 'Kunde inte hämta inlägg.', 'danger');
+                $(this.id).append('<div class="clearfix"></div><p class="top-margin-lg text-center alert '+this.id.replace('#', '')+'"></p>');
+                msgHelper.alert(this.id.replace('#', '.'), 'Kunde inte hämta inlägg.', 'danger', 3000);
             }
         });
     }
 
     addPageButtons () {
         //  TODO:  Add buttons for skipping next/previous page.
-        const buttonNextId = this.id+'_next';
-        const buttonPrevId = this.id+'_prev';
-        $(this.id).append('<div class="col-xs-12 btn-group text-center"><button class="btn btn-primary"><span class="glyphicon glyphicon-"></span></button><button class="btn btn-primary"><span class="glyphicon glyphicon-"></span></button></div');
+        const buttonNextId = this.id.replace('#', '')+'_next';
+        const buttonPrevId = this.id.replace('#', '')+'_prev';
+        $(this.id).append('<div class="top-margin-lg col-xs-12 text-center"><div class="btn-group"><button class="btn btn-primary '+buttonPrevId+'"><span class="glyphicon glyphicon-chevron-left"></span></button><button class="btn btn-primary '+buttonNextId+'"><span class="glyphicon glyphicon-chevron-right"></span></button></div></div>');
         $('.'+buttonNextId).off();
         $('.'+buttonNextId).on('click', () => { this.nextPage(); });
         $('.'+buttonPrevId).off();
@@ -89,7 +89,6 @@ class ContentContainer {
     nextPage () {
         this.data.offset = this.data.offset + this.data.amount;
         this.loadContent();
-
     }
 
     previuosPage () {
@@ -98,10 +97,13 @@ class ContentContainer {
     }
 
     newEntryButton () {
+        console.log('adding new entry button');
         const name = this.id.replace('#', '')+'_button';
         const button = '<div class="col-xs-12 text-center bottom-margin-lg"><button class="' + name + ' btn btn-primary"><span class="glyphicon glyphicon-plus"></span></button></div>';
+        console.log(this.id);
         $(this.id).prepend(button);
-        $('.'+name).off();
+        //console.log(name);
+        //$('.'+name).off();
         $('.'+name).on('click', () => { this.startNewEntry(); });
     }
 
