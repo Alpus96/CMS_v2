@@ -62,8 +62,8 @@ class MsgHelper {
     }
 
     removeModal () {
-        $('.msgHelperModal').modal('hide');
-        setTimeout(() => { $('.msgHelperModal').remove(); }, 250);
+        $('.msgHelperModal').modal({show: false});
+        setTimeout(() => { $('.msgHelperModal').remove(); }, 160);
     }
 }
 
