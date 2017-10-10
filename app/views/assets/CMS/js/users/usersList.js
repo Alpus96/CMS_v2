@@ -22,10 +22,11 @@ class UsersList {
     }
 
     newUser () {
-        for (let user in this.users) {
+        this.listUsers();
+        /*for (let user in this.users) {
             if (this.users[user].username === 'new')
             { this.users.splice(user, 1); }
-        }
+        }*/
         msgHelper.newModal('Ny användare', '<div class="col-xs-12"></div><div class="form-group"><input class="form-control new_username" type="text" name="" placeholder="Användarnamn" autofocus></div><div class="form-group"><select class="form-control new_type" name=""><option value="2">Användare</option><option value="1">Admin</option></select></div><div class="form-group"><input class="form-control new_password" type="password" name="" placeholder="Nytt lösenord"></div><div class="form-group"><input class="form-control new_passConf" type="password" name="" placeholder="Bekräfta lösenord"></div><p class="hidden newUserAlert"></p>', '<div class="btn-group"><button type="button" class="new_cancel btn btn-warning" data-dismiss="modal"><span class="glyphicon glyphicon-remove" aria-hidden="true"></span></button><button type="button" class="new_ok btn btn-success"><span class="glyphicon glyphicon-ok" aria-hidden="true"></span></button></div>');
         $('.new_cancel').on('click', () => { msgHelper.removeModal(); });
         $('.new_ok').on('click', () => { this.saveNewUser(); });
@@ -44,7 +45,6 @@ class UsersList {
         if (newUser.username.indexOf(' ') === -1) {
             if (new_password.length >= 6) {
                 if (new_password === new_passConf) {
-                    this.listUsers();
                     for (let user of this.users) {
                         if (newUser.username === user.data.username) {
                             msgHelper.alert('.newUserAlert', 'Användarnamn måste vara unikt!', 'warning', 3000);
