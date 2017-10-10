@@ -72,6 +72,7 @@
                         $success = $query->affected_rows > 0 ? true : false;
                         $query->close();
                         $connection->close();
+                        self::$user->hash = $success ? $password : self::$user->hash;
                         return $success;
                     } else { $connection->close(); }
                 } else { self::databaseError($connObj->connection); }
@@ -102,6 +103,7 @@
                             'authName' => $authName,
                             'hash' => $hash,
                             'type' => $type,
+                            'locked' => $locked
                         ];
                     }
                     $query->close();

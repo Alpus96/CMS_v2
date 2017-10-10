@@ -60,6 +60,7 @@ class UserHandler {
     }
 
     changePW () {
+        const password = window.btoa($('#password').val())
         const newPass = {
             password: window.btoa($('#newPassword').val()),
             confPass: window.btoa($('#newPassConf').val())
@@ -74,11 +75,12 @@ class UserHandler {
                 return;
             }
 
-            AJAX.post('/setPW', newPass, (err, res) => {
+            AJAX.post(baseURL+'/setPW', {password: password, newPass: newPass.password}, (err, res) => {
                 if (!err && res) {
                     if (res.success) {
                         msgHelper.alert('p#msg-text', 'Lösenordet har updaterats!', 'success', 3000);
-
+                        
+                        $('#password').val('');
                         $('#newPassword').val('');
                         $('#newPassConf').val('');
                     } else {
@@ -92,7 +94,7 @@ class UserHandler {
     }
 
     changeAuthorName () {
-        
+
     }
 
 }
