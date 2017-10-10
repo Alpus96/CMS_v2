@@ -1,5 +1,3 @@
-//let baseURL = '/projects/CMS_v2';
-
 class ContentEntry {
 
     constructor (containerId, entryObject, containerInfo) {
