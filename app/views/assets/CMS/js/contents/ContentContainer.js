@@ -13,8 +13,6 @@ class ContentContainer {
             if (this.data.marker != '' && this.data.amount != -1) {
                 this.entries = [];
                 this.loadContent();
-                if (cookie.read('token'))
-                { this.newEntryButton(); }
             } else {
                 console.warn('Insufficient data! ("'+this.id+'")');
                 $(this.id).append('<p class="text-center alert '+id.replace('#', '')+'"></p>');
@@ -58,6 +56,8 @@ class ContentContainer {
                 if (res && res.success) {
                     let entryCount;
                     $(this.id).html('');
+                    if (cookie.read('token') && window.location.href.indexOf('/edit') != -1)
+                    { this.newEntryButton(); }
                     for (let entry of res.data) {
                         this.entries.push(new ContentEntry(this.id, entry, this.data));
                         entryCount++;
