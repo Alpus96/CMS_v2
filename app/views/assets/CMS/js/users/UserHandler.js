@@ -91,6 +91,10 @@ class UserHandler {
         }
     }
 
+    changeAuthorName () {
+        
+    }
+
 }
 
 $(document).ready(() => { const cms = new UserHandler(); });
