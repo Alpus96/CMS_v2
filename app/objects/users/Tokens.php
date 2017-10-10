@@ -49,7 +49,7 @@
                     $queryStr = str_replace('?', self::$id, self::$deleteTokenQuery);
                     $connection->query($queryStr);
                     return self::active(self::$username);
-                }
+                } else { self::databaseError($connObj->connection); }
             }
             return false;
         }
@@ -90,11 +90,7 @@
                         $connection->close();
                         return self::active($user->username);
                     } else { $connection->close(); }
-                } else {
-                    $msg = 'Unable to connect to the database : '.$connObj->connection;
-                    self::$logger->log(self::$logName, $msg);
-                    throw new Exception($msg);
-                }
+                } else { self::databaseError($connObj->connection); }
             }
         }
 
@@ -119,11 +115,7 @@
                     self::$username = self::$id ? $username : null;
                     return self::$id ? true : false;
                 } else { $connection->close();}
-            } else {
-                $msg = 'Unable to connect to the database : '.$connObj->connection;
-                self::$logger->log(self::$logName, $msg);
-                throw new Exception($msg);
-            }
+            } else { self::databaseError($connObj->connection); }
         }
 
         private function updateToken ($token) {
@@ -138,13 +130,15 @@
                             self::$logger->log(self::$logName, 'Unable to update the token timestamp : '.$connObj->connection);
                         }
                     }
-                } else {
-                    $msg = 'Unable to connect to the database : '.$connObj->connection;
-                    self::$logger->log(self::$logName, $msg);
-                    throw new Exception($msg);
-                }
+                } else { self::databaseError($connObj->connection); }
                 $connection->close();
             }
+        }
+
+        private static function databaseError($error) {
+            $msg = 'Unable to connect to the database : '.$error;
+            self::$logger->log(self::$logName, $msg);
+            throw new Exception($msg);
         }
 
     }

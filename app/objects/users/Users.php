@@ -53,11 +53,7 @@
                         $connection->close();
                         return $success;
                     } else { $connection->close(); }
-                } else {
-                    $msg = 'Unable to connect to the database : '.$connObj->connection;
-                    self::$logger->log(self::$logName, $msg);
-                    throw new Exception($msg);
-                }
+                } else { self::databaseError($connObj->connection); }
             }
             return false;
         }
@@ -89,11 +85,7 @@
                     $query->close();
                     $connection->close();
                 } else { $connection->close(); }
-            } else {
-                $msg = 'Unable to connect to the database : '.$connObj->connection;
-                self::$logger->log(self::$logName, $msg);
-                throw new Exception($msg);
-            }
+            } else { self::databaseError($connObj->connection); }
 
             if (isset(self::$user->id) && isset(self::$user->username) && isset(self::$user->hash) && isset(self::$user->type) && isset(self::$user->locked)) {
                 if (password_verify($identifier->password, self::$user->hash)) {
@@ -102,6 +94,12 @@
                 }
             }
             self::$token = new Token(null);
+        }
+
+        private static function databaseError($error) {
+            $msg = 'Unable to connect to the database : '.$error;
+            self::$logger->log(self::$logName, $msg);
+            throw new Exception($msg);
         }
 
     }
