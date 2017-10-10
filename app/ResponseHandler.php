@@ -134,7 +134,7 @@ class ResponseHandler {
             $res = (object)['success' => false];
             if (property_exists($data, 'id')) {
                 $contentsEditor = new ContentsEditor($token);
-                $res->success = $contentsEditor->deleteContents($data);
+                $res->success = $contentsEditor->deleteContents($data->id);
             }
             echo json_encode($res);
         }
