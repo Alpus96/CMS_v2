@@ -18,6 +18,7 @@ class ContentContainer {
             }
         }
     }
+    
     addChildrenListners () {
         $(this.id).off();
         $(this.id).on('DOMNodeInserted', (e) => {

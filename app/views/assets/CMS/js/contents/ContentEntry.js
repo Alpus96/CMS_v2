@@ -28,9 +28,13 @@ class ContentEntry {
     parseWidth (width) {
         //  should be anything xs/sm/md/lg/xl + (-) + 1-12
         if (width) {
-            const ws = width.split('-');
-            if (ws.length == 2) {
-                this.width = ws[0]+'-'+ws[1];
+            const ws = width.indexOf() ? width.split('-') : false;
+            if (ws) {
+                let wStr = '';
+                for (let i = 0; i < ws.length; i++) {
+                    wStr += 'col-'+ws[i]+'-'+ws[++i]+' ';
+                }
+                this.width = wStr;
             }
         }
         else { this.width = false; }
@@ -48,7 +52,7 @@ class ContentEntry {
         const authString = this.containerInfo.incAuth && this.data.author ? this.data.author : '';
 
         const name = 'entry_'+this.data.id;
-        const entryString = '<div class="col-'+this.width+' '+name+'">'+this.data.text+'<p class="pull-right text-right"><small>'+authString+'</small><br><small>'+dateString+'</p></div>';
+        const entryString = '<div class="'+this.width+name+'">'+this.data.text+'<p class="pull-right text-right"><small>'+authString+'</small><br><small>'+dateString+'</p></div>';
 
         $('.'+name).replaceWith(entryString);
         if (cookie.read('token') && window.location.href.indexOf('/edit') != -1)
@@ -60,7 +64,7 @@ class ContentEntry {
         AJAX.post(baseURL+'/getMD', {id: this.data.id}, (err, res) => {
             if (!err) {
                 if (res && res.success) {
-                    const entryString = '<div class="col-'+this.width+' '+name+'"><textarea class="form-control editArea edit_'+this.data.id+'">'+res.data+'</textarea><div class="top-margin-sm pull-right btn-group"><button class="btn btn-danger edit_delete"><span class="glyphicon glyphicon-trash"></span></button><button class="btn btn-warning edit_abort"><span class="glyphicon glyphicon-remove"></span></button><button class="btn btn-success edit_save"><span class="glyphicon glyphicon-ok"></span></button></div></div>';
+                    const entryString = '<div class="'+this.width+name+'"><textarea class="form-control editArea edit_'+this.data.id+'">'+res.data+'</textarea><div class="top-margin-sm pull-right btn-group"><button class="btn btn-danger edit_delete"><span class="glyphicon glyphicon-trash"></span></button><button class="btn btn-warning edit_abort"><span class="glyphicon glyphicon-remove"></span></button><button class="btn btn-success edit_save"><span class="glyphicon glyphicon-ok"></span></button></div></div>';
                     $('.'+name).replaceWith(entryString);
 
                     const area = $('textarea.editArea');
