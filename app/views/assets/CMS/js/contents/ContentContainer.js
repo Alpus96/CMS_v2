@@ -18,6 +18,20 @@ class ContentContainer {
             }
         }
     }
+    addChildrenListners () {
+        $(this.id).off();
+        $(this.id).on('DOMNodeInserted', (e) => {
+            let amount = this.data.amount
+            if (cookie.read('token') && window.location.href.indexOf('/edit') != -1) {
+                amount += 2;
+            }
+            if ($(e.target).hasClass('deleted')) {
+                this.loadContent();
+            } else if ($(this.id).children().length > amount) {
+                $(this.id).children().last().remove();
+            }
+        });
+    }
 
     getOptions () {
         let options = $(this.id).attr('class').split(/\s+/);
@@ -52,14 +66,16 @@ class ContentContainer {
         $(this.id).html('');
         if (cookie.read('token') && window.location.href.indexOf('/edit') != -1)
         { this.newEntryButton(); }
-        let entryCount = 0;
         AJAX.post(baseURL+'/getContentsByMarker', this.data, (err, res) => {
             if (!err) {
                 if (res && res.success) {
-                    for (let entry of res.data) {
+                    for (let entry of res.data.entries) {
                         this.entries.push(new ContentEntry(this.id, entry, this.data));
-                        entryCount++;
                     }
+                    this.more = res.data.more;
+                    if (this.more || this.data.offset != 0)
+                    { this.addPageButtons(); }
+                    this.addChildrenListners();
                 } else {
                     $(this.id).append('<div class="clearfix"></div><p class="top-margin-lg text-center alert '+this.id.replace('#', '')+'"></p>');
                     msgHelper.alert(this.id.replace('#', '.'), 'Inga inlägg.', 'info');
@@ -68,23 +84,25 @@ class ContentContainer {
                 $(this.id).append('<div class="clearfix"></div><p class="top-margin-lg text-center alert '+this.id.replace('#', '')+'"></p>');
                 msgHelper.alert(this.id.replace('#', '.'), 'Kunde inte hämta inlägg.', 'danger');
             }
-            console.log(this.data + ' : ' + entryCount);
-            //  TODO: Know if there is contents for next page.
-            if (entryCount == this.data.amount || this.data.offset != 0)
-            { this.addPageButtons(); }
         });
 
     }
 
     addPageButtons () {
-        //  TODO:  Figure if to add both as clickable.
-        const buttonNextId = this.id.replace('#', '')+'_next';
-        const buttonPrevId = this.id.replace('#', '')+'_prev';
-        $(this.id).append('<div class="top-margin-lg col-xs-12 text-center"><div class="btn-group"><button class="btn btn-primary '+buttonPrevId+'"><span class="glyphicon glyphicon-chevron-left"></span></button><button class="btn btn-primary '+buttonNextId+'"><span class="glyphicon glyphicon-chevron-right"></span></button></div></div>');
-        $('.'+buttonNextId).off();
-        $('.'+buttonNextId).on('click', () => { this.nextPage(); });
-        $('.'+buttonPrevId).off();
-        $('.'+buttonPrevId).on('click', () => { this.previousPage(); });
+        const buttonNext = this.more ? '<button class="btn btn-primary '+this.id.replace('#', '')+'_next"><span class="glyphicon glyphicon-chevron-right"></span></button>' : '';
+        const buttonPrev = this.data.offset != 0 ? '<button class="btn btn-primary '+this.id.replace('#', '')+'_prev"><span class="glyphicon glyphicon-chevron-left"></span></button>' : '';
+
+        const btnStr = '<div class="top-margin-lg col-xs-12 text-center"><div class="btn-group">'+ buttonPrev + buttonNext +'</div></div>';
+        $(this.id).append(btnStr);
+
+        if (this.more) {
+            $('.'+this.id.replace('#', '')+'_next').off();
+            $('.'+this.id.replace('#', '')+'_next').on('click', () => { this.nextPage(); });
+        }
+        if (this.data.offset != 0) {
+            $('.'+this.id.replace('#', '')+'_prev').off();
+            $('.'+this.id.replace('#', '')+'_prev').on('click', () => { this.previousPage(); });
+        }
     }
 
     nextPage () {

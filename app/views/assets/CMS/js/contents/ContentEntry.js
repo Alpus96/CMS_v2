@@ -101,7 +101,7 @@ class ContentEntry {
         AJAX.post(baseURL+'/deleteContents', {id: this.data.id}, (err, res) => {
             if (!err) {
                 if (res && res.success) {
-                    $('.entry_'+this.data.id).remove();
+                    $('.entry_'+this.data.id).replaceWith('<div class="deleted"></div>');
                 } else { this.requestDenied(); }
             } else { this.requestFailed(); }
         });

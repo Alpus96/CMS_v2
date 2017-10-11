@@ -34,7 +34,8 @@
                     $offset = 0;
                     if (property_exists($options, 'offset'))
                     { $offset = $options->offset; }
-                    $query->bind_param('sii', $options->marker, $options->amount, $offset);
+                    $amount = $options->amount+1;
+                    $query->bind_param('sii', $options->marker, $amount, $offset);
                     $query->execute();
                     $query->bind_result($id, $text, $author, $created, $edited);
                     $contents = [];
@@ -56,7 +57,12 @@
                         }
                         $contents[$key] = $content;
                     }
-                    return $contents;
+                    $res = (object)['more' => false, 'entries' => $contents];
+                    if (count($contents) > $options->amount) {
+                        $res->more = true;
+                        array_pop($res->entries);
+                    }
+                    return $res;
                 }
                 $connection->close();
             } else { self::databaseError($connObj->connection); }
