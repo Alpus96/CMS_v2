@@ -61,9 +61,8 @@ class UserHandler {
     }
 
     confirmPass (forX) {
-        msgHelper.newModal('Bekräfta', '<div class="form-group"><input class="form-control" type="password" name="" id ="password" placeholder="Nuvarande lösenord" autofocus></div>', '<div class="btn-group"><button class="btn btn-warning confirm_cancel"><span class="glyphicon glyphicon-remove"></span></button><button class="btn btn-success confirm_ok"><span class="glyphicon glyphicon-ok"></span></button></div>');
+        msgHelper.newModal('Bekräfta', '<div class="form-group"><input class="form-control" type="password" name="" id ="password" placeholder="Bekräfta med lösenord" autofocus></div>', '<div class="btn-group"><button class="btn btn-warning confirm_cancel" data-dismiss="modal"><span class="glyphicon glyphicon-remove"></span></button><button class="btn btn-success confirm_ok" data-dismiss="modal"><span class="glyphicon glyphicon-ok"></span></button></div>');
 
-        $('.confirm_cancel').on('click', () => { msgHelper.removeModal(); });
         $('.confirm_ok').on('click', () => {
             const password = window.btoa($('#password').val())
             if (forX === 'password') {
@@ -71,7 +70,7 @@ class UserHandler {
             } else if (forX === 'authName') {
                 this.changeAuthorName(password);
             }
-            msgHelper.removeModal();
+            //msgHelper.removeModal();
         });
     }
 
@@ -80,7 +79,7 @@ class UserHandler {
             password: window.btoa($('#newPassword').val()),
             confPass: window.btoa($('#newPassConf').val())
         };
-        if (!newPass.password === newPass.confPass) {
+        if (newPass.password !== newPass.confPass) {
             msgHelper.alert('p#msg-text', 'Lösenorden måste matcha!', 'warning', 3000);
             $('#newPassword').val('');
             $('#newPassConf').val('');
@@ -95,7 +94,6 @@ class UserHandler {
                     if (res.success) {
                         msgHelper.alert('p#msg-text', 'Lösenordet har updaterats!', 'success', 3000);
 
-                        $('#password').val('');
                         $('#newPassword').val('');
                         $('#newPassConf').val('');
                     } else {
@@ -128,7 +126,6 @@ class UserHandler {
             if (!err && res) {
                 if (res.success) {
                     msgHelper.alert('p#msg-text-name', 'Förfatarnamn uppdaterat!', 'success', 3000);
-                    $('#namePass').val('');
                 } else {
                     msgHelper.alert('p#msg-text-name', 'Fel lösenord!', 'warning', 3000);
                 }
