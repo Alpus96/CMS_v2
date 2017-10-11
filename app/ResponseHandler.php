@@ -117,7 +117,7 @@ class ResponseHandler {
             if (property_exists($data, 'id')) {
                 $contentsEditor = new ContentsEditor($token);
                 $res->data = $contentsEditor->getAsMD($data->id);
-                $res->success = $res->data ? true : false;
+                $res->success = $res->data === false ? false : true;
             }
             echo json_encode($res);
         }

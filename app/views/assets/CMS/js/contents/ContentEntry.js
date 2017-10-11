@@ -59,7 +59,7 @@ class ContentEntry {
         const name = 'entry_'+this.data.id;
         AJAX.post(baseURL+'/getMD', {id: this.data.id}, (err, res) => {
             if (!err) {
-                if (res && res.data) {
+                if (res && res.success) {
                     const entryString = '<div class="col-'+this.width+' '+name+'"><textarea class="form-control editArea edit_'+this.data.id+'">'+res.data+'</textarea><div class="top-margin-sm pull-right btn-group"><button class="btn btn-danger edit_delete"><span class="glyphicon glyphicon-trash"></span></button><button class="btn btn-warning edit_abort"><span class="glyphicon glyphicon-remove"></span></button><button class="btn btn-success edit_save"><span class="glyphicon glyphicon-ok"></span></button></div></div>';
                     $('.'+name).replaceWith(entryString);
 
@@ -83,14 +83,18 @@ class ContentEntry {
     saveEdit () {
         const name = 'entry_'+this.data.id;
         const newText = $('.edit_'+this.data.id).val();
-        AJAX.post(baseURL+'/updateContents', {id: this.data.id, newText: newText}, (err, res) => {
-            if (!err) {
-                if (res && res.data) {
-                    this.data.text = res.data;
-                    this.displayContent();
-                } else { this.requestDenied(); }
-            } else { this.requestFailed(); }
-        });
+        if (newText != '') {
+            AJAX.post(baseURL+'/updateContents', {id: this.data.id, newText: newText}, (err, res) => {
+                if (!err) {
+                    if (res && res.data) {
+                        this.data.text = res.data;
+                        this.displayContent();
+                    } else { this.requestDenied(); }
+                } else { this.requestFailed(); }
+            });
+        } else {
+            msgHelper.newModal('Fel uppstod!', '<h5>Kan inte spara ett tomt inlägg!</h5>', '<button class="btn btn-warning" data-dismiss="modal"><span class="glyphicon glyphicon-remove"></span></button>');
+        }
     }
 
     removeEntry () {
