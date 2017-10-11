@@ -36,7 +36,7 @@
 
         //  NOTE: $newContents = {text, marker}, add author name.
         function createContents ($newContents) {
-            if (self::$token->toJSON() && property_exists($newContents, 'text') && property_exists($newContents, 'marker')) {
+            if (self::$token->toJSON() && property_exists($newContents, 'text') && $newContents->text != '' && property_exists($newContents, 'marker') && $newContents->marker != '') {
                 $connObj = parent::connect();
                 if (!$connObj->error) {
                     $connection = $connObj->connection;

@@ -52,21 +52,14 @@ class ContentContainer {
         $(this.id).html('');
         if (cookie.read('token') && window.location.href.indexOf('/edit') != -1)
         { this.newEntryButton(); }
+        let entryCount = 0;
         AJAX.post(baseURL+'/getContentsByMarker', this.data, (err, res) => {
             if (!err) {
                 if (res && res.success) {
-                    let entryCount = 0;
-
                     for (let entry of res.data) {
                         this.entries.push(new ContentEntry(this.id, entry, this.data));
-                        ++entryCount;
+                        entryCount++;
                     }
-                    //  TODO: Know if there is contents for next page.
-                    if (entryCount == this.data.amount || this.data.offset != 0)
-                    { this.addPageButtons(); }
-                    $(this.id).change(() => {
-                        this.loadContent();
-                    });
                 } else {
                     $(this.id).append('<div class="clearfix"></div><p class="top-margin-lg text-center alert '+this.id.replace('#', '')+'"></p>');
                     msgHelper.alert(this.id.replace('#', '.'), 'Inga inlägg.', 'info');
@@ -75,7 +68,12 @@ class ContentContainer {
                 $(this.id).append('<div class="clearfix"></div><p class="top-margin-lg text-center alert '+this.id.replace('#', '')+'"></p>');
                 msgHelper.alert(this.id.replace('#', '.'), 'Kunde inte hämta inlägg.', 'danger');
             }
+            console.log(this.data + ' : ' + entryCount);
+            //  TODO: Know if there is contents for next page.
+            if (entryCount == this.data.amount || this.data.offset != 0)
+            { this.addPageButtons(); }
         });
+
     }
 
     addPageButtons () {
@@ -125,34 +123,41 @@ class ContentContainer {
 
     saveNewEntry () {
         const newEntry = $('.newEntry_text').val();
-        const data = {
-            text: newEntry,
-            marker: this.data.marker
-        };
-        AJAX.post(baseURL+'/newContents', data, (err, res) => {
-            if (!err) {
-                if (res && res.success) {
-                    this.loadContent();
-                    msgHelper.removeModal();
+        if (newEntry == '') {
+            msgHelper.removeModal();
+            setTimeout(() => {
+                msgHelper.newModal('Fel uppstod!', '<h5>Kan inte spara ett tomt inlägg!</h5>', '<button class="btn btn-warning" data-dismiss="modal"><span class="glyphicon glyphicon-remove"></span></button>');
+            }, 210);
+        } else {
+            const data = {
+                text: newEntry,
+                marker: this.data.marker
+            };
+            AJAX.post(baseURL+'/newContents', data, (err, res) => {
+                if (!err) {
+                    if (res && res.success) {
+                        this.loadContent();
+                        msgHelper.removeModal();
+                    } else {
+                        msgHelper.removeModal();
+                        setTimeout(() => {
+                            msgHelper.newModal('Fel uppstod!', 'Det gick tyvär inte att spara inlägget.', '<button class="save_error btn btn-warning" data-dismiss="modal"><span class="glyphicon glyphicon-remove"></span></button>');
+                            $('.save_error').on('click', () => {
+                                msgHelper.removeModal();
+                            })
+                        }, 210);
+                    }
                 } else {
                     msgHelper.removeModal();
                     setTimeout(() => {
-                        msgHelper.newModal('Fel uppstod!', 'Det gick tyvär inte att spara inlägget.', '<button class="save_error btn btn-warning" data-dismiss="modal"><span class="glyphicon glyphicon-remove"></span></button>');
+                        msgHelper.newModal('Fel uppstod!', 'Det gick inte att skicka förfrågan!', '<button class="save_error btn btn-danger" data-dismiss="modal"><span class="glyphicon glyphicon-remove"></span></button>');
                         $('.save_error').on('click', () => {
                             msgHelper.removeModal();
                         })
-                    }, 175);
+                    }, 210);
                 }
-            } else {
-                msgHelper.removeModal();
-                setTimeout(() => {
-                    msgHelper.newModal('Fel uppstod!', 'Det gick inte att skicka förfrågan!', '<button class="save_error btn btn-danger" data-dismiss="modal"><span class="glyphicon glyphicon-remove"></span></button>');
-                    $('.save_error').on('click', () => {
-                        msgHelper.removeModal();
-                    })
-                }, 175);
-            }
-        });
+            });
+        //}
     }
 
 }
