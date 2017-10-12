@@ -32,7 +32,7 @@
             }
         }
 
-        function getToken() {
+        public function getToken() {
             return self::$token->toJSON();
         }
 
@@ -40,11 +40,11 @@
             return self::$token->decodedToken()->authName;
         }
 
-        function logout() {
+        public function logout() {
             return self::$token->deleteToken();
         }
 
-        function setAuthorName ($password, $authorName) {
+        public function setAuthorName ($password, $authorName) {
             if (!is_string($authorName)) { return false; }
             if (self::$token->toJSON() && password_verify($password, self::$user->hash)) {
                 $connObj = parent::connect();
@@ -67,7 +67,7 @@
             return false;
         }
 
-        function newPassword($password, $newPass) {
+        public function newPassword($password, $newPass) {
             if (!is_string($newPass) || strlen($newPass) < 6) { return false; }
             if (self::$token->toJSON() && password_verify($password, self::$user->hash)) {
                 $password = password_hash($newPass, PASSWORD_DEFAULT);
@@ -92,6 +92,7 @@
         }
 
         private function getValidUser ($identifier) {
+            if (!property_exists($identifier, 'username') || !property_exists($identifier, 'password')) { return false; }
             $connObj = parent::connect();
             if (!$connObj->error) {
                 $connection = $connObj->connection;
