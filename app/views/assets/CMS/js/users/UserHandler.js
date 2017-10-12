@@ -5,7 +5,6 @@ class UserHandler {
         }
 
         if (window.location.href.indexOf('/login') != -1) {
-            console.log(cookie.read('token'));
             if (cookie.read('token')) {
                 cookie.extendDuration('token');
                 window.location.href = baseURL+'/edit';
