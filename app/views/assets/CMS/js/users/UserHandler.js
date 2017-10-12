@@ -5,10 +5,15 @@ class UserHandler {
         { window.location.href = baseURL+'/login'; }
 
         if (window.location.href.indexOf('/login') != -1) {
-            $('form#login').submit('submit', (event) => {
-                event.preventDefault();
-                this.loginRequest();
-            });
+            if (cokkie.read('token')) {
+                cookie.extendDuration('token');
+                window.location.href = baseURL+'/edit';
+            } else {
+                $('form#login').submit('submit', (event) => {
+                    event.preventDefault();
+                    this.loginRequest();
+                });
+            }
         }
 
         else if (window.location.href.indexOf('/edit') != -1) {
