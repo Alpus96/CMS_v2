@@ -68,7 +68,6 @@ class ContentContainer {
         if (cookie.read('token') && window.location.href.indexOf('/edit') != -1)
         { this.newEntryButton(); }
         AJAX.post(baseURL+'/getContentsByMarker', this.data, (err, res) => {
-            console.log(res);
             if (!err) {
                 if (res && res.success) {
                     for (let entry of res.data.entries) {
