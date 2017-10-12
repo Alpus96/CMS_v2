@@ -112,6 +112,7 @@ class UserHandler {
             if (!err && res) {
                 if (res.success) {
                     cookie.extendDuration('token');
+                    this.authName = res.data;
                     $('#authName').val(res.data);
                 } else {
                     msgHelper.alert('p#msg-text-name', 'Inget namn satt!', 'warning');
@@ -124,18 +125,22 @@ class UserHandler {
 
     changeAuthorName (password) {
         const newName = $('#authName').val();
-        AJAX.post(baseURL+'/setAuthName', {authName: newName, password: password}, (err, res) => {
-            if (!err && res) {
-                if (res.success) {
-                    cookie.create('token', res.data);
-                    msgHelper.alert('p#msg-text-name', 'Förfatarnamn uppdaterat!', 'success', 3000);
+        if (newName !== this.authName) {
+            AJAX.post(baseURL+'/setAuthName', {authName: newName, password: password}, (err, res) => {
+                if (!err && res) {
+                    if (res.success) {
+                        cookie.create('token', res.data);
+                        msgHelper.alert('p#msg-text-name', 'Förfatarnamn uppdaterat!', 'success', 3000);
+                    } else {
+                        msgHelper.alert('p#msg-text-name', 'Fel lösenord!', 'danger', 3000);
+                    }
                 } else {
-                    msgHelper.alert('p#msg-text-name', 'Fel lösenord!', 'warning', 3000);
+                    msgHelper.alert('p#msg-tex-name', 'Uppdatering misslyckades!', 'danger', 30000);
                 }
-            } else {
-                msgHelper.alert('p#msg-tex-name', 'Uppdatering misslyckades!', 'danger', 30000);
-            }
-        });
+            });
+        } else {
+            msgHelper.alert('p#msg-text-name', 'Du måste ange ett nytt namn!', 'warning', 3000);
+        }
     }
 
 }
