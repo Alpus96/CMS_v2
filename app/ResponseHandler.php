@@ -41,7 +41,9 @@ class ResponseHandler {
         $token = $_COOKIE['token'] ? json_decode($_COOKIE['token'])->value : false;
 
         if (self::$url === '/') {
-            echo file_get_contents(self::$config->index);
+            $index = file_get_contents(self::$config->index);
+            $index = str_replace("<!-- pt -->", self::$config->indexTitle, $index);
+            echo $index;
         }
         else if (self::$url === '/login') {
             echo file_get_contents(self::$config->login);
@@ -54,6 +56,7 @@ class ResponseHandler {
                 if ($new_token) {
                     $approved = true;
                     $index = file_get_contents(self::$config->index);
+                    $index = str_replace("<!-- pt -->", 'CMS - Edit', $index);
                     $index = str_replace("<!-- edit -->", self::$config->src_editor, $index);
                     $index = str_replace("<!-- edit_menu -->", self::$config->edit_menu, $index);
                     echo $index;
