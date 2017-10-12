@@ -18,7 +18,7 @@ class ContentContainer {
             }
         }
     }
-    
+
     addChildrenListners () {
         $(this.id).off();
         $(this.id).on('DOMNodeInserted', (e) => {
@@ -28,7 +28,7 @@ class ContentContainer {
             }
             if ($(e.target).hasClass('deleted')) {
                 this.loadContent();
-            } else if ($(this.id).children().length > amount) {
+            } else if ($(this.id).children().length > amount && amount != 0) {
                 $(this.id).children().last().remove();
             }
         });
@@ -49,7 +49,7 @@ class ContentContainer {
                 this.data.marker = typeof marker == 'string' ? marker : '';
             } else if (opt.indexOf('amount_') != -1) {
                 const amount = opt.replace('amount_', '');
-                this.data.amount = isNaN(amount) ? 0 : parseInt(amount);
+                this.data.amount = isNaN(amount) ? -1 : parseInt(amount);
             } else if (opt.indexOf('incAuth_') != -1) {
                 const incAuth = opt.replace('incAuth_', '');
                 this.data.incAuth = incAuth && incAuth != 'false' ? true : false;
@@ -68,6 +68,7 @@ class ContentContainer {
         if (cookie.read('token') && window.location.href.indexOf('/edit') != -1)
         { this.newEntryButton(); }
         AJAX.post(baseURL+'/getContentsByMarker', this.data, (err, res) => {
+            console.log(res);
             if (!err) {
                 if (res && res.success) {
                     for (let entry of res.data.entries) {

@@ -17,7 +17,7 @@
             self::$logger = new logger();
             self::$logName = '_contents_errorLog';
 
-            self::$getByMarkerQuery = 'SELECT ID, CONTENT_TEXT, AUTHOR, TIMESTAMP_CREATED, TIMESTAMP_EDITED FROM CONTENTS WHERE MARKER = ? ORDER BY TIMESTAMP_CREATED DESC LIMIT ? OFFSET ?';
+            self::$getByMarkerQuery = 'SELECT ID, CONTENT_TEXT, AUTHOR, TIMESTAMP_CREATED, TIMESTAMP_EDITED FROM CONTENTS WHERE MARKER = ? ORDER BY TIMESTAMP_CREATED DESC LIMIT ?,?';
             self::$getByIDQuery = 'SELECT CONTENT_TEXT, AUTHOR, TIMESTAMP_CREATED, TIMESTAMP_EDITED FROM CONTENTS WHERE ID = ?';
         }
 
@@ -32,10 +32,12 @@
                 $connection = $connObj->connection;
                 if ($query = $connection->prepare(self::$getByMarkerQuery)) {
                     $offset = 0;
-                    if (property_exists($options, 'offset'))
+                    if (property_exists($options, 'offset') && $options->offset >= 0)
                     { $offset = $options->offset; }
-                    $amount = $options->amount+1;
-                    $query->bind_param('sii', $options->marker, $amount, $offset);
+                    $amount = 18446744073709551615;
+                    if (property_exists($options, 'amount') && $options->amount > 0)
+                    { $amount = $options->amount; }
+                    $query->bind_param('sii', $options->marker, $offset, $amount);
                     $query->execute();
                     $query->bind_result($id, $text, $author, $created, $edited);
                     $contents = [];
@@ -58,7 +60,7 @@
                         $contents[$key] = $content;
                     }
                     $res = (object)['more' => false, 'entries' => $contents];
-                    if (count($contents) > $options->amount) {
+                    if (count($contents) > $amount) {
                         $res->more = true;
                         array_pop($res->entries);
                     }
