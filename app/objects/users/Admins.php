@@ -1,7 +1,6 @@
 <?php
     require_once 'app/library/debug/logger.php';
     require_once 'app/library/socket/MySQL_socket.php';
-    require_once 'app/library/socket/JSON_socket.php';
     require_once 'app/objects/users/Tokens.php';
 
     class Admin extends MySQL_socket {
@@ -20,8 +19,9 @@
         static private $toggleLockedQuery;
         static private $deleteUserQuery;
 
-        function __construct($token) {
+        public function __construct ($token) {
             parent::__construct();
+
             self::$token = new Token($token);
             self::$is_admin = false;
             self::$user = self::$token->decodedToken();
@@ -38,9 +38,11 @@
             self::$deleteUserQuery = 'DELETE FROM USERS WHERE USERNAME = ?';
         }
 
-        function is_admin () { return self::$is_admin; }
+        public function is_admin () {
+            return self::$is_admin;
+        }
 
-        function getAllUsers () {
+        public function getAllUsers () {
             if (!self::$is_admin) { return false; }
             $connObj = parent::connect();
             if (!$connObj->error) {
@@ -62,13 +64,12 @@
                     $query->close();
                     $connection->close();
                     return $users;
-                }
-                $connection->close();
+                } else { $connection->close(); }
             } else { self::databaseError($connObj->connection); }
             return false;
         }
 
-        function createUser ($newUser) {
+        public function createUser ($newUser) {
             if (!self::$is_admin) { return false; }
             if (!property_exists($newUser, 'username') || !property_exists($newUser, 'password') || !property_exists($newUser, 'type')) { return false; }
             if (!self::isUser($newUser->username)) {
@@ -89,7 +90,7 @@
             return false;
         }
 
-        function changeUserType ($username, $type) {
+        public function changeUserType ($username, $type) {
             if (!self::$is_admin) { return false; }
             if (!is_string($username) || strlen($username) === 0 || $username === self::$user->username || $username === 'admin' || !is_numeric($type)) { return false; }
             if (self::isUser($username)) {
@@ -109,7 +110,7 @@
             return false;
         }
 
-        function toggleLockedUser ($username) {
+        public function toggleLockedUser ($username) {
             if (!self::$is_admin) { return false; }
             if (!is_string($username) || strlen($username) === 0 || $username === self::$user->username || $username === 'admin') { return false; }
             if (self::isUser($username)) {
@@ -129,7 +130,7 @@
             return false;
         }
 
-        function deleteUser ($username) {
+        public function deleteUser ($username) {
             if (!self::$is_admin) { return false; }
             if (!is_string($username) || $username === self::$user->username || $username === 'admin') { return false; }
             if (self::isUser($username)) {
@@ -149,17 +150,7 @@
             return false;
         }
 
-        function updateDBConf ($newConf) {
-            if (!self::$is_admin) { return false; }
-            //  TODO:   Write the new information to the database config-file.
-        }
-
-        function newTokenKey () {
-            if (!self::$is_admin) { return false; }
-
-        }
-
-        private function isUser ($username) {
+        private static function isUser ($username) {
             $connObj = parent::connect();
             if (!$connObj->error) {
                 $connection = $connObj->connection;
