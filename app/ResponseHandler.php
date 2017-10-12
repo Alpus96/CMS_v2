@@ -1,5 +1,4 @@
 <?php
-
 require_once 'app/library/debug/logger.php';
 require_once 'app/library/socket/JSON_socket.php';
 
@@ -155,6 +154,7 @@ class ResponseHandler {
             echo json_encode($res);
         }
         else if (self::$url === '/logout') {
+            //  TODO:  Handle errors.
             if ($token) {
                 $user = new User($token);
                 $user->getToken() ? $user->logout() : null;
@@ -236,7 +236,6 @@ class ResponseHandler {
         }
         else { http_response_code(404); }
     }
-    
-}
 
+}
 ?>
