@@ -59,8 +59,9 @@ class UserHandler {
     }
 
     confirmPass (forX) {
-        msgHelper.newModal('Bekräfta', '<div class="form-group"><input class="form-control" type="password" name="" id ="password" placeholder="Bekräfta med lösenord" autofocus></div>', '<div class="btn-group"><button class="btn btn-warning confirm_cancel" data-dismiss="modal"><span class="glyphicon glyphicon-remove"></span></button><button class="btn btn-success confirm_ok" data-dismiss="modal"><span class="glyphicon glyphicon-ok"></span></button></div>');
+        msgHelper.newModal('Bekräfta', '<div class="form-group"><input class="form-control" type="password" id="password" placeholder="Bekräfta med lösenord"></div>', '<div class="btn-group"><button class="btn btn-warning confirm_cancel" data-dismiss="modal"><span class="glyphicon glyphicon-remove"></span></button><button class="btn btn-success confirm_ok" data-dismiss="modal"><span class="glyphicon glyphicon-ok"></span></button></div>');
 
+        setTimeout(() => { $('#password').focus(); }, 200);
         $('.confirm_ok').on('click', () => {
             const password = window.btoa($('#password').val())
             if (forX === 'password') {
@@ -128,6 +129,7 @@ class UserHandler {
                 if (!err && res) {
                     if (res.success) {
                         cookie.create('token', res.data);
+                        this.authName = newName;
                         msgHelper.alert('p#msg-text-name', 'Förfatarnamn uppdaterat!', 'success', 3000);
                     } else {
                         msgHelper.alert('p#msg-text-name', 'Fel lösenord!', 'danger', 3000);

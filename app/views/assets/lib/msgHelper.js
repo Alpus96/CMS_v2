@@ -55,14 +55,13 @@ class MsgHelper {
         const modal = '<div class="msgHelperModal modal fade" role="dialog"><div class="modal-dialog"><div class="modal-content"><div class="modal-header"><button type="button" class="close" data-dismiss="modal">&times;</button><h4 class="modal-title">'+title+'</h4></div><div class="modal-body">'+content+'</div><div class="modal-footer">'+options+'</div></div></div></div>';
         $('body').append(modal);
 
-        $('.msgHelperModal').modal({ show: false });
         $('.msgHelperModal').modal('show');
 
         $('.msgHelperModal').on('hidden.bs.modal', () => { this.removeModal(); });
     }
 
     removeModal () {
-        //$('.msgHelperModal').modal('hide');
+        $('.msgHelperModal').modal('hide');
         setTimeout(() => { $('.msgHelperModal').remove(); }, 200);
     }
 }

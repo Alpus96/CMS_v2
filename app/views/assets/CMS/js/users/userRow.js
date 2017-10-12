@@ -117,13 +117,9 @@ class UserRow {
     }
 
     confirmDelete () {
-        msgHelper.newModal('Tabort användare', '<h5>Detta går inte att ångra, är du säker på att du vill ta bort '+this.data.username+' som användare?</h5>', '<div class="btn-group"><button class="delete_cancel btn btn-warning"><span class="glyphicon glyphicon-remove"></span></button><button class="delete_ok btn btn-danger"><span class="glyphicon glyphicon-trash"></span></button></div>');
+        msgHelper.newModal('Tabort användare', '<h5>Detta går inte att ångra, är du säker på att du vill ta bort '+this.data.username+' som användare?</h5>', '<div class="btn-group"><button class="btn btn-warning" data-dismiss="modal"><span class="glyphicon glyphicon-remove"></span></button><button class="delete_ok btn btn-danger" data-dismiss="modal"><span class="glyphicon glyphicon-trash"></span></button></div>');
 
-        $('button.delete_cancel').on('click', () => { msgHelper.removeModal(); });
-        $('.delete_ok').on('click', () => {
-            msgHelper.removeModal();
-            this.deleteUser();
-        });
+        $('.delete_ok').on('click', () => { this.deleteUser(); });
     }
 
     deleteUser () {
