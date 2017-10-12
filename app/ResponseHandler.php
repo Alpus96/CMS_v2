@@ -154,8 +154,7 @@ class ResponseHandler {
             $res = (object)['success' => false];
             if (property_exists($data, 'id')) {
                 $removedContents = new RemovedContents($token);
-                $res->data = $removedContents->restoreContents($data->id);
-                $res->success = $res->data ? true : false;
+                $res->success = $removedContents->restoreContents($data->id);
             }
             echo json_encode($res);
         }
