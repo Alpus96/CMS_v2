@@ -43,9 +43,11 @@ class ResponseHandler {
 
         if (self::$url === '/') {
             echo file_get_contents(self::$config->index);
-        } else if (self::$url === '/login') {
+        }
+        else if (self::$url === '/login') {
             echo file_get_contents(self::$config->login);
-        } else if (self::$url === '/edit') {
+        }
+        else if (self::$url === '/edit') {
             $approved = false;
             if ($token) {
                 $user = new User($token);
@@ -59,8 +61,8 @@ class ResponseHandler {
                 }
             }
             if (!$approved) { header('Location: '.self::$baseURL.'login'); }
-        } else if (self::$url === '/settings') {
-            //  TODO:  Handle checking if logged in and if admin.
+        }
+        else if (self::$url === '/settings') {
             $approved = false;
             if ($token) {
                 $user = new User($token);
@@ -77,7 +79,8 @@ class ResponseHandler {
                 }
             }
             if (!$approved) { header('Location: '.self::$baseURL.'login'); }
-        } else {
+        }
+        else {
             echo file_get_contents(self::$config->fourOfour);
         }
     }
@@ -231,6 +234,7 @@ class ResponseHandler {
         }
         else { http_response_code(404); }
     }
+    
 }
 
 ?>
