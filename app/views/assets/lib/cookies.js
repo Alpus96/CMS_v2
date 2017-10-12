@@ -29,17 +29,12 @@ class Cookies {
     *                   (Is ' + typeof duration + ')"
     **/
     assertDuration (duration) {
-        //  Check if the duration is not a number.
-        if (typeof duration != 'number') {
-            //  If not try parsing it.
-            const parsed = !isNaN(duration) ? parseInt(duration) : false;
-            //  If unable to parse throw an error.
-            if (parsed === false) { throw new Error('Invalid duration; The duration should be a Number, in milliseconds. (Is ' + typeof duration + ')'); }
-            //  Else return the parsed duration.
-            return parsed;
-        }
-        //  If the duration was a number return it.
-        return duration;
+        //  Check if the duration is a number.
+        const parsed = !isNaN(duration) ? parseInt(duration) : false;
+        //  If unable to parse throw an error.
+        if (parsed === false) { throw new Error('Invalid duration; The duration should be a Number, in milliseconds. (Is ' + typeof duration + ')'); }
+        //  If no error was thrown the parsed duration will be returned.
+        return parsed;
     }
 
     /**
@@ -72,7 +67,7 @@ class Cookies {
         //  Check that the cookie has not been deleted manualy, return if it has.
         if (typeof this.cache[name] === 'undefined') { return; }
         //  If not delete it.
-        delete this.cache[name];
+        this.delete(name);
     }
 
     /**
@@ -88,10 +83,12 @@ class Cookies {
         duration = this.assertDuration(duration);
         //  Get the millis and string of when the cookie expires.
         const expires = setTimeout( () => { this.expired(name); }, duration );
+        //  Get the timestamp for when the cookie expires.
+        const expirationTime = this.expireTimestamp(duration);
         //  Create the new cookie.
-        document.cookie = name + '=' + JSON.stringify( value ? { value: value, expires: expires } : '' ) + '; expires=' + this.expireTimestamp(duration) + '; path=/';
+        document.cookie = name + '=' + JSON.stringify( value ? { value: value, expires: expires, fallbackTime: expirationTime } : '' ) + '; expires=' + expirationTime + '; path=/';
         //  Add the new cookie to the cache.
-        this.cache[name] = { value: value, expires:  expires};
+        this.cache[name] = { value: value, expires:  expires, fallbackTime: expirationTime };
     }
 
     /**
@@ -115,7 +112,16 @@ class Cookies {
             const cookieJSON = cookies[i].substr(cookies[i].indexOf('=')+1);
             //  Decode the JSON string.
             const cookieValue = typeof cookieJSON !== 'undefined' && cookieJSON !== 'undefined' && cookieJSON ? JSON.parse(cookieJSON) : undefined;
-            this.cache[cookieName] = cookieValue;
+            //  Check if the cookie has expired and not been deleted.
+            if (cookieValue && cookieValue.hasOwnProperty('fallbackTime')) {
+                const fbT = new Date(cookieValue.fallbackTime);
+                const now = new Date();
+                now.setTime(now.getTime() + (-1*now.getTimezoneOffset()*60*1000));
+                if (fbT.getTime() > now.getTime()) {
+                    //  If not expired add to cache.
+                    this.cache[cookieName] = cookieValue;
+                } else { this.delete(cookieName); }
+            }
         }
         //  Then return the cookie if it exists, otherwise return null.
         return this.cache[name] ? this.cache[name].value : null;
@@ -131,19 +137,31 @@ class Cookies {
     *   	@throws  	If a cokkie with the passed name does not exist;
     *                   "Can not set expires of undefined.".
     **/
-    extendDuration (name, duration) {
+    extendDuration (name, duration = this.duration) {
         //  Confirm a valid duration was passed.
         duration = this.assertDuration(duration);
-        //  Check that the cookie exists before extending duration, if it does not exist return.
+        //  Check that the cookie exists before extending duration.
         if (typeof this.cache[name] === 'undefined') {
-            throw new Error('Can not extend duration of undefined.');
+            //  If it does not exist throw an error.
+            throw new Error('Can not extend duration of undefined cookie.');
         } else {
             //  If it still exists get it.
             const oldCookie = this.cache[name];
-            //  Remove the timeout.
-            clearTimeout(oldCookie.expires);
-            //  Create the cookie again to overwrite the old one.
-            this.create(name, oldCookie.value, duration ? duration : this.duration);
+            //  Confirm the cookie has not expired.
+            const fbT = new Date(oldCookie.fallbackTime);
+            const now = new Date();
+            now.setTime(now.getTime() + (-1*now.getTimezoneOffset()*60*1000));
+            if (!fbT.getTime() > now.getTime()) {
+                //  Delete the cookie from the browser if it has expired.
+                this.delete(name);
+                //  Then throw an error.
+                throw new Error('Can not extentd duration of expired cookie.');
+            } else {
+                //  Remove the timeout.
+                clearTimeout(oldCookie.expires);
+                //  Create the cookie again to overwrite the old one.
+                this.create(name, oldCookie.value, duration ? duration : this.duration);
+            }
         }
     }
 

@@ -158,6 +158,7 @@ class ResponseHandler {
             if ($token) {
                 $user = new User($token);
                 $user->getToken() ? $user->logout() : null;
+                $_COOKIE['token'] = '';
             }
             $res = (object)['success' => true];
             echo json_encode($res);

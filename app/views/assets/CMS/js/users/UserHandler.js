@@ -1,11 +1,12 @@
 class UserHandler {
 
     constructor () {
-        if (window.location.href.indexOf('/login') == -1 && !cookie.read('token'))
-        { window.location.href = baseURL+'/login'; }
+        if (window.location.href.indexOf('/login') == -1 && !cookie.read('token')) { window.location.href = baseURL+'/login';
+        }
 
         if (window.location.href.indexOf('/login') != -1) {
-            if (cokkie.read('token')) {
+            console.log(cookie.read('token'));
+            if (cookie.read('token')) {
                 cookie.extendDuration('token');
                 window.location.href = baseURL+'/edit';
             } else {
@@ -14,11 +15,9 @@ class UserHandler {
                     this.loginRequest();
                 });
             }
-        }
-
-        else if (window.location.href.indexOf('/edit') != -1) {
+        } else if (window.location.href.indexOf('/edit') != -1) {
             cookie.extendDuration('token');
-            $('button#logout').on('click', () => { this.logoutRequest(); });
+            $('#logout').on('click', () => { this.logoutRequest(); });
         } else if (window.location.href.indexOf('/settings') != -1) {
             cookie.extendDuration('token');
             $('#accountTab').on('click', () => { this.showAuthName(); });
