@@ -3,7 +3,7 @@ class Cookies {
     *       @desc		Constructor does the required setup on initiation. Sets
     *                   standard duration for cookies and caches current cookies.
     *
-    *       @param   	duration; <Number>, the standad duration a cookie should exist.
+    *       @param   	duration;   <Number>, the standad duration a cookie should exist.
     *
     *       @throws  	If the parameter duration was not passed; "Duration required;
     *                   The instance of Cookies requires a standard cookie duration in
@@ -17,11 +17,12 @@ class Cookies {
     }
 
     /**
-    *       @desc       This function asserts that a valid duration was passed.
+    *       @desc       This function asserts that a valid duration,
+    *                   Number in milliseconds, was passed.
     *
-    *       @param   	duration; Any, the duration parameter that should be asserted.
+    *       @param   	duration;   Any, the duration parameter that should be asserted.
     *
-    *       @returns 	Returns the duration of it was valid or parseable.
+    *       @returns 	The duration if it was valid or parseable.
     *
     *       @throws  	If the duration was not a number and can not be parsed to a number;
     *                   "Invalid duration; The duration should be in Number of milliseconds.
@@ -33,7 +34,7 @@ class Cookies {
             //  If not try parsing it.
             const parsed = !isNaN(duration) ? parseInt(duration) : false;
             //  If unable to parse throw an error.
-            if (parsed === false) { throw new Error('Invalid duration; The duration should be in Number of milliseconds. (Is ' + typeof duration + ')'); }
+            if (parsed === false) { throw new Error('Invalid duration; The duration should be a Number, in milliseconds. (Is ' + typeof duration + ')'); }
             //  Else return the parsed duration.
             return parsed;
         }
@@ -42,16 +43,16 @@ class Cookies {
     }
 
     /**
-    *       @desc       Converts milliseconds to string of time after milliseconds.
+    *       @desc       Creates a time string for what the time is when the cookie expires.
     *
-    *       @param    	duration; <Number>, in how long from now I want the date string for.
+    *       @param    	duration;   <Number>, in how long from now I want the date string for.
     *
-    *       @return    	Returns an object with string and milliseconds of current time + duration.
+    *       @return    	Returns a string of current time + duration.
     *
     *       @throws   	If the duration was not a number; "Invalid duration; The duration
     *                   should be in Number of milliseconds. (Is ' + typeof duration + ')".
     **/
-    expireStamp (duration = this.duration) {
+    expireTimestamp (duration = this.duration) {
         //  Confirm a valid duration was passed.
         duration = this.assertDuration(duration);
         //  Set time to after duration.
@@ -62,10 +63,10 @@ class Cookies {
     }
 
     /**
-    *       @desc		This function checks if it a cookie has expired, if not
+    *       @desc		This function checks if a cookie has expired, if not
     *               	checks again when it would.
     *
-    *       @param		name; <String>, the name of the cookie to check.
+    *       @param		name;   <String>, the name of the cookie to check.
     **/
     expired (name) {
         //  Check that the cookie has not been deleted manualy, return if it has.
@@ -77,9 +78,10 @@ class Cookies {
     /**
     *       @desc       Creates a cookie.
     *
-    *       @param      name; <String>, the name of the cookie that is created.
-    *                   value: Any, a variable that is conterted to a JSON string and saved in the cookie.
-    *                   exp; <Number>, the amount of milliseconds the cookie will exist.
+    *       @param      name;       <String>, the name of the cookie that is created.
+    *       @param      value:      Any, a variable that is conterted to a JSON string
+    *                               and saved in the cookie.
+    *       @param      duration;   <Number>, the amount of milliseconds the cookie will exist.
     **/
     create (name, value, duration = this.duration) {
         //  Confirm a valid duration was passed.
@@ -87,7 +89,7 @@ class Cookies {
         //  Get the millis and string of when the cookie expires.
         const expires = setTimeout( () => { this.expired(name); }, duration );
         //  Create the new cookie.
-        document.cookie = name + '=' + JSON.stringify( value ? { value: value, expires: expires } : '' ) + '; expires=' + this.expireStamp(duration) + '; path=/';
+        document.cookie = name + '=' + JSON.stringify( value ? { value: value, expires: expires } : '' ) + '; expires=' + this.expireTimestamp(duration) + '; path=/';
         //  Add the new cookie to the cache.
         this.cache[name] = { value: value, expires:  expires};
     }
@@ -97,7 +99,7 @@ class Cookies {
     *                   does not all current cookies are cached and the cookie with the
     *                   passed is returned if it exists.
     *
-    *       @param   	name; <String>, the name of the cookie to read.
+    *       @param   	name;   <String>, the name of the cookie to read.
     *
     *       @return   	An object with the cookie value.
     **/
@@ -122,28 +124,33 @@ class Cookies {
     /**
     *		@desc       Updates the expiration stamp for the cookie with the passed name.
     *
-    *   	@param		name; <String>, the name of the cookie to update.
-    *               	duration; <Number>, how long from the current time the cookie expires in milliseconds.
+    *   	@param		name;       <String>, the name of the cookie to update.
+    *       @param		duration;   <Number>, how long from the current time the cookie expires,
+    *                               in milliseconds.
     *
-    *   	@throws  	If a cokkie with the passed name does not exist; "Can not set expires of undefined.".
+    *   	@throws  	If a cokkie with the passed name does not exist;
+    *                   "Can not set expires of undefined.".
     **/
     extendDuration (name, duration) {
         //  Confirm a valid duration was passed.
         duration = this.assertDuration(duration);
         //  Check that the cookie exists before extending duration, if it does not exist return.
-        if (typeof this.cache[name] === 'undefined') { throw new Error('Can not extend duration of undefined.'); }
-        //  If it still exists get it.
-        const oldCookie = this.cache[name];
-        //  Remove the timeout.
-        clearTimeout(oldCookie.expires);
-        //  Create the cookie again to overwrite the old one.
-        this.create(name, oldCookie.value, duration ? duration : this.duration);
+        if (typeof this.cache[name] === 'undefined') {
+            throw new Error('Can not extend duration of undefined.');
+        } else {
+            //  If it still exists get it.
+            const oldCookie = this.cache[name];
+            //  Remove the timeout.
+            clearTimeout(oldCookie.expires);
+            //  Create the cookie again to overwrite the old one.
+            this.create(name, oldCookie.value, duration ? duration : this.duration);
+        }
     }
 
     /**
     *       @desc       Deletes the cookie with the passed name.
     *
-    *       @param    	name; <String>, the name of the cookie to delete.
+    *       @param    	name;   <String>, the name of the cookie to delete.
     **/
     delete (name) {
         //  Check that the cookie exists, otherwise return.
