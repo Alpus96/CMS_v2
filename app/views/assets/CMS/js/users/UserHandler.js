@@ -50,17 +50,12 @@ class UserHandler {
     }
 
     logoutRequest () {
-        //  TODO:  Decide what to do if logout does not work.
         AJAX.post(baseURL+'/logout', cookie.read('token'), (err, res) => {
             if (!err) {
                 if (res.success) {
                     cookie.delete('token');
                     window.location.href = baseURL+'/login';
-                } else {
-                    //msgHelper.alert('', 'Fel uppstod!', 'danger', 3000);
                 }
-            } else {
-                //msgHelper.alert('', 'Fel uppstod!', 'danger', 3000);
             }
         });
     }
