@@ -12,6 +12,8 @@
 
         static private $getRemovedQuery;
         static private $getByIdQuery;
+        static private $restoreToContentsQuery;
+        static private $deleteOldQuery;
 
         public function __construct ($token) {
             parent::__construct();
@@ -35,7 +37,6 @@
                     if ($result = $connection->query(self::$getRemovedQuery)) {
                         $data = [];
                         while ($row = $result->fetch_object()) {
-                            self::$logger->log(self::$logName, json_encode($row));
                             $deleted = strtotime($row->DELETED);
                             if (($deleted+(3*24*60*60)) > Time()) {
                                 array_push($data, $row);
@@ -46,7 +47,6 @@
                                 }
                             }
                         }
-                        $query->close();
                         $connection->close();
                         return $data;
                     } else { $connection->close(); }
@@ -63,11 +63,17 @@
                 if (!$connObj->error) {
                     $connection = $connObj->connection;
                     if ($query = $connection->prepare(self::$restoreToContentsQuery)) {
-                        $query->bind_param('sss', $c->CONTENT_TEXT, $c->MARKER, $authName);
+                        $query->bind_param('sss', $c->text, $c->marker, $authName);
                         $query->execute();
                         $success = $query->affected_rows > 0 ? true : false;
                         $query->close();
                         $connection->close();
+                        if ($success) {
+                            $del = self::deleteOld($id);
+                            if (!$del) {
+                                self::$logger->log(self::$logName, 'Could not delete restored row from deleted contents. (id: '.$id.')');
+                            }
+                        }
                         return $success;
                     } else { $connection->close(); }
                 } else { self::databaseError($connObj->connection); }
