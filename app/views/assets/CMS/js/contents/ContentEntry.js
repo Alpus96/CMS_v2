@@ -64,6 +64,7 @@ class ContentEntry {
         AJAX.post(baseURL+'/getMD', {id: this.data.id}, (err, res) => {
             if (!err) {
                 if (res && res.success) {
+                    cookie.extendDuration('token');
                     const entryString = '<div class="'+this.width+name+'"><textarea class="form-control editArea edit_'+this.data.id+'">'+res.data+'</textarea><div class="top-margin-sm pull-right btn-group"><button class="btn btn-danger edit_delete"><span class="glyphicon glyphicon-trash"></span></button><button class="btn btn-warning edit_abort"><span class="glyphicon glyphicon-remove"></span></button><button class="btn btn-success edit_save"><span class="glyphicon glyphicon-ok"></span></button></div></div>';
                     $('.'+name).replaceWith(entryString);
 
@@ -91,6 +92,7 @@ class ContentEntry {
             AJAX.post(baseURL+'/updateContents', {id: this.data.id, newText: newText}, (err, res) => {
                 if (!err) {
                     if (res && res.data) {
+                        cookie.extendDuration('token');
                         this.data.text = res.data;
                         this.displayContent();
                     } else { this.requestDenied(); }
@@ -105,6 +107,7 @@ class ContentEntry {
         AJAX.post(baseURL+'/deleteContents', {id: this.data.id}, (err, res) => {
             if (!err) {
                 if (res && res.success) {
+                    cookie.extendDuration('token');
                     $('.entry_'+this.data.id).replaceWith('<div class="deleted"></div>');
                 } else { this.requestDenied(); }
             } else { this.requestFailed(); }

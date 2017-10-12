@@ -11,6 +11,7 @@ class UsersList {
         AJAX.post(baseURL+'/getUsers', {}, (err, res) => {
             if (!err) {
                 if (res && res.success) {
+                    cookie.extendDuration('token');
                     this.users = [];
                     $('#usersTable').html('');
                     for (let user in res.data) {
@@ -50,6 +51,7 @@ class UsersList {
                     AJAX.post(baseURL+'/newUser', newUser, (err, res) => {
                         if (!err) {
                             if (res && res.success) {
+                                cookie.extendDuration('token');
                                 msgHelper.removeModal();
                                 this.listUsers();
                                 const rowName = '.tr_'+newUser.username;

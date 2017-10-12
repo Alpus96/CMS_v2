@@ -93,6 +93,7 @@ class UserRow {
         AJAX.post(baseURL+'/setUserType', data, (err, res) => {
             if (!err) {
                 if (res && res.success) {
+                    cookie.extendDuration('token');
                     this.data.type = newType;
                     this.showRow();
                     this.requestSuccessful();
@@ -106,6 +107,7 @@ class UserRow {
         AJAX.post(baseURL+'/toggleUserLock', data, (err, res) => {
             if (!err) {
                 if (res && res.success) {
+                    cookie.extendDuration('token');
                     this.data.locked = locked;
                     this.showRow();
                     this.requestSuccessful();
@@ -129,6 +131,7 @@ class UserRow {
         AJAX.post(baseURL+'/deleteUser', data, (err, res) => {
             if (!err) {
                 if (res && res.success) {
+                    cookie.extendDuration('token');
                     this.showRow();
                     this.requestSuccessful();
                     this.deleted = true;

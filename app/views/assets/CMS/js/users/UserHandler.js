@@ -94,6 +94,7 @@ class UserHandler {
                     if (res.success) {
                         msgHelper.alert('p#msg-text', 'Lösenordet har updaterats!', 'success', 3000);
 
+                        cookie.create('token', res.data);
                         $('#newPassword').val('');
                         $('#newPassConf').val('');
                     } else {
@@ -110,6 +111,7 @@ class UserHandler {
         AJAX.post(baseURL+'/getAuthName', {}, (err, res) => {
             if (!err && res) {
                 if (res.success) {
+                    cookie.extendDuration('token');
                     $('#authName').val(res.data);
                 } else {
                     msgHelper.alert('p#msg-text-name', 'Inget namn satt!', 'warning');
@@ -125,6 +127,7 @@ class UserHandler {
         AJAX.post(baseURL+'/setAuthName', {authName: newName, password: password}, (err, res) => {
             if (!err && res) {
                 if (res.success) {
+                    cookie.create('token', res.data);
                     msgHelper.alert('p#msg-text-name', 'Förfatarnamn uppdaterat!', 'success', 3000);
                 } else {
                     msgHelper.alert('p#msg-text-name', 'Fel lösenord!', 'warning', 3000);
