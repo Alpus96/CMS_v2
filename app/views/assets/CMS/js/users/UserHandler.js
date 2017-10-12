@@ -11,12 +11,12 @@ class UserHandler {
             });
         }
 
-        else if (window.location.href.indexOf('/edit') != -1)
-        { $('button#logout').on('click', () => { this.logoutRequest(); }); }
-
-        else if (window.location.href.indexOf('/settings') != -1) {
-            this.showAuthName();
-
+        else if (window.location.href.indexOf('/edit') != -1) {
+            cookie.extendDuration('token');
+            $('button#logout').on('click', () => { this.logoutRequest(); });
+        } else if (window.location.href.indexOf('/settings') != -1) {
+            cookie.extendDuration('token');
+            $('#accountTab').on('click', () => { this.showAuthName(); });
             $('#logout').on('click', () => { this.logoutRequest(); });
             $('#changePW').on('click', () => { this.confirmPass('password'); });
             $('#changeAuthName').on('click', () => { this.confirmPass('authName'); });
