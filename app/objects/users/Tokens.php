@@ -75,23 +75,22 @@
 
         private function newToken ($user) {
             if (!property_exists($user, 'username') || !is_string($user->username) || $user->username === '') { return; }
-            if (!self::active($user->username)) {
-                $JSON = new JSON_socket();
-                $key = $JSON->read('JWTConfig')->key;
-                $JWT = new JWT($key);
-                $token = $JWT->encode($user, $key);
-                $connObj = parent::connect();
-                if (!$connObj->error) {
-                    $connection = $connObj->connection;
-                    if ($query = $connection->prepare(self::$newTokenQuery)) {
-                        $query->bind_param('ss', $user->username, $token);
-                        $query->execute();
-                        $query->close();
-                        $connection->close();
-                        return self::active($user->username);
-                    } else { $connection->close(); }
-                } else { self::databaseError($connObj->connection); }
-            }
+            if (self::active($user->username)) { self::deleteToken(); }
+            $JSON = new JSON_socket();
+            $key = $JSON->read('JWTConfig')->key;
+            $JWT = new JWT($key);
+            $token = $JWT->encode($user, $key);
+            $connObj = parent::connect();
+            if (!$connObj->error) {
+                $connection = $connObj->connection;
+                if ($query = $connection->prepare(self::$newTokenQuery)) {
+                    $query->bind_param('ss', $user->username, $token);
+                    $query->execute();
+                    $query->close();
+                    $connection->close();
+                    return self::active($user->username);
+                } else { $connection->close(); }
+            } else { self::databaseError($connObj->connection); }
         }
 
         private function active ($username) {

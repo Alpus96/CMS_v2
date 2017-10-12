@@ -167,7 +167,8 @@ class ResponseHandler {
             if (property_exists($data, 'password') && property_exists($data, 'newPass')) {
                 $user = new User($token);
                 if ($user->getToken()) {
-                    $res->success = $user->newPassword(base64_decode($data->password), base64_decode($data->newPass));
+                    $res->data = $user->newPassword(base64_decode($data->password), base64_decode($data->newPass));
+                    $res->success = $res->data ? true : false;
                 }
             }
             echo json_encode($res);
@@ -186,7 +187,8 @@ class ResponseHandler {
             if (property_exists($data, 'password') && property_exists($data, 'authName')) {
                 $user = new User($token);
                 if ($user->getToken()) {
-                    $res->success = $user->setAuthorName(base64_decode($data->password), $data->authName);
+                    $res->data = $user->setAuthorName(base64_decode($data->password), $data->authName);
+                    $res->success = $res->data ? true : false;
                 }
             }
             echo json_encode($res);

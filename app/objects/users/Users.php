@@ -36,8 +36,8 @@
             return self::$token->toJSON();
         }
 
-        function getAuthorName () {
-            return self::$user->authName;
+        public function getAuthorName () {
+            return self::$token->decodedToken()->authName;
         }
 
         function logout() {
@@ -56,7 +56,11 @@
                         $success = $query->affected_rows > 0 ? true : false;
                         $query->close();
                         $connection->close();
-                        return $success;
+                        if ($success) {
+                            self::$user->authName = $authorName;
+                            self::$token = new Token(self::$user);
+                        }
+                        return $success ? self::$token->toJSON() : false;
                     } else { $connection->close(); }
                 } else { self::databaseError($connObj->connection); }
             }
@@ -76,8 +80,11 @@
                         $success = $query->affected_rows > 0 ? true : false;
                         $query->close();
                         $connection->close();
-                        self::$user->hash = $success ? $password : self::$user->hash;
-                        return $success;
+                        if ($success) {
+                            self::$user->hash = $password;
+                            self::$token = new Token(self::$user);
+                        }
+                        return $success ? self::$token->toJSON() : false;
                     } else { $connection->close(); }
                 } else { self::databaseError($connObj->connection); }
             }
