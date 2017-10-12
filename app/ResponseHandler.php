@@ -7,8 +7,8 @@ require_once 'app/objects/users/Admins.php';
 
 require_once 'app/objects/contents/Contents.php';
 require_once 'app/objects/contents/ContentsEditor.php';
+require_once 'app/objects/contents/RemovedContents.php';
 //  ContentsIndex
-//  ContentsDeleted
 
 class ResponseHandler {
     static private $url;
@@ -140,6 +140,22 @@ class ResponseHandler {
             if (property_exists($data, 'id')) {
                 $contentsEditor = new ContentsEditor($token);
                 $res->success = $contentsEditor->deleteContents($data->id);
+            }
+            echo json_encode($res);
+        }
+        else if (self::$url === '/getDeleted') {
+            $res = (object)['success' => false];
+            $removedContents = new RemovedContents($token);
+            $res->data = $removedContents->getRemovedContents();
+            $res->success = $res->data ? true : false;
+            echo json_encode($res);
+        }
+        else if (self::$url === '/restoreDeleted') {
+            $res = (object)['success' => false];
+            if (property_exists($data, 'id')) {
+                $removedContents = new RemovedContents($token);
+                $res->data = $removedContents->restoreContents($data->id);
+                $res->success = $res->data ? true : false;
             }
             echo json_encode($res);
         }
