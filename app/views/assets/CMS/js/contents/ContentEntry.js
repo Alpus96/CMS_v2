@@ -65,7 +65,7 @@ class ContentEntry {
             if (!err) {
                 if (res && res.success) {
                     cookie.extendDuration('token');
-                    const entryString = '<div class="'+this.width+name+'"><textarea class="form-control editArea edit_'+this.data.id+'">'+res.data+'</textarea><div class="top-margin-sm pull-right btn-group"><button class="btn btn-danger edit_delete"><span class="glyphicon glyphicon-trash"></span></button><button class="btn btn-warning edit_abort"><span class="glyphicon glyphicon-remove"></span></button><button class="btn btn-success edit_save"><span class="glyphicon glyphicon-ok"></span></button></div></div>';
+                    const entryString = '<div class="'+this.width+name+'"><textarea class="form-control editArea edit_'+this.data.id+'">'+res.data+'</textarea><div class="top-margin-sm pull-left"><a href="#" data-toggle="tooltip" title="'+cs+'"><span class="glyphicon glyphicon-question-sign"></span></a></div><div class="top-margin-sm pull-right btn-group"><button class="btn btn-danger edit_delete"><span class="glyphicon glyphicon-trash"></span></button><button class="btn btn-warning edit_abort"><span class="glyphicon glyphicon-remove"></span></button><button class="btn btn-success edit_save"><span class="glyphicon glyphicon-ok"></span></button></div></div>';
                     $('.'+name).replaceWith(entryString);
 
                     const area = $('textarea.editArea');

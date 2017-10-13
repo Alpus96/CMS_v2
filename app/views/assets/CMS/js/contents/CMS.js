@@ -2,6 +2,11 @@ class CMS {
     constructor () {
         this.getContainerIDs();
         this.initalizeContainers();
+        if (cookie.read('token')) {
+            if (window.location.href.indexOf('/edit') != -1 || window.location.href.indexOf('/settings') != -1) {
+                this.loadCheetSheet();
+            }
+        }
     }
 
     getContainerIDs () {
@@ -26,6 +31,16 @@ class CMS {
         }
     }
 
-}
+    loadCheetSheet () {
+        AJAX.get(baseURL+'/app/views/assets/CMS/json/mdcs.json', (err, res) => {
+            if (!err && res) {
+                cs = res.cheetsheet;
+                return;
+            }
+            console.warn('Unable to load markdown cheet sheet!');
+        });
+    }
 
+}
+let cs;
 $(document).ready(() => { const cms = new CMS(); });
