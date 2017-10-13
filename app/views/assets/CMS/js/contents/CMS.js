@@ -1,3 +1,6 @@
+/**
+*   @desc
+**/
 class CMS {
     constructor () {
         this.getContainerIDs();
