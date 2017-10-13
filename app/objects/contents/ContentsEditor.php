@@ -1,5 +1,28 @@
 <?php
-
+    /**
+    *   This class handles changing information in the CONTENTS table.
+    *
+    *   @method     __construct($token):
+    *
+    *   @method     createContents($newContents):
+    *
+    *   @method     getAsMD($id):
+    *
+    *   @method     updateContents($contents):
+    *
+    *   @method     deleteContents($id):
+    *
+    *   @method     databaseError($error)   Logs the passed connection $error.
+    *
+    *   @uses       MySQL_socket:           Reads database credentials and
+    *                                       has a method to connect to the database.
+    *
+    *   @uses       logger:                 To log errors id 'app/library/debug/logs/*.txt'
+    *
+    *   @uses       Tokens:                 To verify the user is logged in and has permissions.
+    *
+    *   @throws     Exception:              Unable to connect to database: $error.
+    * */
     require_once 'app/library/debug/logger.php';
     require_once 'app/objects/users/Tokens.php';
     require_once 'app/library/plugin/parsedown/Parsedown.php';
@@ -34,7 +57,6 @@
             self::$deleteFromContentsQuery = 'DELETE FROM CONTENTS WHERE ID = ?';
         }
 
-        //  NOTE: $newContents = {text, marker}, add author name.
         function createContents ($newContents) {
             if (self::$token->toJSON() && property_exists($newContents, 'text') && $newContents->text != '' && property_exists($newContents, 'marker') && $newContents->marker != '') {
                 $connObj = parent::connect();
@@ -95,7 +117,6 @@
         }
 
         function deleteContents ($id) {
-            //  TODO:  Move the contents to other table.
             if (self::$token->toJSON() && is_numeric($id)) {
                 $connObj = parent::connect();
                 if (!$connObj->error) {

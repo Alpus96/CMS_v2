@@ -1,4 +1,28 @@
 <?php
+    /**
+    *   This class handles changing information in the CONTENTS table.
+    *
+    *   @method     __construct($token):
+    *
+    *   @method     getRemovedContents():
+    *
+    *   @method     restoreContents($id):
+    *
+    *   @method     deleteOld($id):
+    *
+    *   @method     getById($id):
+    *
+    *   @method     databaseError($error)   Logs the passed connection $error.
+    *
+    *   @uses       MySQL_socket:           Reads database credentials and
+    *                                       has a method to connect to the database.
+    *
+    *   @uses       logger:                 To log errors id 'app/library/debug/logs/*.txt'
+    *
+    *   @uses       Tokens:                 To verify the user is logged in and has permissions.
+    *
+    *   @throws     Exception:              Unable to connect to database: $error.
+    * */
     require_once 'app/library/socket/MySQL_socket.php';
     require_once 'app/library/debug/logger.php';
     require_once 'app/objects/users/Tokens.php';
