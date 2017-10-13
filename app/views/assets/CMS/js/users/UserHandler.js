@@ -69,7 +69,6 @@ class UserHandler {
             } else if (forX === 'authName') {
                 this.changeAuthorName(password);
             }
-            //msgHelper.removeModal();
         });
     }
 
