@@ -1,5 +1,7 @@
 <?php
-
+    /**
+    *   Not implemented.
+    * */
     class ImagesCompres {
 
         function __construct () ($source_url, $destination_url, $quality = 85) {
