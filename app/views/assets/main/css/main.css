@@ -1,1 +1,52 @@
 /* CSS */
+
+body {
+    background: #EEE;
+}
+
+p, ul {
+    font-size: 16px;
+}
+
+#head > img {
+    width: 25%;
+    margin: 0;
+    padding: 0;
+}
+
+.nav-tabs {
+    border-bottom: none;
+}
+
+.nav-tabs > li > a{
+    color: white;
+    background-color: chocolate;
+    border: medium none;
+}
+
+.nav-tabs > li.active > a, .nav-tabs > li.active > a:link{
+    color: white;
+    background-color: coral;
+    border: medium none;
+}
+
+.tab-content{
+    background-color: white;
+    padding: 5px;
+    border-top: 5px solid coral;
+    height: inherit;
+}
+
+.nav-tabs > li > a:hover, .nav-tabs > li.active > a:hover{
+    background-color: chocolate !important;
+    text-decoration: underline;
+    color: white;
+    border: medium none;
+}
+
+.nav-tabs > li.active > a:hover{
+    background-color: coral !important;
+    text-decoration: underline;
+    color: white;
+    border: medium none;
+}

@@ -1,5 +1,5 @@
 {
-    "indexTitle": "index",
+    "indexTitle": "Dalslands Skrivarförening",
     "index": "app/views/index.html",
     "login": "app/views/assets/CMS/html/login.html",
     "settings": "app/views/assets/CMS/html/settings.html",

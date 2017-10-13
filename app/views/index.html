@@ -21,7 +21,6 @@
         <script src="/projects/CMS_v2/app/views/assets/lib/cookies.min.js"></script>
         <script src="/projects/CMS_v2/app/views/assets/lib/ajax.js"></script>
         <script src="/projects/CMS_v2/app/views/assets/lib/msgHelper.js"></script>
-        <!--<script src="/projects/CMS_v2/app/views/assets/CMS/js/contents/ContentLoader.js"></script>-->
         <script src="/projects/CMS_v2/app/views/assets/CMS/js/contents/ContentContainer.js"></script>
         <script src="/projects/CMS_v2/app/views/assets/CMS/js/contents/ContentEntry.js"></script>
         <!-- edit -->
@@ -45,39 +44,33 @@
         <div class="container">
             <!-- edit_menu -->
 
-            <div class="row">
-                <h1>Hello world!</h1>
-
-                <p>this is the main page, where the content is loaded to.</p>
+            <div class="row top-margin-xl">
+                <div class="contentContainer marker_head amount_1 incAuth_false incDate_false entryWidth_xs-12" id="head"></div>
             </div>
 
-            <div class="row">
+            <div class="row top-margin-xl news">
+                <div class="contentContainer marker_news amount_4 incAuth_false incDate_true entryWidth_md-3-sm-6" id="news"></div>
+            </div>
+
+            <div class="row top-margin-lg">
                 <ul class="nav nav-tabs">
-                    <li class="active"><a data-toggle="tab" href="#posts1">Posts 1</a></li>
-                    <li><a data-toggle="tab" href="#posts2">Posts 2</a></li>
-                    <li><a data-toggle="tab" href="#posts3">Posts 3</a></li>
-                    <li><a data-toggle="tab" href="#posts4">Posts 4</a></li>
+                    <li class="active"><a data-toggle="tab" role="tab" href="#aboutTab">Dalslands Skrivarförening</a></li>
+                    <li><a data-toggle="tab" role="tab" href="#booksTab">Böcker</a></li>
+                    <li><a data-toggle="tab" role="tab" href="#calendarTab">Kalendarium</a></li>
+                    <li><a data-toggle="tab" role="tab" href="#contactTab">Kontakta Oss</a></li>
                 </ul>
 
-                <div class="tab-content">
-                    <div id="posts1" class="tab-pane fade in active">
-                        <h3>Posts 1</h3>
-                        <div class="contentContainer marker_indexMain amount_4 incAuth_true incDate_true entryWidth_md-6" id="main_posts"></div>
+                <div class="tab-content clearfix">
+                    <div id="aboutTab" role="tabpanel" class="tab-pane fade in active top-margin-lg contentContainer marker_about amount_1 incAuth_false incDate_false entryWidth_xs-12">
                     </div>
 
-                    <div id="posts2" class="tab-pane fade">
-                        <h3>Posts 2</h3>
-                        <div class="contentContainer marker_index2 entryWidth_md-6 incDate_false incAuth_false amount_0" id="secondary_posts"></div>
+                    <div id="booksTab" role="tabpanel" class="tab-pane fade top-margin-lg contentContainer marker_books entryWidth_md-4-sm-6 incDate_false incAuth_false amount_0">
                     </div>
 
-                    <div id="posts3" class="tab-pane fade">
-                        <h3>Posts 3</h3>
-                        <div class="contentContainer type_posts" id="some_posts"></div>
+                    <div id="calendarTab" role="tabpanel" class="tab-pane fade top-margin-lg contentContainer marker_calendar amount_0 incAuth_false incDate_false entryWidth_md-3-sm-6">
                     </div>
 
-                    <div id="posts4" class="tab-pane fade">
-                        <h3>Posts 4</h3>
-                        <div class="contentContainer type_articles" id="main_articles"></div>
+                    <div id="contactTab" role="tabpanel" class="tab-pane fade top-margin-lg contentContainer marker_contact amount_0 incAuth_false incDate_false entryWidth_md-3-sm-6" id="contact">
                     </div>
                 </div>
             </div>
