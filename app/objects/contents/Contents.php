@@ -1,4 +1,30 @@
 <?php
+    /**
+    *   This class handles reading from the CONTENTS table in the database.
+    *
+    *   @method     __construct():          Constructs MySQL_socket and logger for later use.
+    *                                       Also sets the prepared query strings to use in the
+    *                                       class methods.
+    *
+    *   @method     getByMarker($option):   Gets all rows in the CONTENTS table acording to
+    *                                       the passed options in $options.
+    *
+    *   @method     getById($option):       Gets the information with id acording to
+    *                                       the passed options in $option.
+    *
+    *   @method     databaseError($error)   Logs the passed connection $error.
+    *
+    *   @uses       MySQL_socket:           Reads database credentials and
+    *                                       has a method to connect to the database.
+    *
+    *   @uses       logger:                 To log errors id 'app/library/debug/logs/*.txt'
+    *
+    *   @uses       Parsedown:              To parse contents text from markdown to html before
+    *                                       returning contents data.
+    *
+    *   @throws     Exception:              Unable to connect to database: $error.
+    * */
+
     require_once 'app/library/socket/MySQL_socket.php';
     require_once 'app/library/debug/logger.php';
     require_once 'app/library/plugin/parsedown/Parsedown.php';
@@ -21,7 +47,6 @@
             self::$getByIDQuery = 'SELECT CONTENT_TEXT, AUTHOR, TIMESTAMP_CREATED, TIMESTAMP_EDITED FROM CONTENTS WHERE ID = ?';
         }
 
-        // $options = {category, amount, offset, includeAuthor, includeDates}
         function getByMarker ($options) {
             if (!property_exists($options, 'marker') || !property_exists($options, 'amount')) {
                 self::$logger->log(self::$logName, 'Faulty content request: '.json_encode($options));
@@ -71,7 +96,6 @@
             return false;
         }
 
-        // $options = {id, includeAuthor, includeDates}
         function getId ($options) {
             if (!property_exists($options, 'id')) {
                 self::$logger->log(self::$logName, 'Faulty content request: '.json_encode($options));
