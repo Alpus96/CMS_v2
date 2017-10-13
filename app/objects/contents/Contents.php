@@ -34,7 +34,7 @@
                     $offset = 0;
                     if (property_exists($options, 'offset') && $options->offset >= 0)
                     { $offset = $options->offset; }
-                    $amount = 18446744073709551615;
+                    $amount = 10000;
                     if (property_exists($options, 'amount') && $options->amount > 0)
                     { $amount = $options->amount; }
                     $query->bind_param('sii', $options->marker, $offset, $amount);

@@ -28,8 +28,8 @@ class ContentContainer {
             }
             if ($(e.target).hasClass('deleted')) {
                 this.loadContent();
-            } else if ($(this.id).children().length > amount && amount != 0) {
-                $(this.id).children().last().remove();
+            } else if ($(this.id).children().length > amount && this.data.amount != 0) {
+                $(this.id).children().last(2).remove();
             }
         });
     }
