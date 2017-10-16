@@ -1,7 +1,7 @@
 <?php
     /*
     *   NOTE:   '/projects/CMS_v2' should be repalced
-    *           with '/CMS' before integration.
+    *           with '/' before integration.
     * */
     $url = str_replace('/projects/CMS_v2', '', $_SERVER['REQUEST_URI']);
     require_once 'app/ResponseHandler.php';
