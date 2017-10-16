@@ -1,85 +1,67 @@
 <?php
-	//  This class handels all logging
-	class Logger{
+	/**
+	*   This class handels writing strings to
+	*	a text file, to ease debuging.
+	*
+	*   @category       Debuging
+	*   @package        Logger
+	*   @version        1.0
+	*   @since          1.0
+	*   @deprecated     ---
+	* */
+	class logger {
 
-		/*
-		*	Log variables:
-		**/
+		//	Absolute path to log file.
+		static private $path;
 
-		//	Log start string
-		static private $logS;
-		//	Log end string
-		static private $logE;
-		//
-		static private $log_mode;
-
-		/*
-		*	Static: Log date (The log created and/or writen to
-		*	will allways begin with the date the log was made.)
-		**/
-		static private $file_date;
-
-		/*
-		*	Static: Log time (The log writen to the log file
-		*	will allways begin with the time the log was made.)
-		**/
-		static private $log_time;
-
-		/*
-		*	Static: Log filetype (The log will always be of the
-		*	filetype .txt as specified in __construct().)
-		**/
-		static private $log_filetype;
-
-
-		//  Setting log variables
-		function __construct(){
-			//	Private variables:
-			$this->logS = "\t";
-			$this->logE = "\n";
-			$this->log_mode = 'a';
-
-			//	Private Static variables:
-			$this->log_filetype = '.txt';
-			//	Set timezone to use when setting time variables:
+		/**
+		*	@method		Sets the absolute path to the log file with passed name.
+		*
+		*	@param		string	The name of the file to write logs to.
+		* */
+		function __construct($file_name) {
+			//	Set the path to the log file with date before given name.
 			date_default_timezone_set('Europe/Stockholm');
-			//	Static time variables
-			$this->file_date = date('Y-m-d');
-			$this->log_time = date('H:i:s');
+			$date = date('Y-m-d');
+			self::$path = dirname(__FILE__).'/logs/'.$date.'_'.$file_name.'.txt';
 		}
 
-
-		/*
-		*	This function writes $str to desired $log(opens or
-		*	creates log file for the date the log occures), with
-		*	a timestamp on the log entry.
-		**/
-		function log($logFile, $str){
-			//echo $this->file_date.$logFile.$this->log_filetype;
-			$file = fopen(dirname(__FILE__).'/logs/'.$this->file_date.$logFile.$this->log_filetype, $this->log_mode);
+		/**
+		*	@method		Opens log file and if successful writes
+		*				log entry before closing the file again.
+		*
+		*	@param		string	The log entry string to write to the file.
+		* */
+		function log ($str) {
+			//	Open the file.
+			$file = fopen(self::$path, 'a');
+			//	Return if unable to open file.
 			if (!$file) { return; }
-			fwrite($file, $this->logE.$this->log_time.$this->logS.$str);/*$this->logE.$this->log_time.$this->logS.$str*/
+			//	Begin the log entry with the current
+			//	timea nd write it to the file.
+			$time = date('H:i:s');
+			fwrite($file, '\n'.$time.'\t'.$str);
+			//	Close the file when done.
 			fclose($file);
 		}
 
-		/*
-		*	Appends the last row of the log file with $str.
-		**/
-		function append_log($log, $str){
-			$file = fopen($this->file_date.$log.$this->log_filetype, $this->log_mode);
+		/**
+		*	@method		Opens log file and if successful writes log string on
+		*				existing line before closing the file again.
+		*
+		*	@param		string	The log string to append to the current row.
+		* */
+		function append_log ($str) {
+			//	Open the file.
+			$file = fopen(self::$path, 'a');
+			//	Return if unable to open file.
+			if (!$file) { return; }
+			//	Write the given string without
+			//	begining a new row.
 			fwrite($file, $str);
+			//	Close file.
 			fclose($file);
 		}
 
-		/*
-		*	This function is used if uniqe log is desired.
-		**/
-		function log_special($log, $str, $logS, $logE, $log_mode){
-			$this->logS = $logS;
-			$this->logE = $logE;
-			$this->log_mode = $log_mode;
-
-			$this->log($log, $str);
-		}
 	}
 ?>
