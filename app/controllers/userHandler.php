@@ -14,7 +14,7 @@
     *   @deprecated     ---
     * */
 
-    require_once 'userModel.php';
+    require_once '/app/models/userModel.php';
     require_once 'tokenHandler.php';
 
     class userHandler extends userModel {

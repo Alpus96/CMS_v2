@@ -14,8 +14,8 @@
     *   @deprecated     ---
     * */
 
-    require_once 'mysqlSocket.php';
-    require_once 'logger.php';
+    require_once '/library/socket/mysqlSocket.php';
+    require_once '/library/debug/logger.php';
 
     class tokenModel extends mysqlSocket {
 
