@@ -16,10 +16,10 @@
     *   @deprecated     ---
     * */
 
-    require_once '/app/models/tokenModel.php';
-    require_once '/library/socket/jsonSocket.php';
-    require_once '/library/plugin/jwt/JWT.php';
-    require_once '/library/debug/logger.php';
+    require_once 'app/models/tokenModel.php';
+    require_once 'library/socket/jsonSocket.php';
+    require_once 'library/plugin/jwt/JWT.php';
+    require_once 'library/debug/logger.php';
 
     class tokenHandler extends tokenModel {
 

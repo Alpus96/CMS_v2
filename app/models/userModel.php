@@ -14,8 +14,8 @@
     *   @deprecated     ---
     * */
 
-    require_once '/library/socket/mysqlSocket.php';
-    require_once '/library/debug/logger.php';
+    require_once 'library/socket/mysqlSocket.php';
+    require_once 'library/debug/logger.php';
 
     class userModel extends mysqlSocket {
 
