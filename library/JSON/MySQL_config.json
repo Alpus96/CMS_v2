@@ -1,0 +1,9 @@
+{
+    "cridentials" : {
+        "host": "localhost",
+        "user": "php_cms",
+        "pw": "1234",
+        "db": "cms"
+    },
+    "charset" : "utf8"
+}
