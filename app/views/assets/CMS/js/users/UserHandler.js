@@ -32,8 +32,9 @@ class UserHandler {
             username : window.btoa($('#username').val()),
             password : window.btoa($('#password').val())
         };
-
-        AJAX.post(baseURL+'/login', credentials, (err, res) => {
+        AJAX.post('http://localhost'+baseURL+'/login', credentials, (err, res) => {
+            console.log(err);
+            console.log(res);
             if (!err && res) {
                 if (res.success) {
                     cookie.create('token', res.token);

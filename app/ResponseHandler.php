@@ -1,14 +1,14 @@
 <?php
-require_once 'app/library/debug/logger.php';
-require_once 'app/library/socket/JSON_socket.php';
+require_once ROOT_PATH.'library/debug/Logger.php';
+require_once ROOT_PATH.'library/socket/JsonSocket.php';
 
-require_once 'app/objects/users/Users.php';
-require_once 'app/objects/users/Admins.php';
+require_once ROOT_PATH.'app/controllers/user/UserHandler.php';
+//require_once ROOT_PATH.'app/controllers/user/AdminHandler.php';
 
-require_once 'app/objects/contents/Contents.php';
-require_once 'app/objects/contents/ContentsEditor.php';
-require_once 'app/objects/contents/RemovedContents.php';
-//  ContentsIndex
+// require_once 'app/objects/contents/Contents.php';
+// require_once 'app/objects/contents/ContentsEditor.php';
+// require_once 'app/objects/contents/RemovedContents.php';
+//  ContentsIndexing
 
 class ResponseHandler {
     static private $url;
@@ -21,17 +21,17 @@ class ResponseHandler {
     static private $config;
 
     public function __construct($url) {
-        self::$logger = new logger();
-        self::$logName = '_urlHandler_log';
+        self::$logger = new Logger('responseHandler_log');
 
+        //  TODO:   Handle url not valid type better.
         if (!is_string($url)) {
             $msg = 'The passed URL was not a string.';
-            self::$logger->log(self::$logName, $msg);
-            throw new Exception($msg);
+            self::$logger->log($msg);
+            //throw new Exception($msg);
         }
 
         self::$url = $url;
-        self::$JSON = new JSON_socket();
+        self::$JSON = new JsonSocket(ROOT_PATH.'library/json_lib/');
         self::$config = self::$JSON->read('responseConfig');
 
         self::$baseURL = 'http://localhost/projects/CMS_v2/';
@@ -46,14 +46,24 @@ class ResponseHandler {
             echo $index;
         }
         else if (self::$url === '/login') {
-            echo file_get_contents(self::$config->login);
+            $valid = false;
+            if ($token) {
+                $user = new userHandler();
+                $valid = $user->verifyToken($token);
+            }
+            if ($valid) {
+                header('Location: '.self::$baseURL.'edit');
+            } else {
+                $_COOKIE['token'] = '';
+                echo file_get_contents(self::$config->login);
+            }
         }
         else if (self::$url === '/edit') {
             $approved = false;
             if ($token) {
-                $user = new User($token);
-                $new_token = $user->getToken();
-                if ($new_token) {
+                $user = new userHandler();
+                $valid = $user->verifyToken($token);
+                if ($valid) {
                     $approved = true;
                     $index = file_get_contents(self::$config->index);
                     $index = str_replace("<!-- pt -->", 'CMS - Edit', $index);
@@ -67,16 +77,17 @@ class ResponseHandler {
         else if (self::$url === '/settings') {
             $approved = false;
             if ($token) {
-                $user = new User($token);
-                if ($user->getToken()) {
+                $user = new userHandler();
+                $valid = $user->verifyToken($token);
+                if ($valid) {
                     $approved = true;
                     $settings = file_get_contents(self::$config->settings);
-                    $admin = new Admin($token);
+                    /*$admin = new Admin($token);
                     if ($admin->is_admin()) {
                         $settings = str_replace("<!--  admin_scripts  -->", self::$config->admin_scripts, $settings);
                         $settings = str_replace("<!--  admin_menu  -->", self::$config->admin_menu, $settings);
                         $settings = str_replace("<!--  admin_tabs  -->", self::$config->admin_tabs, $settings);
-                    }
+                    }*/
                     echo $settings;
                 }
             }
@@ -91,7 +102,7 @@ class ResponseHandler {
         $data = json_decode(file_get_contents('php://input'));
         $token = $_COOKIE['token'] ? json_decode($_COOKIE['token'])->value : false;
 
-        if (self::$url === '/getContentsByMarker') {
+        /*if (self::$url === '/getContentsByMarker') {
             $res = (object)['success' => false];
             if (property_exists($data, 'marker')) {
                 $contents = new Contents();
@@ -158,27 +169,28 @@ class ResponseHandler {
             }
             echo json_encode($res);
         }
-        else if (self::$url === '/login') {
-            $credentials = (object)[
+        else*/
+        if (self::$url === '/login') {
+            $cred = (object)[
                 'username' => base64_decode($data->username),
                 'password' => base64_decode($data->password)
             ];
-            $user = new User($credentials);
-            $token = $user->getToken();
+            $user = new userHandler();
+            $token = $user->login($cred->username, $cred->password);
             $res = (object)[
                 'success' => $token ? true : false,
-                $token ? 'token' : 'error' => $token ? $token : 'Fel användarnamn eller lösenord!'
+                'token' => $token ? $token : false
             ];
             echo json_encode($res);
         }
         else if (self::$url === '/logout') {
             //  TODO:  Handle errors.
+            $res = (object)['success' => false];
             if ($token) {
-                $user = new User($token);
-                $user->getToken() ? $user->logout() : null;
-                $_COOKIE['token'] = '';
+                $user = new userHandler();
+                $res->success = $user->logout($token);
             }
-            $res = (object)['success' => true];
+            if ($res->success) { $_COOKIE['token'] = ''; }
             echo json_encode($res);
         }
         else if (self::$url === '/setPW') {
@@ -194,15 +206,19 @@ class ResponseHandler {
         }
         else if (self::$url === '/getAuthName') {
             $res = (object)['success' => false];
-            $user = new User($token);
-            if ($user->getToken()) {
-                $res->data = $user->getAuthorName();
+            if ($token) {
+                $user = new userHandler();
+                $res->data = $user->getDisplayName($token);
                 $res->success = $res->data ? true : false;
             }
             echo json_encode($res);
         }
         else if (self::$url === '/setAuthName') {
             $res = (object)['success' => false];
+            if ($token) {
+                $user = new userHandler();
+                $res->data = $user->setDisplayName($token);
+            }
             if (property_exists($data, 'password') && property_exists($data, 'authName')) {
                 $user = new User($token);
                 if ($user->getToken()) {

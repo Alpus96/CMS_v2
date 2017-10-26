@@ -14,10 +14,10 @@
     *   @deprecated     ---
     * */
 
-    require_once 'library/socket/mysqlSocket.php';
-    require_once 'library/debug/logger.php';
+    require_once ROOT_PATH.'/library/socket/MysqlSocket.php';
+    require_once ROOT_PATH.'/library/debug/Logger.php';
 
-    class userModel extends mysqlSocket {
+    class UserModel extends MysqlSocket {
 
         static private $query;
 
@@ -26,9 +26,11 @@
         * */
         protected function __construct () {
             parent::__construct();
-            self::$query->read = 'SELECT * FROM USERS WHERE USERNAME = ?';
-            self::$query->ud_hash = 'UPDATE USERS SET HASH = ? WHERE USERNAME = ?';
-            self::$query->ud_dname = 'UPDATE USERS SET DISPLAY_NAME = ? WHERE USERNAME = ?';
+            self::$query = (object)[
+                'read' => 'SELECT * FROM USERS WHERE USERNAME = ?',
+                'ud_hash' => 'UPDATE USERS SET HASH = ? WHERE USERNAME = ?',
+                'ud_dname' => 'UPDATE USERS SET DISPLAY_NAME = ? WHERE USERNAME = ?'
+            ];
         }
 
         /**
@@ -146,7 +148,7 @@
         * */
         private function logError ($msg) {
             //  Open the log instance.
-            $logger = new logger('tokenModel_errorsLog');
+            $logger = new Logger('tokenModel_errorsLog');
             //  Create an exception with the given prameter.
             $e = new Exception($msg);
             //  Log the exception.
