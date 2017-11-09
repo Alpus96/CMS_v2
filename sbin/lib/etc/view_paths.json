@@ -1,0 +1,6 @@
+{
+    "index": "sbin/app/ui/index.html",
+    "login": "sbin/app/ui/usr/html/login.html",
+    "unauthorized": "sbin/app/ui/usr/html/unautorized.html",
+    "fourOfour": "sbin/app/ui/usr/html/404.html"
+}
