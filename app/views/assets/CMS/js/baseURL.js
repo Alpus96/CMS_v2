@@ -1,1 +1,0 @@
-const baseURL = '/projects/CMS_v2';

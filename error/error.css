@@ -1,0 +1,21 @@
+/* CSS */
+body {
+    background-image: url('/error/error_cinemagraph.gif');
+    background-size: 100% auto;
+    background-repeat: no-repeat;
+}
+
+.perspective-center {
+    position: absolute;
+    top: 45%;
+    top: 45vh;
+    left: 50%;
+    left: 50vw;
+    transform: translate(-50%, -50%);
+    -moz-transform: translate(-50%, -50%);
+    -webkit-transform: translate(-50%, -50%);
+}
+
+.error-sign {
+    margin: 10px;
+}
